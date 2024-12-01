@@ -16,6 +16,10 @@ package org.eclipse.swt.examples.controlexample;
 
 import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,19 +33,23 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolBar_Old;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolItem_Old;
 import org.eclipse.swt.widgets.Widget;
 
 class ToolBarTab extends Tab {
 	/* Example widgets and groups that contain them */
-	ToolBar imageToolBar, textToolBar, imageTextToolBar;
-	Group imageToolBarGroup, textToolBarGroup, imageTextToolBarGroup;
+	private ToolBar_Old imageToolBar, textToolBar, imageTextToolBar;
+	private ToolBar imageToolBar2, textToolBar2, imageTextToolBar2;
+
+	private Group imageToolBarGroup, textToolBarGroup, imageTextToolBarGroup;
 
 	/* Style widgets added to the "Style" group */
-	Button horizontalButton, verticalButton, flatButton, shadowOutButton, wrapButton, rightButton;
+	private Button horizontalButton, verticalButton, flatButton, shadowOutButton, wrapButton, rightButton;
 
 	/* Other widgets added to the "Other" group */
-	Button comboChildButton;
+	private Button comboChildButton;
 
 	/**
 	 * Creates the Tab within a given instance of ControlExample.
@@ -59,19 +67,19 @@ class ToolBarTab extends Tab {
 
 		/* Create a group for the image tool bar */
 		imageToolBarGroup = new Group (exampleGroup, SWT.NONE);
-		imageToolBarGroup.setLayout (new GridLayout ());
+		imageToolBarGroup.setLayout (new GridLayout(2, false));
 		imageToolBarGroup.setLayoutData (new GridData (SWT.FILL, SWT.FILL, true, true));
 		imageToolBarGroup.setText (ControlExample.getResourceString("Image_ToolBar"));
 
 		/* Create a group for the text tool bar */
 		textToolBarGroup = new Group (exampleGroup, SWT.NONE);
-		textToolBarGroup.setLayout (new GridLayout ());
+		textToolBarGroup.setLayout (new GridLayout (2, false));
 		textToolBarGroup.setLayoutData (new GridData (SWT.FILL, SWT.FILL, true, true));
 		textToolBarGroup.setText (ControlExample.getResourceString("Text_ToolBar"));
 
 		/* Create a group for the image and text tool bar */
 		imageTextToolBarGroup = new Group (exampleGroup, SWT.NONE);
-		imageTextToolBarGroup.setLayout (new GridLayout ());
+		imageTextToolBarGroup.setLayout (new GridLayout (2, false));
 		imageTextToolBarGroup.setLayoutData (new GridData (SWT.FILL, SWT.FILL, true, true));
 		imageTextToolBarGroup.setText (ControlExample.getResourceString("ImageText_ToolBar"));
 	}
@@ -100,29 +108,51 @@ class ToolBarTab extends Tab {
 		*/
 
 		/* Create the image tool bar */
-		imageToolBar = new ToolBar (imageToolBarGroup, style);
-		ToolItem item = new ToolItem (imageToolBar, SWT.PUSH);
+		createImageToolBarOld(style);
+		createImageToolBarNew(style);
+
+
+		/* Create the text tool bar */
+		createTxtToolBarOld(style);
+		createTxtToolBarNew(style);
+
+
+		/* Create the image and text tool bar */
+		createImageTextToolBarOld(style);
+		createimageTextToolBarNew(style);
+
+		/*
+		* Do not add the selection event for this drop down
+		* tool item.  Without hooking the event, the drop down
+		* widget does nothing special when the drop down area
+		* is selected.
+		*/
+	}
+
+	private void createImageToolBarOld(int style) {
+		imageToolBar = new ToolBar_Old (imageToolBarGroup, style);
+		ToolItem_Old item = new ToolItem_Old (imageToolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText("SWT.PUSH");
-		item = new ToolItem (imageToolBar, SWT.PUSH);
+		item = new ToolItem_Old (imageToolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.PUSH");
-		item = new ToolItem (imageToolBar, SWT.RADIO);
+		item = new ToolItem_Old (imageToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);
 		item.setToolTipText ("SWT.RADIO");
-		item = new ToolItem (imageToolBar, SWT.RADIO);
+		item = new ToolItem_Old (imageToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);
 		item.setToolTipText ("SWT.RADIO");
-		item = new ToolItem (imageToolBar, SWT.CHECK);
+		item = new ToolItem_Old (imageToolBar, SWT.CHECK);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setToolTipText ("SWT.CHECK");
-		item = new ToolItem (imageToolBar, SWT.RADIO);
+		item = new ToolItem_Old (imageToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.RADIO");
-		item = new ToolItem (imageToolBar, SWT.RADIO);
+		item = new ToolItem_Old (imageToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.RADIO");
-		item = new ToolItem (imageToolBar, SWT.SEPARATOR);
+		item = new ToolItem_Old (imageToolBar, SWT.SEPARATOR);
 		item.setToolTipText("SWT.SEPARATOR");
 		if (comboChildButton.getSelection ()) {
 			Combo combo = new Combo (imageToolBar, SWT.NONE);
@@ -132,35 +162,75 @@ class ToolBarTab extends Tab {
 			item.setWidth (combo.getSize ().x);
 			item.setControl (combo);
 		}
-		item = new ToolItem (imageToolBar, SWT.DROP_DOWN);
+		item = new ToolItem_Old (imageToolBar, SWT.DROP_DOWN);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setToolTipText ("SWT.DROP_DOWN");
 		item.addSelectionListener(new DropDownSelectionListener());
+	}
 
-		/* Create the text tool bar */
-		textToolBar = new ToolBar (textToolBarGroup, style);
-		item = new ToolItem (textToolBar, SWT.PUSH);
+	private void createImageToolBarNew(int style) {
+		imageToolBar2 = new ToolBar (imageToolBarGroup, style);
+		ToolItem item = new ToolItem (imageToolBar2, SWT.PUSH);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setToolTipText("SWT.PUSH");
+		item = new ToolItem (imageToolBar2, SWT.PUSH);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setToolTipText ("SWT.PUSH");
+		item = new ToolItem (imageToolBar2, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciOpenFolder]);
+		item.setToolTipText ("SWT.RADIO");
+		item = new ToolItem (imageToolBar2, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciOpenFolder]);
+		item.setToolTipText ("SWT.RADIO");
+		item = new ToolItem (imageToolBar2, SWT.CHECK);
+		item.setImage (instance.images[ControlExample.ciTarget]);
+		item.setToolTipText ("SWT.CHECK");
+		item = new ToolItem (imageToolBar2, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setToolTipText ("SWT.RADIO");
+		item = new ToolItem (imageToolBar2, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setToolTipText ("SWT.RADIO");
+		item = new ToolItem (imageToolBar2, SWT.SEPARATOR);
+		item.setToolTipText("SWT.SEPARATOR");
+		if (comboChildButton.getSelection ()) {
+			Combo combo = new Combo (imageToolBar2, SWT.NONE);
+			combo.setItems ("250", "500", "750");
+			combo.setText (combo.getItem (0));
+			combo.pack ();
+			item.setWidth (combo.getSize ().x);
+			item.setControl (combo);
+		}
+		item = new ToolItem (imageToolBar2, SWT.DROP_DOWN);
+		item.setImage (instance.images[ControlExample.ciTarget]);
+		item.setToolTipText ("SWT.DROP_DOWN");
+		item.addSelectionListener(new DropDownSelectionListener());
+	}
+
+	private void createTxtToolBarOld(int style) {
+		textToolBar = new ToolBar_Old (textToolBarGroup, style);
+		ToolItem_Old item = new ToolItem_Old (textToolBar, SWT.PUSH);
+		item.setText (ControlExample.getResourceString("PushBlaBlub"));
+		item.setToolTipText("SWT.PUSH");
+		item = new ToolItem_Old (textToolBar, SWT.PUSH);
 		item.setText (ControlExample.getResourceString("Push"));
 		item.setToolTipText("SWT.PUSH");
-		item = new ToolItem (textToolBar, SWT.PUSH);
-		item.setText (ControlExample.getResourceString("Push"));
-		item.setToolTipText("SWT.PUSH");
-		item = new ToolItem (textToolBar, SWT.RADIO);
+		item = new ToolItem_Old (textToolBar, SWT.RADIO);
+		item.setText (ControlExample.getResourceString("r"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem_Old (textToolBar, SWT.RADIO);
 		item.setText (ControlExample.getResourceString("Radio"));
 		item.setToolTipText("SWT.RADIO");
-		item = new ToolItem (textToolBar, SWT.RADIO);
-		item.setText (ControlExample.getResourceString("Radio"));
-		item.setToolTipText("SWT.RADIO");
-		item = new ToolItem (textToolBar, SWT.CHECK);
+		item = new ToolItem_Old (textToolBar, SWT.CHECK);
 		item.setText (ControlExample.getResourceString("Check"));
 		item.setToolTipText("SWT.CHECK");
-		item = new ToolItem (textToolBar, SWT.RADIO);
+		item = new ToolItem_Old (textToolBar, SWT.RADIO);
 		item.setText (ControlExample.getResourceString("Radio"));
 		item.setToolTipText("SWT.RADIO");
-		item = new ToolItem (textToolBar, SWT.RADIO);
+		item = new ToolItem_Old (textToolBar, SWT.RADIO);
 		item.setText (ControlExample.getResourceString("Radio"));
 		item.setToolTipText("SWT.RADIO");
-		item = new ToolItem (textToolBar, SWT.SEPARATOR);
+		item = new ToolItem_Old (textToolBar, SWT.SEPARATOR);
 		item.setToolTipText("SWT.SEPARATOR");
 		if (comboChildButton.getSelection ()) {
 			Combo combo = new Combo (textToolBar, SWT.NONE);
@@ -170,42 +240,82 @@ class ToolBarTab extends Tab {
 			item.setWidth (combo.getSize ().x);
 			item.setControl (combo);
 		}
-		item = new ToolItem (textToolBar, SWT.DROP_DOWN);
+		item = new ToolItem_Old (textToolBar, SWT.DROP_DOWN);
 		item.setText (ControlExample.getResourceString("Drop_Down"));
 		item.setToolTipText("SWT.DROP_DOWN");
 		item.addSelectionListener(new DropDownSelectionListener());
+	}
 
-		/* Create the image and text tool bar */
-		imageTextToolBar = new ToolBar (imageTextToolBarGroup, style);
-		item = new ToolItem (imageTextToolBar, SWT.PUSH);
+	private void createTxtToolBarNew(int style) {
+		textToolBar2 = new ToolBar (textToolBarGroup, style);
+		ToolItem item = new ToolItem (textToolBar2, SWT.PUSH);
+		item.setText (ControlExample.getResourceString("PushBlaBlub"));
+		item.setToolTipText("SWT.PUSH");
+		item = new ToolItem (textToolBar2, SWT.PUSH);
+		item.setText (ControlExample.getResourceString("Push"));
+		item.setToolTipText("SWT.PUSH");
+		item = new ToolItem (textToolBar2, SWT.RADIO);
+		item.setText (ControlExample.getResourceString("r"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem (textToolBar2, SWT.RADIO);
+		item.setText (ControlExample.getResourceString("Radio"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem (textToolBar2, SWT.CHECK);
+		item.setText (ControlExample.getResourceString("Check"));
+		item.setToolTipText("SWT.CHECK");
+		item = new ToolItem (textToolBar2, SWT.RADIO);
+		item.setText (ControlExample.getResourceString("Radio"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem (textToolBar2, SWT.RADIO);
+		item.setText (ControlExample.getResourceString("Radio"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem (textToolBar2, SWT.SEPARATOR);
+		item.setToolTipText("SWT.SEPARATOR");
+		if (comboChildButton.getSelection ()) {
+			Combo combo = new Combo (textToolBar2, SWT.NONE);
+			combo.setItems ("250", "500", "750");
+			combo.setText (combo.getItem (0));
+			combo.pack ();
+			item.setWidth (combo.getSize ().x);
+			item.setControl (combo);
+		}
+		item = new ToolItem (textToolBar2, SWT.DROP_DOWN);
+		item.setText (ControlExample.getResourceString("Drop_Down"));
+		item.setToolTipText("SWT.DROP_DOWN");
+		item.addSelectionListener(new DropDownSelectionListener());
+	}
+
+	private void createImageTextToolBarOld(int style) {
+		imageTextToolBar = new ToolBar_Old (imageTextToolBarGroup, style);
+		ToolItem_Old item = new ToolItem_Old (imageTextToolBar, SWT.PUSH);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setText (ControlExample.getResourceString("PushBlaBlub"));
+		item.setToolTipText("SWT.PUSH");
+		item = new ToolItem_Old (imageTextToolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setText (ControlExample.getResourceString("Push"));
 		item.setToolTipText("SWT.PUSH");
-		item = new ToolItem (imageTextToolBar, SWT.PUSH);
-		item.setImage (instance.images[ControlExample.ciClosedFolder]);
-		item.setText (ControlExample.getResourceString("Push"));
-		item.setToolTipText("SWT.PUSH");
-		item = new ToolItem (imageTextToolBar, SWT.RADIO);
+		item = new ToolItem_Old (imageTextToolBar, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciOpenFolder]);
+		item.setText (ControlExample.getResourceString("r"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem_Old (imageTextToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);
 		item.setText (ControlExample.getResourceString("Radio"));
 		item.setToolTipText("SWT.RADIO");
-		item = new ToolItem (imageTextToolBar, SWT.RADIO);
-		item.setImage (instance.images[ControlExample.ciOpenFolder]);
-		item.setText (ControlExample.getResourceString("Radio"));
-		item.setToolTipText("SWT.RADIO");
-		item = new ToolItem (imageTextToolBar, SWT.CHECK);
+		item = new ToolItem_Old (imageTextToolBar, SWT.CHECK);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setText (ControlExample.getResourceString("Check"));
 		item.setToolTipText("SWT.CHECK");
-		item = new ToolItem (imageTextToolBar, SWT.RADIO);
+		item = new ToolItem_Old (imageTextToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setText (ControlExample.getResourceString("Radio"));
 		item.setToolTipText("SWT.RADIO");
-		item = new ToolItem (imageTextToolBar, SWT.RADIO);
+		item = new ToolItem_Old (imageTextToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setText (ControlExample.getResourceString("Radio"));
 		item.setToolTipText("SWT.RADIO");
-		item = new ToolItem (imageTextToolBar, SWT.SEPARATOR);
+		item = new ToolItem_Old (imageTextToolBar, SWT.SEPARATOR);
 		item.setToolTipText("SWT.SEPARATOR");
 		if (comboChildButton.getSelection ()) {
 			Combo combo = new Combo (imageTextToolBar, SWT.NONE);
@@ -215,18 +325,60 @@ class ToolBarTab extends Tab {
 			item.setWidth (combo.getSize ().x);
 			item.setControl (combo);
 		}
-		item = new ToolItem (imageTextToolBar, SWT.DROP_DOWN);
+		item = new ToolItem_Old (imageTextToolBar, SWT.DROP_DOWN);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setText (ControlExample.getResourceString("Drop_Down"));
 		item.setToolTipText("SWT.DROP_DOWN");
 		item.addSelectionListener(new DropDownSelectionListener());
 
-		/*
-		* Do not add the selection event for this drop down
-		* tool item.  Without hooking the event, the drop down
-		* widget does nothing special when the drop down area
-		* is selected.
-		*/
+	}
+
+	private void createimageTextToolBarNew(int style) {
+		imageTextToolBar2 = new ToolBar (imageTextToolBarGroup, style);
+		ToolItem item = new ToolItem (imageTextToolBar2, SWT.PUSH);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setText (ControlExample.getResourceString("PushBlaBlub"));
+		item.setToolTipText("SWT.PUSH");
+		item = new ToolItem(imageTextToolBar2, SWT.PUSH);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setText (ControlExample.getResourceString("Push"));
+		item.setToolTipText("SWT.PUSH");
+		item = new ToolItem (imageTextToolBar2, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciOpenFolder]);
+		item.setText (ControlExample.getResourceString("r"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem (imageTextToolBar2, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciOpenFolder]);
+		item.setText (ControlExample.getResourceString("Radio"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem (imageTextToolBar2, SWT.CHECK);
+		item.setImage (instance.images[ControlExample.ciTarget]);
+		item.setText (ControlExample.getResourceString("Check"));
+		item.setToolTipText("SWT.CHECK");
+		item = new ToolItem (imageTextToolBar2, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setText (ControlExample.getResourceString("Radio"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem (imageTextToolBar2, SWT.RADIO);
+		item.setImage (instance.images[ControlExample.ciClosedFolder]);
+		item.setText (ControlExample.getResourceString("Radio"));
+		item.setToolTipText("SWT.RADIO");
+		item = new ToolItem (imageTextToolBar2, SWT.SEPARATOR);
+		item.setToolTipText("SWT.SEPARATOR");
+		if (comboChildButton.getSelection ()) {
+			Combo combo = new Combo (imageTextToolBar2, SWT.NONE);
+			combo.setItems ("250", "500", "750");
+			combo.setText (combo.getItem (0));
+			combo.pack ();
+			item.setWidth (combo.getSize ().x);
+			item.setControl (combo);
+		}
+		item = new ToolItem (imageTextToolBar2, SWT.DROP_DOWN);
+		item.setImage (instance.images[ControlExample.ciTarget]);
+		item.setText (ControlExample.getResourceString("Drop_Down"));
+		item.setToolTipText("SWT.DROP_DOWN");
+		item.addSelectionListener(new DropDownSelectionListener());
+
 	}
 
 	/**
@@ -283,11 +435,25 @@ class ToolBarTab extends Tab {
 		Item [] imageToolBarItems = imageToolBar.getItems();
 		Item [] textToolBarItems = textToolBar.getItems();
 		Item [] imageTextToolBarItems = imageTextToolBar.getItems();
-		Item [] allItems = new Item [imageToolBarItems.length + textToolBarItems.length + imageTextToolBarItems.length];
-		System.arraycopy(imageToolBarItems, 0, allItems, 0, imageToolBarItems.length);
-		System.arraycopy(textToolBarItems, 0, allItems, imageToolBarItems.length, textToolBarItems.length);
-		System.arraycopy(imageTextToolBarItems, 0, allItems, imageToolBarItems.length + textToolBarItems.length, imageTextToolBarItems.length);
-		return allItems;
+
+		Item [] imageToolBarItemsNew = imageToolBar2.getItems();
+		Item [] textToolBarItemsNew = textToolBar2.getItems();
+		Item [] imageTextToolBarItemsNew = imageTextToolBar2.getItems();
+
+		Item [] allItems = new Item [2 * (imageToolBarItems.length + textToolBarItems.length + imageTextToolBarItems.length)];
+//		System.arraycopy(imageToolBarItems, 0, allItems, 0, imageToolBarItems.length);
+//		System.arraycopy(textToolBarItems, 0, allItems, imageToolBarItems.length, textToolBarItems.length);
+//		System.arraycopy(imageTextToolBarItems, 0, allItems, imageToolBarItems.length + textToolBarItems.length, imageTextToolBarItems.length);
+
+		List<Item> list = new ArrayList<>();
+		list.addAll(Arrays.asList(imageToolBarItems));
+		list.addAll(Arrays.asList(textToolBarItems));
+		list.addAll(Arrays.asList(imageTextToolBarItems));
+		list.addAll(Arrays.asList(imageToolBarItemsNew));
+		list.addAll(Arrays.asList(textToolBarItemsNew));
+		list.addAll(Arrays.asList(imageTextToolBarItemsNew));
+
+		return list.toArray(allItems);
 	}
 
 	/**
@@ -295,7 +461,7 @@ class ToolBarTab extends Tab {
 	 */
 	@Override
 	Widget [] getExampleWidgets () {
-		return new Widget [] {imageToolBar, textToolBar, imageTextToolBar};
+		return new Widget [] {imageToolBar, textToolBar, imageTextToolBar, imageToolBar2, textToolBar2, imageTextToolBar2};
 	}
 
 	/**
@@ -350,7 +516,7 @@ class ToolBarTab extends Tab {
 			// Create the menu if it has not already been created
 			if (menu == null) {
 				// Lazy create the menu.
-				ToolBar toolbar = ((ToolItem) event.widget).getParent();
+				ToolBar_Old toolbar = ((ToolItem_Old) event.widget).getParent();
 				int style = toolbar.getStyle() & (SWT.RIGHT_TO_LEFT | SWT.LEFT_TO_RIGHT);
 				menu = new Menu(shell, style | SWT.POP_UP);
 				for (int i = 0; i < 9; ++i) {
@@ -375,8 +541,8 @@ class ToolBarTab extends Tab {
 				 * The drop down arrow was selected.
 				 */
 				// Position the menu below and vertically aligned with the the drop down tool button.
-				final ToolItem toolItem = (ToolItem) event.widget;
-				final ToolBar  toolBar = toolItem.getParent();
+				final ToolItem_Old toolItem = (ToolItem_Old) event.widget;
+				final ToolBar_Old  toolBar = toolItem.getParent();
 
 				Point point = toolBar.toDisplay(new Point(event.x, event.y));
 				menu.setLocation(point.x, point.y);

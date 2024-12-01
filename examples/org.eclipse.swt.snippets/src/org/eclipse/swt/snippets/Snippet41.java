@@ -36,9 +36,9 @@ public static void main (String [] args) {
 	TabItem item0 = new TabItem (folder, 0);
 	item0.setText ("tab item");
 	item0.setToolTipText ("TabItem toolTip: " + string);
-	ToolBar bar = new ToolBar (shell, SWT.BORDER);
+	ToolBar_Old bar = new ToolBar_Old (shell, SWT.BORDER);
 	bar.setBounds (clientArea.x, clientArea.y + 200, 200, 40);
-	ToolItem item1 = new ToolItem (bar, SWT.PUSH);
+	ToolItem_Old item1 = new ToolItem_Old (bar, SWT.PUSH);
 	item1.setText ("tool item");
 	item1.setToolTipText ("ToolItem toolTip: " + string);
 	shell.setToolTipText ("Shell toolTip: " + string);

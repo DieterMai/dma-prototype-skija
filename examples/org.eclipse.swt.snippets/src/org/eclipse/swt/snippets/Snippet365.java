@@ -40,7 +40,7 @@ public class Snippet365 {
 	// Native
 	static Composite nativeGroup;
 	static Button buttonCheckBox;
-	static ToolBar toolBar;
+	static ToolBar_Old toolBar;
 	static CoolBar coolBar;
 	static Label label;
 	static Link link;
@@ -273,9 +273,9 @@ public class Snippet365 {
 		push.setText("Push Button");
 
 		// Toolbar
-		toolBar = new ToolBar(nativeGroup, SWT.FLAT);
+		toolBar = new ToolBar_Old(nativeGroup, SWT.FLAT);
 		toolBar.pack();
-		ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+		ToolItem_Old item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setText("ToolBar_Item");
 
 		// Coolbar

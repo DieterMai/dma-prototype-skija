@@ -29,17 +29,17 @@ public static void main (String [] args) {
 	Display display = new Display ();
 	Shell shell = new Shell (display);
 	shell.setText("Snippet 58");
-	ToolBar bar = new ToolBar (shell, SWT.BORDER);
+	ToolBar_Old bar = new ToolBar_Old (shell, SWT.BORDER);
 	Rectangle clientArea = shell.getClientArea ();
 	bar.setLocation (clientArea.x, clientArea.y);
 	for (int i=0; i<4; i++) {
-		ToolItem item = new ToolItem (bar, 0);
+		ToolItem_Old item = new ToolItem_Old (bar, 0);
 		item.setText ("Item " + i);
 	}
-	ToolItem sep = new ToolItem (bar, SWT.SEPARATOR);
+	ToolItem_Old sep = new ToolItem_Old (bar, SWT.SEPARATOR);
 	int start = bar.getItemCount ();
 	for (int i=start; i<start+4; i++) {
-		ToolItem item = new ToolItem (bar, 0);
+		ToolItem_Old item = new ToolItem_Old (bar, 0);
 		item.setText ("Item " + i);
 	}
 	Combo combo = new Combo (bar, SWT.READ_ONLY);

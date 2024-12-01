@@ -34,16 +34,16 @@ public class Snippet128 {
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 3;
 		shell.setLayout(gridLayout);
-		ToolBar toolbar = new ToolBar(shell, SWT.NONE);
-		ToolItem itemBack = new ToolItem(toolbar, SWT.PUSH);
+		ToolBar_Old toolbar = new ToolBar_Old(shell, SWT.NONE);
+		ToolItem_Old itemBack = new ToolItem_Old(toolbar, SWT.PUSH);
 		itemBack.setText("Back");
-		ToolItem itemForward = new ToolItem(toolbar, SWT.PUSH);
+		ToolItem_Old itemForward = new ToolItem_Old(toolbar, SWT.PUSH);
 		itemForward.setText("Forward");
-		ToolItem itemStop = new ToolItem(toolbar, SWT.PUSH);
+		ToolItem_Old itemStop = new ToolItem_Old(toolbar, SWT.PUSH);
 		itemStop.setText("Stop");
-		ToolItem itemRefresh = new ToolItem(toolbar, SWT.PUSH);
+		ToolItem_Old itemRefresh = new ToolItem_Old(toolbar, SWT.PUSH);
 		itemRefresh.setText("Refresh");
-		ToolItem itemGo = new ToolItem(toolbar, SWT.PUSH);
+		ToolItem_Old itemGo = new ToolItem_Old(toolbar, SWT.PUSH);
 		itemGo.setText("Go");
 
 		GridData data = new GridData();
@@ -88,7 +88,7 @@ public class Snippet128 {
 
 		/* event handling */
 		Listener listener = event -> {
-			ToolItem item = (ToolItem) event.widget;
+			ToolItem_Old item = (ToolItem_Old) event.widget;
 			String string = item.getText();
 			if (string.equals("Back"))
 				browser.back();

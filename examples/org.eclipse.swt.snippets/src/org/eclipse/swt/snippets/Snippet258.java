@@ -41,8 +41,8 @@ public class Snippet258 {
 		Image image = null;
 		if ((text.getStyle() & SWT.ICON_CANCEL) == 0) {
 			image = display.getSystemImage(SWT.ICON_ERROR);
-			ToolBar toolBar = new ToolBar (shell, SWT.FLAT);
-			ToolItem item = new ToolItem (toolBar, SWT.PUSH);
+			ToolBar_Old toolBar = new ToolBar_Old (shell, SWT.FLAT);
+			ToolItem_Old item = new ToolItem_Old (toolBar, SWT.PUSH);
 			item.setImage (image);
 			item.addSelectionListener(widgetSelectedAdapter(e ->  {
 					text.setText("");

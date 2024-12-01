@@ -46,8 +46,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolBar_Old;
+import org.eclipse.swt.widgets.ToolItem_Old;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -62,13 +62,13 @@ public class GraphicsExample {
 	GraphicsTab tab;				// the current tab
 	GraphicsBackground background;	// used to store information about the background
 
-	ToolBar toolBar;				// toolbar that contains backItem and dbItem
+	ToolBar_Old toolBar;				// toolbar that contains backItem and dbItem
 	Tree tabList;					// tree structure of tabs
 	Text tabDesc;					// multi-line text widget that displays a tab description
 	Sash hSash, vSash;
 	Canvas canvas;
 	Composite tabControlPanel;
-	ToolItem backItem, dbItem;		// background, double buffer items
+	ToolItem_Old backItem, dbItem;		// background, double buffer items
 	Menu backMenu;					// background menu item
 
 	List<Image> resources;			// stores resources that will be disposed
@@ -252,9 +252,9 @@ void createControlPanel(Composite parent) {
 void createToolBar(final Composite parent) {
 	final Display display = parent.getDisplay();
 
-	toolBar = new ToolBar(parent, SWT.FLAT);
+	toolBar = new ToolBar_Old(parent, SWT.FLAT);
 
-	ToolItem  back = new ToolItem(toolBar, SWT.PUSH);
+	ToolItem_Old  back = new ToolItem_Old(toolBar, SWT.PUSH);
 	back.setText(getResourceString("Back")); //$NON-NLS-1$
 	back.setImage(loadImage(display, "back.gif")); //$NON-NLS-1$
 
@@ -265,7 +265,7 @@ void createToolBar(final Composite parent) {
 		setTab(tabs_in_order.get(index));
 	});
 
-	ToolItem  next = new ToolItem(toolBar, SWT.PUSH);
+	ToolItem_Old  next = new ToolItem_Old(toolBar, SWT.PUSH);
 	next.setText(getResourceString("Next")); //$NON-NLS-1$
 	next.setImage(loadImage(display, "next.gif")); //$NON-NLS-1$
 	next.addListener(SWT.Selection, event -> {
@@ -291,13 +291,13 @@ void createToolBar(final Composite parent) {
 	background = (GraphicsBackground)backMenu.getItem(0).getData();
 
 	// background tool item
-	backItem = new ToolItem(toolBar, SWT.PUSH);
+	backItem = new ToolItem_Old(toolBar, SWT.PUSH);
 	backItem.setText(getResourceString("Background")); //$NON-NLS-1$
 	backItem.setImage(background.getThumbNail());
 	backItem.addListener(SWT.Selection, event -> {
 		if (event.widget == backItem) {
-			final ToolItem toolItem = (ToolItem) event.widget;
-			final ToolBar  toolBar = toolItem.getParent();
+			final ToolItem_Old toolItem = (ToolItem_Old) event.widget;
+			final ToolBar_Old  toolBar = toolItem.getParent();
 			Rectangle toolItemBounds = toolItem.getBounds();
 			Point point = toolBar.toDisplay(new Point(toolItemBounds.x, toolItemBounds.y));
 			backMenu.setLocation(point.x, point.y + toolItemBounds.height);
@@ -306,7 +306,7 @@ void createToolBar(final Composite parent) {
 	});
 
 	// double buffer tool item
-	dbItem = new ToolItem(toolBar, SWT.CHECK);
+	dbItem = new ToolItem_Old(toolBar, SWT.CHECK);
 	dbItem.setText(getResourceString("DoubleBuffer")); //$NON-NLS-1$
 	dbItem.setImage(loadImage(display, "db.gif")); //$NON-NLS-1$
 	dbItem.addListener(SWT.Selection, event -> setDoubleBuffered(dbItem.getSelection()));

@@ -1,0 +1,100 @@
+/*******************************************************************************
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.swt.widgets;
+
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.ToolItem.*;
+
+public class ToolItemDropDownRenderer implements ToolItemRenderer {
+	private static final int ARROW_PADDING = 4;
+	private static final int ARROW_WIDTH = 7;
+	private static final int ARROW_HEIGHT = 4;
+
+	private static final int ARROW_SECTION_WIDTH = ARROW_PADDING * 2 + ARROW_WIDTH;
+
+	private final ToolBar bar;
+	private final ToolItem item;
+	private final ToolItemButtonRenderer buttonRenderer;
+
+	ToolItemDropDownRenderer(ToolBar bar, ToolItem item) {
+		this.bar = bar;
+		this.item = item;
+		this.buttonRenderer = new ToolItemButtonRenderer(bar, item);
+	}
+
+	@Override
+	public void render(GC gc, Rectangle bounds) {
+		Rectangle button;
+		Rectangle arrow;
+
+		if (bar.isLeftToRight()) {
+			button = new Rectangle(bounds.x, bounds.y, bounds.width - ARROW_SECTION_WIDTH, bounds.height);
+			arrow = new Rectangle(bounds.x + button.width, bounds.y, ARROW_SECTION_WIDTH, bounds.height);
+		} else {
+			arrow = new Rectangle(bounds.x, bounds.y, ARROW_SECTION_WIDTH, bounds.height);
+			button = new Rectangle(bounds.x + arrow.width, bounds.y, bounds.width - ARROW_SECTION_WIDTH, bounds.height);
+		}
+
+		renderHighlight(gc, arrow);
+
+		buttonRenderer.render(gc, button);
+
+		drawArrow(gc, arrow);
+
+//		return new Point(button.width + arrow.width, bounds.height);
+	}
+
+	private void renderHighlight(GC gc, Rectangle bounds) {
+		switch (item.getState()) {
+		case IDLE -> {
+		}
+		case HOVER -> drawHighlight(gc, bounds, new Color(204, 232, 255), new Color(229, 243, 255));
+		case DOWN -> drawHighlight(gc, bounds, new Color(153, 209, 255), new Color(204, 232, 255));
+		}
+	}
+
+	// XXX duplicated method. see ToolItemButtonRenderer.renderHighlight
+	private void drawHighlight(GC gc, Rectangle bounds, Color borderColor, Color fillColor) {
+		gc.setAntialias(SWT.ON);
+		gc.setBackground(fillColor);
+		gc.fillRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
+//
+		gc.setForeground(borderColor);
+		gc.drawRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
+	}
+
+	private Point drawArrow(GC gc, Rectangle bounds) {
+		int arrowX = bounds.x + ARROW_PADDING;
+		int arrowY = bounds.y + (bounds.height - ARROW_HEIGHT) / 2;
+		Point topLeft = new Point(arrowX, arrowY);
+		Point topRight = new Point(topLeft.x + ARROW_WIDTH, topLeft.y);
+		Point bottom = new Point(topLeft.x + (ARROW_WIDTH / 2), topLeft.y + ARROW_HEIGHT);
+
+		gc.setBackground(bar.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+		gc.fillPolygon(new int[] { topLeft.x, topLeft.y, topRight.x, topRight.y, bottom.x, bottom.y });
+
+		return new Point(ARROW_SECTION_WIDTH, bounds.height);
+	}
+
+	@Override
+	public Point getSize() {
+		Point buttonSize = buttonRenderer.getSize();
+		return new Point(buttonSize.x + getArrowWidth(), buttonSize.y);
+	}
+
+	private int getArrowWidth() {
+		return ARROW_PADDING * 2 + ARROW_WIDTH;
+	}
+}

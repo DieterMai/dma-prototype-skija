@@ -204,9 +204,9 @@ public class CTabFolder extends Composite {
 	boolean minimized = false;
 	boolean showMax = false;
 	boolean maximized = false;
-	ToolBar minMaxTb;
-	ToolItem maxItem;
-	ToolItem minItem;
+	ToolBar_Old minMaxTb;
+	ToolItem_Old maxItem;
+	ToolItem_Old minItem;
 	Image maxImage;
 	Image minImage;
 	boolean hoverTb;
@@ -218,8 +218,8 @@ public class CTabFolder extends Composite {
 
 	boolean showChevron = false;
 	Menu showMenu;
-	ToolBar chevronTb;
-	ToolItem chevronItem;
+	ToolBar_Old chevronTb;
+	ToolItem_Old chevronItem;
 	int chevronCount;
 	boolean chevronVisible = true;
 
@@ -843,14 +843,14 @@ public boolean getBorderVisible() {
 	checkWidget();
 	return borderVisible;
 }
-ToolBar getChevron() {
+ToolBar_Old getChevron() {
 	if (chevronTb == null) {
-		chevronTb = new ToolBar(this, SWT.FLAT);
+		chevronTb = new ToolBar_Old(this, SWT.FLAT);
 		initAccessibleChevronTb();
 		addTabControl(chevronTb, SWT.TRAIL, -1, false);
 	}
 	if (chevronItem == null) {
-		chevronItem = new ToolItem(chevronTb, SWT.PUSH);
+		chevronItem = new ToolItem_Old(chevronTb, SWT.PUSH);
 		chevronItem.setToolTipText(SWT.getMessage("SWT_ShowList"));
 		chevronItem.addListener(SWT.Selection, listener);
 	}
@@ -2518,12 +2518,12 @@ void updateButtons() {
 	Display display = getDisplay();
 	if (showMax) {
 		if (minMaxTb == null) {
-			minMaxTb = new ToolBar(this, SWT.FLAT);
+			minMaxTb = new ToolBar_Old(this, SWT.FLAT);
 			initAccessibleMinMaxTb();
 			addTabControl(minMaxTb, SWT.TRAIL, 0, false);
 		}
 		if (maxItem == null) {
-			maxItem = new ToolItem(minMaxTb, SWT.PUSH);
+			maxItem = new ToolItem_Old(minMaxTb, SWT.PUSH);
 			if (maxImage == null) {
 				maxImage = createButtonImage(display, CTabFolderRenderer.PART_MAX_BUTTON);
 			}
@@ -2541,12 +2541,12 @@ void updateButtons() {
 	// min button
 	if (showMin) {
 		if (minMaxTb == null) {
-			minMaxTb = new ToolBar(this, SWT.FLAT);
+			minMaxTb = new ToolBar_Old(this, SWT.FLAT);
 			initAccessibleMinMaxTb();
 			addTabControl(minMaxTb, SWT.TRAIL, 0, false);
 		}
 		if (minItem == null) {
-			minItem = new ToolItem(minMaxTb, SWT.PUSH, 0);
+			minItem = new ToolItem_Old(minMaxTb, SWT.PUSH, 0);
 			if (minImage == null) {
 				minImage = createButtonImage(display, CTabFolderRenderer.PART_MIN_BUTTON);
 			}
@@ -2870,7 +2870,7 @@ boolean setItemSize(GC gc) {
 	if (isDisposed()) return changed;
 	Point size = getSize();
 	if (size.x <= 0 || size.y <= 0) return changed;
-	ToolBar chevron = getChevron();
+	ToolBar_Old chevron = getChevron();
 	if (chevron != null) chevron.setVisible(false);
 	showChevron = false;
 	if (single) {

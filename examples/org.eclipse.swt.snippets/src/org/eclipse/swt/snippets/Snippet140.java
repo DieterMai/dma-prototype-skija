@@ -42,11 +42,11 @@ public static void main (String [] args) {
 	shell.setLayout(new GridLayout());
 	coolBar = new CoolBar(shell, SWT.FLAT | SWT.BORDER);
 	coolBar.setLayoutData(new GridData(GridData.FILL_BOTH));
-	ToolBar toolBar = new ToolBar(coolBar, SWT.FLAT | SWT.WRAP);
+	ToolBar_Old toolBar = new ToolBar_Old(coolBar, SWT.FLAT | SWT.WRAP);
 	int minWidth = 0;
 	for (int j = 0; j < 5; j++) {
 		int width = 0;
-		ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+		ToolItem_Old item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setText("B" + j);
 		width = item.getWidth();
 		/* find the width of the widest tool */
@@ -66,8 +66,8 @@ public static void main (String [] args) {
 				Point pt = coolBar.toDisplay(new Point(itemBounds.x, itemBounds.y));
 				itemBounds.x = pt.x;
 				itemBounds.y = pt.y;
-				ToolBar bar = (ToolBar) item.getControl();
-				ToolItem[] tools = bar.getItems();
+				ToolBar_Old bar = (ToolBar_Old) item.getControl();
+				ToolItem_Old[] tools = bar.getItems();
 
 				int i = 0;
 				while (i < tools.length) {

@@ -63,8 +63,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolBar_Old;
+import org.eclipse.swt.widgets.ToolItem_Old;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -80,7 +80,7 @@ public class FileViewer {
 	/* UI elements */
 	private Display display;
 	private Shell shell;
-	private ToolBar toolBar;
+	private ToolBar_Old toolBar;
 
 	private Label numObjectsLabel;
 	private Label diskSpaceLabel;
@@ -318,14 +318,14 @@ public class FileViewer {
 	 * @param layoutData the layout data
 	 */
 	private void createToolBar(final Shell shell, Object layoutData) {
-		toolBar = new ToolBar(shell, SWT.NONE);
+		toolBar = new ToolBar_Old(shell, SWT.NONE);
 		toolBar.setLayoutData(layoutData);
-		ToolItem item = new ToolItem(toolBar, SWT.SEPARATOR);
-		item = new ToolItem(toolBar, SWT.PUSH);
+		ToolItem_Old item = new ToolItem_Old(toolBar, SWT.SEPARATOR);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdParent]);
 		item.setToolTipText(getResourceString("tool.Parent.tiptext"));
 		item.addSelectionListener(widgetSelectedAdapter(e -> doParent()));
-		item = new ToolItem(toolBar, SWT.PUSH);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdRefresh]);
 		item.setToolTipText(getResourceString("tool.Refresh.tiptext"));
 		item.addSelectionListener(widgetSelectedAdapter(e -> doRefresh()));
@@ -336,36 +336,36 @@ public class FileViewer {
 			box.open();
 		});
 
-		item = new ToolItem(toolBar, SWT.SEPARATOR);
-		item = new ToolItem(toolBar, SWT.PUSH);
+		item = new ToolItem_Old(toolBar, SWT.SEPARATOR);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdCut]);
 		item.setToolTipText(getResourceString("tool.Cut.tiptext"));
 		item.addSelectionListener(unimplementedListener);
-		item = new ToolItem(toolBar, SWT.PUSH);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdCopy]);
 		item.setToolTipText(getResourceString("tool.Copy.tiptext"));
 		item.addSelectionListener(unimplementedListener);
-		item = new ToolItem(toolBar, SWT.PUSH);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdPaste]);
 		item.setToolTipText(getResourceString("tool.Paste.tiptext"));
 		item.addSelectionListener(unimplementedListener);
 
-		item = new ToolItem(toolBar, SWT.SEPARATOR);
-		item = new ToolItem(toolBar, SWT.PUSH);
+		item = new ToolItem_Old(toolBar, SWT.SEPARATOR);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdDelete]);
 		item.setToolTipText(getResourceString("tool.Delete.tiptext"));
 		item.addSelectionListener(unimplementedListener);
-		item = new ToolItem(toolBar, SWT.PUSH);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdRename]);
 		item.setToolTipText(getResourceString("tool.Rename.tiptext"));
 		item.addSelectionListener(unimplementedListener);
 
-		item = new ToolItem(toolBar, SWT.SEPARATOR);
-		item = new ToolItem(toolBar, SWT.PUSH);
+		item = new ToolItem_Old(toolBar, SWT.SEPARATOR);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdSearch]);
 		item.setToolTipText(getResourceString("tool.Search.tiptext"));
 		item.addSelectionListener(unimplementedListener);
-		item = new ToolItem(toolBar, SWT.PUSH);
+		item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setImage(iconCache.stockImages[iconCache.cmdPrint]);
 		item.setToolTipText(getResourceString("tool.Print.tiptext"));
 		item.addSelectionListener(unimplementedListener);

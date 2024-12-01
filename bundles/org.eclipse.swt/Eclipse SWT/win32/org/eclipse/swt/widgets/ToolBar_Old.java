@@ -49,11 +49,11 @@ import org.eclipse.swt.internal.win32.*;
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class ToolBar extends Composite {
+public class ToolBar_Old extends Composite {
 	int lastFocusId, lastArrowId, lastHotId, _width, _height, _count = -1, _wHint = -1, _hHint = -1;
 	long currentToolItemToolTip;
-	ToolItem [] items;
-	ToolItem [] tabItemList;
+	ToolItem_Old [] items;
+	ToolItem_Old [] tabItemList;
 	boolean ignoreResize, ignoreMouse;
 	ImageList imageList, disabledImageList, hotImageList;
 	static final long ToolBarProc;
@@ -62,7 +62,7 @@ public class ToolBar extends Composite {
 		WNDCLASS lpWndClass = new WNDCLASS ();
 		OS.GetClassInfo (0, ToolBarClass, lpWndClass);
 		ToolBarProc = lpWndClass.lpfnWndProc;
-		DPIZoomChangeRegistry.registerHandler(ToolBar::handleDPIChange, ToolBar.class);
+		DPIZoomChangeRegistry.registerHandler(ToolBar_Old::handleDPIChange, ToolBar_Old.class);
 	}
 
 	/*
@@ -108,7 +108,7 @@ public class ToolBar extends Composite {
  * @see Widget#checkSubclass()
  * @see Widget#getStyle()
  */
-public ToolBar (Composite parent, int style) {
+public ToolBar_Old (Composite parent, int style) {
 	super (parent, checkStyle (style));
 	/*
 	* Ensure that either of HORIZONTAL or VERTICAL is set.
@@ -291,7 +291,7 @@ void clearSizeCache(boolean changed) {
 
 @Override
 Widget computeTabGroup () {
-	ToolItem [] items = _getItems ();
+	ToolItem_Old [] items = _getItems ();
 	if (tabItemList == null) {
 		int i = 0;
 		while (i < items.length && items [i].control == null) i++;
@@ -300,7 +300,7 @@ Widget computeTabGroup () {
 	int index = (int)OS.SendMessage (handle, OS.TB_GETHOTITEM, 0, 0);
 	if (index == -1) index = lastHotId;
 	while (index >= 0) {
-		ToolItem item = items [index];
+		ToolItem_Old item = items [index];
 		if (item.isTabGroup ()) return item;
 		index--;
 	}
@@ -309,7 +309,7 @@ Widget computeTabGroup () {
 
 @Override
 Widget [] computeTabList () {
-	ToolItem [] items = _getItems ();
+	ToolItem_Old [] items = _getItems ();
 	if (tabItemList == null) {
 		int i = 0;
 		while (i < items.length && items [i].control == null) i++;
@@ -317,8 +317,8 @@ Widget [] computeTabList () {
 	}
 	Widget result [] = {};
 	if (!isTabGroup () || !isEnabled () || !isVisible ()) return result;
-	ToolItem [] list = tabList != null ? _getTabItemList () : items;
-	for (ToolItem child : list) {
+	ToolItem_Old [] list = tabList != null ? _getTabItemList () : items;
+	for (ToolItem_Old child : list) {
 		Widget  [] childList = child.computeTabList ();
 		if (childList.length != 0) {
 			Widget [] newResult = new Widget [result.length + childList.length];
@@ -394,13 +394,13 @@ void createHandle () {
 	OS.SendMessage (handle, OS.TB_SETEXTENDEDSTYLE, 0, bits);
 }
 
-void createItem (ToolItem item, int index) {
+void createItem (ToolItem_Old item, int index) {
 	int count = (int)OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
 	if (!(0 <= index && index <= count)) error (SWT.ERROR_INVALID_RANGE);
 	int id = 0;
 	while (id < items.length && items [id] != null) id++;
 	if (id == items.length) {
-		ToolItem [] newItems = new ToolItem [items.length + 4];
+		ToolItem_Old [] newItems = new ToolItem_Old [items.length + 4];
 		System.arraycopy (items, 0, newItems, 0, items.length);
 		items = newItems;
 	}
@@ -434,7 +434,7 @@ void createItem (ToolItem item, int index) {
 @Override
 void createWidget () {
 	super.createWidget ();
-	items = new ToolItem [4];
+	items = new ToolItem_Old [4];
 	lastFocusId = lastArrowId = lastHotId = -1;
 }
 
@@ -443,7 +443,7 @@ int applyThemeBackground () {
 	return -1; /* No Change */
 }
 
-void destroyItem (ToolItem item) {
+void destroyItem (ToolItem_Old item) {
 	TBBUTTONINFO info = new TBBUTTONINFO ();
 	info.cbSize = TBBUTTONINFO.sizeof;
 	info.dwMask = OS.TBIF_IMAGE | OS.TBIF_STYLE;
@@ -484,7 +484,7 @@ void destroyItem (ToolItem item) {
 			display.releaseToolDisabledImageList (disabledImageList);
 		}
 		imageList = hotImageList = disabledImageList = null;
-		items = new ToolItem [4];
+		items = new ToolItem_Old [4];
 	}
 	if ((style & SWT.VERTICAL) != 0) setRowCount (count - 1);
 	layoutItems ();
@@ -505,7 +505,7 @@ void enableWidget (boolean enabled) {
 	* The fix is to use the disabled image in all image
 	* lists for all items.
 	*/
-	for (ToolItem item : items) {
+	for (ToolItem_Old item : items) {
 		if (item != null) {
 			if ((item.style & SWT.SEPARATOR) == 0) {
 				item.updateImages (enabled && item.getEnabled ());
@@ -541,7 +541,7 @@ ImageList getImageList () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public ToolItem getItem (int index) {
+public ToolItem_Old getItem (int index) {
 	checkWidget ();
 	int count = (int)OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
 	if (!(0 <= index && index < count)) error (SWT.ERROR_INVALID_RANGE);
@@ -567,14 +567,14 @@ public ToolItem getItem (int index) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public ToolItem getItem (Point point) {
+public ToolItem_Old getItem (Point point) {
 	checkWidget ();
 	if (point == null) error (SWT.ERROR_NULL_ARGUMENT);
 	return getItemInPixels(DPIUtil.scaleUp(point, getZoom()));
 }
 
-ToolItem getItemInPixels (Point point) {
-	for (ToolItem item : getItems ()) {
+ToolItem_Old getItemInPixels (Point point) {
+	for (ToolItem_Old item : getItems ()) {
 		Rectangle rect = item.getBoundsInPixels ();
 		if (rect.contains (point)) return item;
 	}
@@ -612,15 +612,15 @@ public int getItemCount () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public ToolItem [] getItems () {
+public ToolItem_Old [] getItems () {
 	checkWidget ();
 	return _getItems ();
 }
 
-ToolItem [] _getItems () {
+ToolItem_Old [] _getItems () {
 	int count = (int)OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
 	TBBUTTON lpButton = new TBBUTTON ();
-	ToolItem [] result = new ToolItem [count];
+	ToolItem_Old [] result = new ToolItem_Old [count];
 	for (int i=0; i<count; i++) {
 		OS.SendMessage (handle, OS.TB_GETBUTTON, i, lpButton);
 		result [i] = items [lpButton.idCommand];
@@ -649,16 +649,16 @@ public int getRowCount () {
 	return (int)OS.SendMessage (handle, OS.TB_GETROWS, 0, 0);
 }
 
-ToolItem [] _getTabItemList () {
+ToolItem_Old [] _getTabItemList () {
 	if (tabItemList == null) return tabItemList;
 	int count = 0;
-	for (ToolItem item : tabItemList) {
+	for (ToolItem_Old item : tabItemList) {
 		if (!item.isDisposed ()) count++;
 	}
 	if (count == tabItemList.length) return tabItemList;
-	ToolItem [] newList = new ToolItem [count];
+	ToolItem_Old [] newList = new ToolItem_Old [count];
 	int index = 0;
-	for (ToolItem item : tabItemList) {
+	for (ToolItem_Old item : tabItemList) {
 		if (!item.isDisposed ()) {
 			newList [index++] = item;
 		}
@@ -685,7 +685,7 @@ ToolItem [] _getTabItemList () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public int indexOf (ToolItem item) {
+public int indexOf (ToolItem_Old item) {
 	checkWidget ();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (item.isDisposed()) error(SWT.ERROR_INVALID_ARGUMENT);
@@ -710,7 +710,7 @@ void layoutItems () {
 	if (OS.IsAppThemed ()) {
 		if ((style & SWT.RIGHT) != 0 && (style & SWT.VERTICAL) == 0) {
 			boolean hasText = false, hasImage = false;
-			for (ToolItem item : items) {
+			for (ToolItem_Old item : items) {
 				if (item != null) {
 					if (!hasText) hasText = item.text.length () != 0;
 					if (!hasImage) hasImage = item.image != null;
@@ -749,7 +749,7 @@ void layoutItems () {
 	if (OS.IsAppThemed()) {
 		if ((style & SWT.RIGHT) == 0 && (style & SWT.HORIZONTAL) != 0) {
 			boolean hasText = false, hasImage = false, hasTextAndImageInSingleItem = false;
-			for (ToolItem item : items) {
+			for (ToolItem_Old item : items) {
 				if (item != null) {
 					boolean itemHasText = false, itemHasImage = false;
 					itemHasText = item.text.length() != 0;
@@ -806,7 +806,7 @@ void layoutItems () {
 			info.cx = (short) OS.LOWORD (size);
 			int index = 0, extraPadding = 0;
 			while (index < items.length) {
-				ToolItem item = items [index];
+				ToolItem_Old item = items [index];
 				if (item != null && (item.style & SWT.DROP_DOWN) != 0) {
 					/*
 					 * Specifying 1 pixel extra padding to avoid truncation
@@ -823,7 +823,7 @@ void layoutItems () {
 				long padding = OS.SendMessage (handle, OS.TB_GETPADDING, 0, 0);
 				info.cx += OS.LOWORD (padding + extraPadding) * 2;
 			}
-			for (ToolItem item : items) {
+			for (ToolItem_Old item : items) {
 				if (item != null && (item.style & SWT.SEPARATOR) == 0) {
 					OS.SendMessage (handle, OS.TB_SETBUTTONINFO, item.id, info);
 				}
@@ -847,7 +847,7 @@ void layoutItems () {
 			TBBUTTONINFO info = new TBBUTTONINFO ();
 			info.cbSize = TBBUTTONINFO.sizeof;
 			info.dwMask = OS.TBIF_SIZE;
-			for (ToolItem item : items) {
+			for (ToolItem_Old item : items) {
 				if (item != null && item.cx > 0) {
 					info.cx = item.cx;
 					OS.SendMessage (handle, OS.TB_SETBUTTONINFO, item.id, info);
@@ -856,7 +856,7 @@ void layoutItems () {
 		}
 	}
 
-	for (ToolItem item : items) {
+	for (ToolItem_Old item : items) {
 		if (item != null) item.resizeControl ();
 	}
 }
@@ -895,7 +895,7 @@ boolean mnemonicMatch (char ch) {
 @Override
 void releaseChildren (boolean destroy) {
 	if (items != null) {
-		for (ToolItem item : items) {
+		for (ToolItem_Old item : items) {
 			if (item != null && !item.isDisposed ()) {
 				item.release (false);
 			}
@@ -926,7 +926,7 @@ void releaseWidget () {
 @Override
 void removeControl (Control control) {
 	super.removeControl (control);
-	for (ToolItem item : items) {
+	for (ToolItem_Old item : items) {
 		if (item != null && item.control == control) {
 			item.setControl (null);
 		}
@@ -936,7 +936,7 @@ void removeControl (Control control) {
 @Override
 void reskinChildren (int flags) {
 	if (items != null) {
-		for (ToolItem item : items) {
+		for (ToolItem_Old item : items) {
 			if (item != null) item.reskin (flags);
 		}
 	}
@@ -1021,7 +1021,7 @@ void setDropDownItems (boolean set) {
 	*/
 	if (OS.IsAppThemed ()) {
 		boolean hasText = false, hasImage = false;
-		for (ToolItem item : items) {
+		for (ToolItem_Old item : items) {
 			if (item != null) {
 				if (!hasText) hasText = item.text.length () != 0;
 				if (!hasImage) hasImage = item.image != null;
@@ -1029,7 +1029,7 @@ void setDropDownItems (boolean set) {
 			}
 		}
 		if (hasImage && !hasText) {
-			for (ToolItem item : items) {
+			for (ToolItem_Old item : items) {
 				if (item != null && (item.style & SWT.DROP_DOWN) != 0) {
 					TBBUTTONINFO info = new TBBUTTONINFO ();
 					info.cbSize = TBBUTTONINFO.sizeof;
@@ -1075,7 +1075,7 @@ public void setFont (Font font) {
 	int index = 0;
 	int mask = SWT.PUSH | SWT.CHECK | SWT.RADIO | SWT.DROP_DOWN;
 	while (index < items.length) {
-		ToolItem item = items [index];
+		ToolItem_Old item = items [index];
 		if (item != null && (item.style & mask) != 0) break;
 		index++;
 	}
@@ -1174,15 +1174,15 @@ void setRowCount (int count) {
 	}
 }
 
-/*public*/ void setTabItemList (ToolItem [] tabList) {
+/*public*/ void setTabItemList (ToolItem_Old [] tabList) {
 	checkWidget ();
 	if (tabList != null) {
-		for (ToolItem item : tabList) {
+		for (ToolItem_Old item : tabList) {
 			if (item == null) error (SWT.ERROR_INVALID_ARGUMENT);
 			if (item.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
 			if (item.parent != this) error (SWT.ERROR_INVALID_PARENT);
 		}
-		ToolItem [] newList = new ToolItem [tabList.length];
+		ToolItem_Old [] newList = new ToolItem_Old [tabList.length];
 		System.arraycopy (tabList, 0, newList, 0, tabList.length);
 		tabList = newList;
 	}
@@ -1193,7 +1193,7 @@ void setRowCount (int count) {
 boolean setTabItemFocus () {
 	int index = 0;
 	while (index < items.length) {
-		ToolItem item = items [index];
+		ToolItem_Old item = items [index];
 		if (item != null && (item.style & SWT.SEPARATOR) == 0) {
 			if (item.getEnabled ()) break;
 		}
@@ -1206,7 +1206,7 @@ boolean setTabItemFocus () {
 @Override
 boolean updateTextDirection(int textDirection) {
 	if (super.updateTextDirection(textDirection)) {
-		ToolItem [] items = _getItems ();
+		ToolItem_Old [] items = _getItems ();
 		int i = items.length;
 		while (i-- > 0) {
 			items[i].updateTextDirection(style & SWT.FLIP_TEXT_DIRECTION);
@@ -1251,7 +1251,7 @@ String toolTipText (NMTTDISPINFO hdr) {
 		}
 		if (toolTipText != null) return ""; //$NON-NLS-1$
 		if (0 <= index && index < items.length) {
-			ToolItem item = items [index];
+			ToolItem_Old item = items [index];
 			if (item != null) {
 				/*
 				* Bug in Windows.  When the  arrow keys are used to change
@@ -1281,7 +1281,7 @@ void updateOrientation () {
 		info.dwMask = OS.TBIF_IMAGE;
 		int count = (int)OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
 		for (int i=0; i<count; i++) {
-			ToolItem item = items [i];
+			ToolItem_Old item = items [i];
 			if ((item.style & SWT.SEPARATOR) != 0) continue;
 			if (item.image == null) continue;
 			OS.SendMessage (handle, OS.TB_GETBUTTONINFO, item.id, info);
@@ -1356,7 +1356,7 @@ LRESULT WM_CAPTURECHANGED (long wParam, long lParam) {
 	* item is pressed, the item remains pressed.  The fix is
 	* unpress all items using TB_SETSTATE and TBSTATE_PRESSED.
 	*/
-	for (ToolItem item : items) {
+	for (ToolItem_Old item : items) {
 		if (item != null) {
 			int fsState = (int)OS.SendMessage (handle, OS.TB_GETSTATE, item.id, 0);
 			if ((fsState & OS.TBSTATE_PRESSED) != 0) {
@@ -1617,19 +1617,19 @@ LRESULT WM_WINDOWPOSCHANGING (long wParam, long lParam) {
 
 @Override
 LRESULT wmCommandChild (long wParam, long lParam) {
-	ToolItem child = items [OS.LOWORD (wParam)];
+	ToolItem_Old child = items [OS.LOWORD (wParam)];
 	if (child == null) return null;
 	return child.wmCommandChild (wParam, lParam);
 }
 
-int getForegroundPixel (ToolItem item) {
+int getForegroundPixel (ToolItem_Old item) {
 	if (item != null && item.foreground != -1) {
 		return item.foreground;
 	}
 	return getForegroundPixel ();
 }
 
-int getBackgroundPixel (ToolItem item) {
+int getBackgroundPixel (ToolItem_Old item) {
 	if (item != null && item.background != -1) {
 		return item.background;
 	}
@@ -1638,7 +1638,7 @@ int getBackgroundPixel (ToolItem item) {
 
 @Override
 LRESULT wmNotifyChild (NMHDR hdr, long wParam, long lParam) {
-	ToolItem child;
+	ToolItem_Old child;
 	switch (hdr.code) {
 		case OS.TBN_DROPDOWN:
 			NMTOOLBAR lpnmtb = new NMTOOLBAR ();
@@ -1747,10 +1747,10 @@ LRESULT wmNotifyChild (NMHDR hdr, long wParam, long lParam) {
 }
 
 private static void handleDPIChange(Widget widget, int newZoom, float scalingFactor) {
-	if (!(widget instanceof ToolBar toolBar)) {
+	if (!(widget instanceof ToolBar_Old toolBar)) {
 		return;
 	}
-	ToolItem[] toolItems = toolBar._getItems();
+	ToolItem_Old[] toolItems = toolBar._getItems();
 	var seperatorWidth = new int[toolItems.length];
 	int itemCount = toolItems.length;
 
@@ -1758,7 +1758,7 @@ private static void handleDPIChange(Widget widget, int newZoom, float scalingFac
 		return;
 	}
 
-	record ToolItemData(ToolItem toolItem, TBBUTTON button) {
+	record ToolItemData(ToolItem_Old toolItem, TBBUTTON button) {
 	}
 
 	// Remove and re-add all button the let Windows resize the tool bar
@@ -1766,7 +1766,7 @@ private static void handleDPIChange(Widget widget, int newZoom, float scalingFac
 	for (int i = itemCount - 1; i >= 0; i--) {
 		TBBUTTON lpButton = new TBBUTTON ();
 		OS.SendMessage (toolBar.handle, OS.TB_GETBUTTON, i, lpButton);
-		ToolItem item = toolItems[i];
+		ToolItem_Old item = toolItems[i];
 		if ((item.style & SWT.SEPARATOR) != 0 && item.getControl() != null) {
 			// Take note of widths of separators with control, so they can be resized
 			// at the end
@@ -1780,7 +1780,7 @@ private static void handleDPIChange(Widget widget, int newZoom, float scalingFac
 	while (!buttondata.isEmpty()) {
 		ToolItemData itemData = buttondata.pop();
 		OS.SendMessage(toolBar.handle, OS.TB_ADDBUTTONS, 1, itemData.button);
-		ToolItem item = itemData.toolItem;
+		ToolItem_Old item = itemData.toolItem;
 		if (item != null) {
 			// The text is not retained correctly, so we need to reset it
 			String text = item.getText();
@@ -1791,7 +1791,7 @@ private static void handleDPIChange(Widget widget, int newZoom, float scalingFac
 		}
 	}
 	for (int i = 0; i < itemCount; i++) {
-		ToolItem item = toolItems[i];
+		ToolItem_Old item = toolItems[i];
 		// If the separator is used with a control, we must reset the size to the cached value,
 		// cause windows will treat the separator as normal separator and shrinks it accordingly
 		if ((item.style & SWT.SEPARATOR) != 0 && item.getControl() != null) {

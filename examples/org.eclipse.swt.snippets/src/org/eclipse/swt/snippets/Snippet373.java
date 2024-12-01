@@ -173,12 +173,12 @@ public class Snippet373 {
 		});
 
 		// Toolbar with Image
-		ToolBar toolBar = new ToolBar(composite, SWT.FLAT | SWT.BORDER);
+		ToolBar_Old toolBar = new ToolBar_Old(composite, SWT.FLAT | SWT.BORDER);
 		Rectangle clientArea = shell.getClientArea();
 		toolBar.setLocation(clientArea.x, clientArea.y);
 		for (int i = 0; i < 2; i++) {
 			int style = i % 2 == 1 ? SWT.DROP_DOWN : SWT.PUSH;
-			ToolItem toolItem = new ToolItem(toolBar, style);
+			ToolItem_Old toolItem = new ToolItem_Old(toolBar, style);
 			toolItem.setImage((i % 2 == 0) ? eclipseToolBar1 : eclipseToolBar2);
 			toolItem.setEnabled(i % 2 == 0);
 		}

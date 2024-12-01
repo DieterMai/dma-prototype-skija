@@ -303,7 +303,7 @@ public class SWT {
 	 * @see org.eclipse.swt.widgets.TabFolder#addSelectionListener
 	 * @see org.eclipse.swt.widgets.Table#addSelectionListener
 	 * @see org.eclipse.swt.widgets.TableColumn#addSelectionListener
-	 * @see org.eclipse.swt.widgets.ToolItem#addSelectionListener
+	 * @see org.eclipse.swt.widgets.ToolItem_Old#addSelectionListener
 	 * @see org.eclipse.swt.widgets.TrayItem#addSelectionListener
 	 * @see org.eclipse.swt.widgets.Tree#addSelectionListener
 	 * @see org.eclipse.swt.widgets.TreeColumn#addSelectionListener
