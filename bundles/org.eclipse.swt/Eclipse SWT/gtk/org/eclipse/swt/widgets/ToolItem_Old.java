@@ -26,8 +26,8 @@ import org.eclipse.swt.internal.gtk3.*;
 import org.eclipse.swt.internal.gtk4.*;
 
 /**
- * Instances of this class represent a selectable user interface object
- * that represents a button in a tool bar.
+ * Instances of this class represent a selectable user interface object that
+ * represents a button in a tool bar.
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>PUSH, CHECK, RADIO, SEPARATOR, DROP_DOWN</dd>
@@ -35,30 +35,33 @@ import org.eclipse.swt.internal.gtk4.*;
  * <dd>Selection</dd>
  * </dl>
  * <p>
- * Note: Only one of the styles CHECK, PUSH, RADIO, SEPARATOR and DROP_DOWN
- * may be specified.
- * </p><p>
+ * Note: Only one of the styles CHECK, PUSH, RADIO, SEPARATOR and DROP_DOWN may
+ * be specified.
+ * </p>
+ * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#toolbar">ToolBar, ToolItem snippets</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
+ * @see <a href="http://www.eclipse.org/swt/snippets/#ToolBar_Old">ToolBar_Old,
+ *      ToolItem_Old snippets</a>
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further
+ *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class ToolItem extends Item {
+public class ToolItem_Old extends Item {
 	long arrowHandle, labelHandle, imageHandle;
 	long eventHandle, proxyMenuItem, provider;
 
 	/** GTK4 only field, used to keep track of the containing box of the image & label */
 	long boxHandle, groupHandle;
 
-	ToolBar parent;
+	ToolBar_Old parent;
 	Control control;
 	Image hotImage, disabledImage, defaultDisableImage;
 	Color background, foreground;
 	String toolTipText;
 	boolean drawHotImage;
-	/** True iff map has been hooked for this ToolItem. See bug 546914. */
+	/** True iff map has been hooked for this ToolItem_Old. See bug 546914. */
 	boolean mapHooked;
 	boolean enabled = true;
 
@@ -72,30 +75,36 @@ public class ToolItem extends Item {
 	Image currentImage;
 
 /**
- * Constructs a new instance of this class given its parent
- * (which must be a <code>ToolBar</code>) and a style value
- * describing its behavior and appearance. The item is added
- * to the end of the items maintained by its parent.
+ * Constructs a new instance of this class given its parent (which must be a
+ * <code>ToolBar_Old</code>) and a style value describing its behavior and
+ * appearance. The item is added to the end of the items maintained by its
+ * parent.
  * <p>
- * The style value is either one of the style constants defined in
- * class <code>SWT</code> which is applicable to instances of this
- * class, or must be built by <em>bitwise OR</em>'ing together
- * (that is, using the <code>int</code> "|" operator) two or more
- * of those <code>SWT</code> style constants. The class description
- * lists the style constants that are applicable to the class.
- * Style bits are also inherited from superclasses.
+ * The style value is either one of the style constants defined in class
+ * <code>SWT</code> which is applicable to instances of this class, or must be
+ * built by <em>bitwise OR</em>'ing together (that is, using the
+ * <code>int</code> "|" operator) two or more of those <code>SWT</code> style
+ * constants. The class description lists the style constants that are
+ * applicable to the class. Style bits are also inherited from superclasses.
  * </p>
  *
- * @param parent a composite control which will be the parent of the new instance (cannot be null)
- * @param style the style of control to construct
+ * @param parent a composite control which will be the parent of the new
+ *               instance (cannot be null)
+ * @param style  the style of control to construct
  *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
- *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
- * </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_NULL_ARGUMENT - if the parent
+ *                                     is null</li>
+ *                                     </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     parent</li>
+ *                                     <li>ERROR_INVALID_SUBCLASS - if this
+ *                                     class is not an allowed subclass</li>
+ *                                     </ul>
  *
  * @see SWT#PUSH
  * @see SWT#CHECK
@@ -105,39 +114,47 @@ public class ToolItem extends Item {
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public ToolItem (ToolBar parent, int style) {
+public ToolItem_Old(ToolBar_Old parent, int style) {
 	super (parent, checkStyle (style));
 	this.parent = parent;
 	createWidget (parent.getItemCount ());
 }
 
 /**
- * Constructs a new instance of this class given its parent
- * (which must be a <code>ToolBar</code>), a style value
- * describing its behavior and appearance, and the index
- * at which to place it in the items maintained by its parent.
+ * Constructs a new instance of this class given its parent (which must be a
+ * <code>ToolBar_Old</code>), a style value describing its behavior and
+ * appearance, and the index at which to place it in the items maintained by its
+ * parent.
  * <p>
- * The style value is either one of the style constants defined in
- * class <code>SWT</code> which is applicable to instances of this
- * class, or must be built by <em>bitwise OR</em>'ing together
- * (that is, using the <code>int</code> "|" operator) two or more
- * of those <code>SWT</code> style constants. The class description
- * lists the style constants that are applicable to the class.
- * Style bits are also inherited from superclasses.
+ * The style value is either one of the style constants defined in class
+ * <code>SWT</code> which is applicable to instances of this class, or must be
+ * built by <em>bitwise OR</em>'ing together (that is, using the
+ * <code>int</code> "|" operator) two or more of those <code>SWT</code> style
+ * constants. The class description lists the style constants that are
+ * applicable to the class. Style bits are also inherited from superclasses.
  * </p>
  *
- * @param parent a composite control which will be the parent of the new instance (cannot be null)
- * @param style the style of control to construct
- * @param index the zero-relative index to store the receiver in its parent
+ * @param parent a composite control which will be the parent of the new
+ *               instance (cannot be null)
+ * @param style  the style of control to construct
+ * @param index  the zero-relative index to store the receiver in its parent
  *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
- *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the parent (inclusive)</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
- *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
- * </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_NULL_ARGUMENT - if the parent
+ *                                     is null</li>
+ *                                     <li>ERROR_INVALID_RANGE - if the index is
+ *                                     not between 0 and the number of elements
+ *                                     in the parent (inclusive)</li>
+ *                                     </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     parent</li>
+ *                                     <li>ERROR_INVALID_SUBCLASS - if this
+ *                                     class is not an allowed subclass</li>
+ *                                     </ul>
  *
  * @see SWT#PUSH
  * @see SWT#CHECK
@@ -147,7 +164,7 @@ public ToolItem (ToolBar parent, int style) {
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public ToolItem (ToolBar parent, int style, int index) {
+public ToolItem_Old(ToolBar_Old parent, int style, int index) {
 	super (parent, checkStyle (style));
 	this.parent = parent;
 	int count = parent.getItemCount ();
@@ -328,8 +345,9 @@ void createHandle (int index) {
 	}
 
 	/*
-	 * Set the "homogeneous" property to false, otherwise all ToolItems will be as large as
-	 * the largest one in the ToolBar. See bug 548331, 395296 for more information.
+	 * Set the "homogeneous" property to false, otherwise all ToolItem_Olds will be
+	 * as large as the largest one in the ToolBar_Old. See bug 548331, 395296 for
+	 * more information.
 	 */
 	if (GTK.GTK4) {
 		GTK.gtk_box_set_homogeneous(parent.handle, false);
@@ -368,7 +386,7 @@ void deregister() {
 @Override
 public void dispose () {
 	if (isDisposed ()) return;
-	ToolBar parent = this.parent;
+	ToolBar_Old parent = this.parent;
 	super.dispose ();
 	parent.relayout ();
 }
@@ -534,16 +552,19 @@ public Image getImage () {
 }
 
 /**
- * Returns the receiver's parent, which must be a <code>ToolBar</code>.
+ * Returns the receiver's parent, which must be a <code>ToolBar_Old</code>.
  *
  * @return the receiver's parent
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  */
-public ToolBar getParent () {
+public ToolBar_Old getParent() {
 	checkWidget();
 	if (parent == null) error (SWT.ERROR_WIDGET_DISPOSED);
 	return parent;
@@ -755,7 +776,7 @@ long gtk_create_menu_proxy (long widget) {
 				 * activate signal to send the Arrow selection signal.
 				 */
 				proxyMenuItem = GTK3.gtk_tool_item_get_proxy_menu_item (widget, buffer);
-				OS.g_signal_connect(menuItem, OS.activate, ToolBar.menuItemSelectedFunc.getAddress(), handle);
+				OS.g_signal_connect(menuItem, OS.activate, ToolBar_Old.menuItemSelectedFunc.getAddress(), handle);
 				return 1;
 			}
 		}
@@ -904,9 +925,9 @@ void hookEvents () {
 		OS.g_signal_connect(clickController, OS.pressed, display.gesturePressReleaseProc, GESTURE_PRESSED);
 	} else {
 		/*
-		 * Feature in GTK. GtkToolItem does not respond to basic listeners
-		 * such as button-press, enter-notify to it. The fix is to assign
-		 * the listener to child (GtkButton) of the tool-item.
+		 * Feature in GTK. GtkToolItem_Old does not respond to basic listeners such as
+		 * button-press, enter-notify to it. The fix is to assign the listener to child
+		 * (GtkButton) of the tool-item.
 		 */
 		eventHandle = GTK3.gtk_bin_get_child(handle);
 		if ((style & SWT.DROP_DOWN) != 0) {
@@ -974,7 +995,7 @@ public boolean isEnabled () {
 }
 
 boolean isTabGroup () {
-	ToolItem [] tabList = parent._getTabItemList ();
+	ToolItem_Old[] tabList = parent._getTabItemList();
 	if (tabList != null) {
 		for (int i=0; i<tabList.length; i++) {
 			if (tabList [i] == this) return true;
@@ -983,7 +1004,7 @@ boolean isTabGroup () {
 	if ((style & SWT.SEPARATOR) != 0) return true;
 	int index = parent.indexOf (this);
 	if (index == 0) return true;
-	ToolItem previous = parent.getItem (index - 1);
+	ToolItem_Old previous = parent.getItem(index - 1);
 	return (previous.getStyle () & SWT.SEPARATOR) != 0;
 }
 
@@ -1075,7 +1096,7 @@ void resizeHandle(int width, int height) {
 
 void selectRadio () {
 	int index = 0;
-	ToolItem [] items = parent.getItems ();
+	ToolItem_Old[] items = parent.getItems();
 	while (index < items.length && items [index] != this) index++;
 	int i = index - 1;
 	while (i >= 0 && items [i].setRadioSelection (false)) --i;
@@ -1446,8 +1467,7 @@ public void setText (String string) {
 	}
 
 	/*
-	 * Only set important if this ToolItem actually has text.
-	 * See bug 543895.
+	 * Only set important if this ToolItem_Old actually has text. See bug 543895.
 	 */
 	if ((parent.style & SWT.RIGHT) != 0) {
 		if (!GTK.GTK4) GTK3.gtk_tool_item_set_is_important (handle, !string.isEmpty());
@@ -1516,21 +1536,27 @@ public void setToolTipText(String string) {
 }
 
 /**
- * Sets the width of the receiver, for <code>SEPARATOR</code> ToolItems.
+ * Sets the width of the receiver, for <code>SEPARATOR</code> ToolItem_Olds.
  *
- * @param width the new width. If the new value is <code>SWT.DEFAULT</code>,
- * the width is a fixed-width area whose amount is determined by the platform.
- * If the new value is 0 a vertical or horizontal line will be drawn, depending
- * on the setting of the corresponding style bit (<code>SWT.VERTICAL</code> or
- * <code>SWT.HORIZONTAL</code>). If the new value is <code>SWT.SEPARATOR_FILL</code>
- * a variable-width space is inserted that acts as a spring between the two adjoining
- * items which will push them out to the extent of the containing ToolBar.
+ * @param width the new width. If the new value is <code>SWT.DEFAULT</code>, the
+ *              width is a fixed-width area whose amount is determined by the
+ *              platform. If the new value is 0 a vertical or horizontal line
+ *              will be drawn, depending on the setting of the corresponding
+ *              style bit (<code>SWT.VERTICAL</code> or
+ *              <code>SWT.HORIZONTAL</code>). If the new value is
+ *              <code>SWT.SEPARATOR_FILL</code> a variable-width space is
+ *              inserted that acts as a spring between the two adjoining items
+ *              which will push them out to the extent of the containing
+ *              ToolBar_Old.
  *
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  */
 public void setWidth (int width) {
 	checkWidget ();

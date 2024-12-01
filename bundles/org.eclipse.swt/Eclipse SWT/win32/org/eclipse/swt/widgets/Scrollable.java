@@ -159,8 +159,10 @@ ScrollBar createScrollBar (int type) {
 @Override
 void createWidget () {
 	super.createWidget ();
-	if ((style & SWT.H_SCROLL) != 0) horizontalBar = createScrollBar (SWT.H_SCROLL);
-	if ((style & SWT.V_SCROLL) != 0) verticalBar = createScrollBar (SWT.V_SCROLL);
+	if(isScrolled()) {
+		if ((style & SWT.H_SCROLL) != 0) horizontalBar = createScrollBar (SWT.H_SCROLL);
+		if ((style & SWT.V_SCROLL) != 0) verticalBar = createScrollBar (SWT.V_SCROLL);
+	}
 }
 
 @Override
@@ -345,8 +347,10 @@ long scrolledHandle () {
 @Override
 int widgetStyle () {
 	int bits = super.widgetStyle () | OS.WS_TABSTOP;
-	if ((style & SWT.H_SCROLL) != 0) bits |= OS.WS_HSCROLL;
-	if ((style & SWT.V_SCROLL) != 0) bits |= OS.WS_VSCROLL;
+	if(isScrolled()) {
+		if ((style & SWT.H_SCROLL) != 0) bits |= OS.WS_HSCROLL;
+		if ((style & SWT.V_SCROLL) != 0) bits |= OS.WS_VSCROLL;
+	}
 	return bits;
 }
 

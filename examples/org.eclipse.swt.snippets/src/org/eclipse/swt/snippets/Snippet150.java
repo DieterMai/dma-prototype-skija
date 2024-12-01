@@ -30,9 +30,9 @@ public class Snippet150 {
 
 static int itemCount;
 static CoolItem createItem(CoolBar coolBar, int count) {
-	ToolBar toolBar = new ToolBar(coolBar, SWT.FLAT);
+	ToolBar_Old toolBar = new ToolBar_Old(coolBar, SWT.FLAT);
 	for (int i = 0; i < count; i++) {
-		ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+		ToolItem_Old item = new ToolItem_Old(toolBar, SWT.PUSH);
 		item.setText(itemCount++ +"");
 	}
 	toolBar.pack();

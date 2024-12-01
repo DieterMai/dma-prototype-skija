@@ -24,15 +24,15 @@ import org.eclipse.swt.internal.gtk3.*;
 import org.eclipse.swt.internal.gtk4.*;
 
 /**
- * Instances of this class support the layout of selectable
- * tool bar items.
+ * Instances of this class support the layout of selectable tool bar items.
  * <p>
- * The item children that may be added to instances of this class
- * must be of type <code>ToolItem</code>.
- * </p><p>
- * Note that although this class is a subclass of <code>Composite</code>,
- * it does not make sense to add <code>Control</code> children to it,
- * or set a layout on it.
+ * The item children that may be added to instances of this class must be of
+ * type <code>ToolItem_Old</code>.
+ * </p>
+ * <p>
+ * Note that although this class is a subclass of <code>Composite</code>, it
+ * does not make sense to add <code>Control</code> children to it, or set a
+ * layout on it.
  * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
@@ -42,18 +42,22 @@ import org.eclipse.swt.internal.gtk4.*;
  * </dl>
  * <p>
  * Note: Only one of the styles HORIZONTAL and VERTICAL may be specified.
- * </p><p>
+ * </p>
+ * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#toolbar">ToolBar, ToolItem snippets</a>
- * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example: ControlExample</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
+ * @see <a href="http://www.eclipse.org/swt/snippets/#toolbar">ToolBar,
+ *      ToolItem_Old snippets</a>
+ * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example:
+ *      ControlExample</a>
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further
+ *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class ToolBar extends Composite {
-	ToolItem currentFocusItem;
-	ToolItem [] tabItemList;
+public class ToolBar_Old extends Composite {
+	ToolItem_Old currentFocusItem;
+	ToolItem_Old[] tabItemList;
 	ImageList imageList;
 	boolean hasChildFocus;
 	static Callback menuItemSelectedFunc = new Callback(ToolBar.class, "MenuItemSelectedProc", 2);
@@ -92,7 +96,7 @@ public class ToolBar extends Composite {
  * @see Widget#checkSubclass()
  * @see Widget#getStyle()
  */
-public ToolBar (Composite parent, int style) {
+public ToolBar_Old (Composite parent, int style) {
 	super (parent, checkStyle (style));
 	/*
 	* Ensure that either of HORIZONTAL or VERTICAL is set.
@@ -198,7 +202,7 @@ Point computeSizeInPixels (int wHint, int hHint, boolean changed) {
 
 @Override
 Widget computeTabGroup () {
-	ToolItem [] items = _getItems ();
+	ToolItem_Old[] items = _getItems();
 	if (tabItemList == null) {
 		int i = 0;
 		while (i < items.length && items [i].control == null) i++;
@@ -207,7 +211,7 @@ Widget computeTabGroup () {
 	int index = indexOf(currentFocusItem);
 	if (index == -1) index = items.length - 1;
 	while (index >= 0) {
-		ToolItem item = items [index];
+		ToolItem_Old item = items[index];
 		if (item.isTabGroup ()) return item;
 		index--;
 	}
@@ -216,7 +220,7 @@ Widget computeTabGroup () {
 
 @Override
 Widget [] computeTabList () {
-	ToolItem [] items = _getItems ();
+	ToolItem_Old[] items = _getItems();
 	if (tabItemList == null) {
 		int i = 0;
 		while (i < items.length && items [i].control == null) i++;
@@ -224,9 +228,9 @@ Widget [] computeTabList () {
 	}
 	Widget result [] = {};
 	if (!isTabGroup () || !isEnabled () || !isVisible ()) return result;
-	ToolItem [] list = tabList != null ? _getTabItemList () : items;
+	ToolItem_Old[] list = tabList != null ? _getTabItemList() : items;
 	for (int i=0; i<list.length; i++) {
-		ToolItem child = list [i];
+		ToolItem_Old child = list[i];
 		Widget  [] childList = child.computeTabList ();
 		if (childList.length != 0) {
 			Widget [] newResult = new Widget [result.length + childList.length];
@@ -278,7 +282,7 @@ boolean forceFocus (long focusHandle) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public ToolItem getItem (int index) {
+public ToolItem_Old getItem(int index) {
 	checkWidget();
 	if (!(0 <= index && index < getItemCount())) error (SWT.ERROR_INVALID_RANGE);
 	return getItems()[index];
@@ -300,15 +304,15 @@ public ToolItem getItem (int index) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public ToolItem getItem (Point point) {
+public ToolItem_Old getItem(Point point) {
 	checkWidget();
 	return getItemInPixels(DPIUtil.autoScaleUp(point));
 }
 
 
-ToolItem getItemInPixels (Point point) {
+ToolItem_Old getItemInPixels(Point point) {
 	if (point == null) error (SWT.ERROR_NULL_ARGUMENT);
-	ToolItem[] items = getItems();
+	ToolItem_Old[] items = getItems();
 	for (int i=0; i<items.length; i++) {
 		if (items[i].getBoundsInPixels().contains(point)) return items[i];
 	}
@@ -344,53 +348,57 @@ public int getItemCount () {
 }
 
 /**
- * Returns an array of <code>ToolItem</code>s which are the items
- * in the receiver.
+ * Returns an array of <code>ToolItem_Old</code>s which are the items in the
+ * receiver.
  * <p>
- * Note: This is not the actual structure used by the receiver
- * to maintain its list of items, so modifying the array will
- * not affect the receiver.
+ * Note: This is not the actual structure used by the receiver to maintain its
+ * list of items, so modifying the array will not affect the receiver.
  * </p>
  *
  * @return the items in the receiver
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  */
-public ToolItem [] getItems () {
+public ToolItem_Old[] getItems() {
 	checkWidget();
 	return _getItems ();
 }
 
-ToolItem[] _getItems () {
+ToolItem_Old[] _getItems() {
 	if (GTK.GTK4) {
-		ArrayList<ToolItem> childrenList = new ArrayList<>();
+		ArrayList<ToolItem_Old> childrenList = new ArrayList<>();
 		for (long child = GTK4.gtk_widget_get_first_child(handle); child != 0; child = GTK4.gtk_widget_get_next_sibling(child)) {
 			Widget childWidget = display.getWidget(child);
 			if (childWidget != null) {
-				childrenList.add((ToolItem)childWidget);
+				childrenList.add((ToolItem_Old) childWidget);
 			}
 		}
 
-		return childrenList.toArray(new ToolItem[childrenList.size()]);
+		return childrenList.toArray(new ToolItem_Old[childrenList.size()]);
 	} else {
 		long list = GTK3.gtk_container_get_children (handle);
-		if (list == 0) return new ToolItem [0];
+		if (list == 0)
+			return new ToolItem_Old[0];
 		int count = OS.g_list_length (list);
-		ToolItem [] items = new ToolItem [count];
+		ToolItem_Old[] items = new ToolItem_Old[count];
 		long originalList = list;
 		int index = 0;
 		for (int i=0; i<count; i++) {
 			long data = OS.g_list_data (list);
 			Widget widget = display.getWidget (data);
-			if (widget != null) items [index++] = (ToolItem) widget;
+			if (widget != null)
+				items[index++] = (ToolItem_Old) widget;
 			list = OS.g_list_next (list);
 		}
 		OS.g_list_free (originalList);
 		if (index != items.length) {
-			ToolItem [] newItems = new ToolItem [index];
+			ToolItem_Old[] newItems = new ToolItem_Old[index];
 			System.arraycopy (items, 0, newItems, 0, index);
 			items = newItems;
 		}
@@ -417,14 +425,14 @@ public int getRowCount () {
 	return 1;
 }
 
-ToolItem [] _getTabItemList () {
+ToolItem_Old[] _getTabItemList() {
 	if (tabItemList == null) return tabItemList;
 	int count = 0;
 	for (int i=0; i<tabItemList.length; i++) {
 		if (!tabItemList [i].isDisposed ()) count++;
 	}
 	if (count == tabItemList.length) return tabItemList;
-	ToolItem [] newList = new ToolItem [count];
+	ToolItem_Old[] newList = new ToolItem_Old[count];
 	int index = 0;
 	for (int i=0; i<tabItemList.length; i++) {
 		if (!tabItemList [i].isDisposed ()) {
@@ -471,10 +479,10 @@ boolean hasFocus () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public int indexOf (ToolItem item) {
+public int indexOf(ToolItem_Old item) {
 	checkWidget();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	for (int i=0; i<items.length; i++) {
 		if (item == items[i]) return i;
 	}
@@ -483,14 +491,14 @@ public int indexOf (ToolItem item) {
 
 static long MenuItemSelectedProc (long widget, long /*int*/	user_data) {
 	Display display = Display.getCurrent ();
-	ToolItem item = (ToolItem) display.getWidget (user_data);
+	ToolItem_Old item = (ToolItem_Old) display.getWidget(user_data);
 	if (item != null) {
 		return item.getParent ().menuItemSelected (widget, item);
 	}
 	return 0;
 }
 
-long menuItemSelected (long widget, ToolItem item) {
+long menuItemSelected(long widget, ToolItem_Old item) {
 	Event event = new Event ();
 	switch (item.style) {
 		case SWT.DROP_DOWN :
@@ -521,7 +529,7 @@ long menuItemSelected (long widget, ToolItem item) {
 
 @Override
 boolean mnemonicHit (char key) {
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	for (int i=0; i<items.length; i++) {
 		long labelHandle = items [i].labelHandle;
 		if (labelHandle != 0 && mnemonicHit (labelHandle, key)) return true;
@@ -531,7 +539,7 @@ boolean mnemonicHit (char key) {
 
 @Override
 boolean mnemonicMatch (char key) {
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	for (int i=0; i<items.length; i++) {
 		long labelHandle = items [i].labelHandle;
 		if (labelHandle != 0 && mnemonicMatch (labelHandle, key)) return true;
@@ -540,10 +548,10 @@ boolean mnemonicMatch (char key) {
 }
 
 void relayout () {
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	boolean hasText = false, hasImage = false;
 	for (int i=0; i<items.length; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		if (item != null) {
 			item.resizeControl ();
 			hasText |= item.text != null && item.text.length() > 0;
@@ -573,9 +581,9 @@ void relayout () {
 
 @Override
 void releaseChildren (boolean destroy) {
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	for (int i=0; i<items.length; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		if (item != null && !item.isDisposed ()) {
 			item.release (false);
 		}
@@ -593,19 +601,19 @@ void releaseWidget () {
 @Override
 void removeControl (Control control) {
 	super.removeControl (control);
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	for (int i=0; i<items.length; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		if (item.control == control) item.setControl (null);
 	}
 }
 
 @Override
 void reskinChildren (int flags) {
-	ToolItem[] items = _getItems();
+	ToolItem_Old[] items = _getItems();
 	if (items != null) {
 		for (int i=0; i<items.length; i++) {
-			ToolItem item = items [i];
+			ToolItem_Old item = items[i];
 			if (item != null) item.reskin (flags);
 		}
 	}
@@ -676,7 +684,7 @@ void setForegroundGdkRGBA (long handle, GdkRGBA rgba) {
 @Override
 void setFontDescription (long font) {
 	super.setFontDescription (font);
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	for (int i = 0; i < items.length; i++) {
 		items[i].setFontDescription (font);
 	}
@@ -686,7 +694,7 @@ void setFontDescription (long font) {
 @Override
 void setForegroundGdkRGBA (GdkRGBA rgba) {
 	super.setForegroundGdkRGBA (rgba);
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	for (int i = 0; i < items.length; i++) {
 		items[i].updateStyle ();
 	}
@@ -695,22 +703,22 @@ void setForegroundGdkRGBA (GdkRGBA rgba) {
 @Override
 void setOrientation (boolean create) {
 	super.setOrientation (create);
-	ToolItem [] items = _getItems ();
+	ToolItem_Old[] items = _getItems();
 	for (int i = 0; i < items.length; i++) {
 		items[i].setOrientation (create);
 	}
 }
 
-/*public*/ void setTabItemList (ToolItem [] tabList) {
+/* public */ void setTabItemList(ToolItem_Old[] tabList) {
 	checkWidget ();
 	if (tabList != null) {
 		for (int i=0; i<tabList.length; i++) {
-			ToolItem item = tabList [i];
+			ToolItem_Old item = tabList[i];
 			if (item == null) error (SWT.ERROR_INVALID_ARGUMENT);
 			if (item.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
 			if (item.parent != this) error (SWT.ERROR_INVALID_PARENT);
 		}
-		ToolItem [] newList = new ToolItem [tabList.length];
+		ToolItem_Old[] newList = new ToolItem_Old[tabList.length];
 		System.arraycopy (tabList, 0, newList, 0, tabList.length);
 		tabList = newList;
 	}
@@ -721,7 +729,7 @@ void setOrientation (boolean create) {
 public void setToolTipText(String string) {
 	checkWidget();
 	super.setToolTipText(string);
-	ToolItem[] items = getItems();
+	ToolItem_Old[] items = getItems();
 	for (int i = 0; i < items.length; i++) {
 		String newString = string != null ? null : items[i].toolTipText;
 		setToolTipText(items[i].handle, newString);

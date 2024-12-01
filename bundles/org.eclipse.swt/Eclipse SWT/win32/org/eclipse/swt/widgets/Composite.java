@@ -300,7 +300,7 @@ Point computeSizeInPixels (int wHint, int hHint, boolean changed) {
 void createHandle () {
 	super.createHandle ();
 	state |= CANVAS;
-	if ((style & (SWT.H_SCROLL | SWT.V_SCROLL)) == 0 || findThemeControl () == parent) {
+	if (!isScrolled() || findThemeControl() == parent) {
 		state |= THEME_BACKGROUND;
 	}
 	if ((style & SWT.TRANSPARENT) != 0) {
@@ -324,7 +324,7 @@ int applyThemeBackground () {
 	 * enable the THEME_BACKGROUND in 'state' to support background transparent.
 	 * Refer bug 463127 & related bug 234649.
 	 */
-	return (backgroundAlpha == 0 || (style & (SWT.H_SCROLL | SWT.V_SCROLL)) == 0 || findThemeControl () == parent) ? 1 : 0;
+	return (backgroundAlpha == 0 || !isScrolled() || findThemeControl() == parent) ? 1 : 0;
 }
 
 /**

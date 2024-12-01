@@ -423,6 +423,44 @@ protected void checkWidget () {
 }
 
 /**
+ * Checks if the given index is in range and throws an exception if i < 0 or i
+ * >= size.
+ *
+ * @param i    The index to check.
+ * @param size The size.
+ *
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_INVALID_RANGE - if out of range</li>
+ *                         </ul>
+ */
+protected void checkRange(int i, int size) {
+	if (i < 0 || i >= size) {
+		error(SWT.ERROR_INVALID_RANGE);
+	}
+}
+
+/**
+ * Checks if the given client widget can be used.
+ *
+ * @param client The widget to check.
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - If the given widget has
+ *                         been disposed.</li>
+ *                         <li>ERROR_NULL_ARGUMENT - If the given widget is
+ *                         null.</li>
+ *                         </ul>
+ */
+protected void checkClient(Widget client) {
+	if (client == null) {
+		error(SWT.ERROR_NULL_ARGUMENT);
+	} else if (client.isDisposed()) {
+		error(SWT.ERROR_WIDGET_DISPOSED);
+	}
+}
+
+/**
  * Destroys the widget in the operating system and releases
  * the widget's handle.  If the widget does not have a handle,
  * this method may hide the widget, mark the widget as destroyed

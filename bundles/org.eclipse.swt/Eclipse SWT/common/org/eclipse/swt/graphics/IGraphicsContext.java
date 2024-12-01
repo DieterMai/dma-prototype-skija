@@ -54,8 +54,9 @@ public interface IGraphicsContext {
 			boolean b);
 	void setLineWidth(int i);
 	FontMetrics getFontMetrics();
-	void drawImage(Image img, int i, int j, int width, int imageHeight, int x,
-			int imageY, int width2, int imageHeight2);
+
+	void drawImage(Image img, int i, int j, int width, int imageHeight, int x, int imageY, int width2,
+			int imageHeight2);
 	void drawText(String line, int lineX, int lineY, int dRAW_FLAGS);
 	void drawRectangle(Rectangle rectangle);
 

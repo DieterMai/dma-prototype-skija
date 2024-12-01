@@ -66,8 +66,8 @@ public static void main (String [] args) {
 				Point pt = coolBar.toDisplay(new Point(itemBounds.x, itemBounds.y));
 				itemBounds.x = pt.x;
 				itemBounds.y = pt.y;
-				ToolBar bar = (ToolBar) item.getControl();
-				ToolItem[] tools = bar.getItems();
+				ToolBar_Old bar = (ToolBar_Old) item.getControl();
+				ToolItem_Old[] tools = bar.getItems();
 
 				int i = 0;
 				while (i < tools.length) {

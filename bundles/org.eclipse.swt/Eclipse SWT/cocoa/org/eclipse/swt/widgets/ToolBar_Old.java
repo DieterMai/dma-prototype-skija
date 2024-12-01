@@ -20,15 +20,15 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.cocoa.*;
 
 /**
- * Instances of this class support the layout of selectable
- * tool bar items.
+ * Instances of this class support the layout of selectable tool bar items.
  * <p>
- * The item children that may be added to instances of this class
- * must be of type <code>ToolItem</code>.
- * </p><p>
- * Note that although this class is a subclass of <code>Composite</code>,
- * it does not make sense to add <code>Control</code> children to it,
- * or set a layout on it.
+ * The item children that may be added to instances of this class must be of
+ * type <code>ToolItem_Old</code>.
+ * </p>
+ * <p>
+ * Note that although this class is a subclass of <code>Composite</code>, it
+ * does not make sense to add <code>Control</code> children to it, or set a
+ * layout on it.
  * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
@@ -38,21 +38,25 @@ import org.eclipse.swt.internal.cocoa.*;
  * </dl>
  * <p>
  * Note: Only one of the styles HORIZONTAL and VERTICAL may be specified.
- * </p><p>
+ * </p>
+ * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#toolbar">ToolBar, ToolItem snippets</a>
- * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example: ControlExample</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
+ * @see <a href="http://www.eclipse.org/swt/snippets/#toolbar">ToolBar,
+ *      ToolItem_Old snippets</a>
+ * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example:
+ *      ControlExample</a>
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further
+ *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class ToolBar extends Composite {
+public class ToolBar_Old extends Composite {
 	int itemCount;
-	ToolItem [] items;
+	ToolItem_Old[] items;
 	NSToolbar nsToolbar;
 	NSArray accessibilityAttributes = null;
-	ToolItem lastFocus;
+	ToolItem_Old lastFocus;
 	static int NEXT_ID;
 
 /**
@@ -88,11 +92,11 @@ public class ToolBar extends Composite {
  * @see Widget#checkSubclass()
  * @see Widget#getStyle()
  */
-public ToolBar (Composite parent, int style) {
+public ToolBar_Old(Composite parent, int style) {
 	this(parent, style, false);
 }
 
-ToolBar(Composite parent, int style, boolean internal) {
+ToolBar_Old(Composite parent, int style, boolean internal) {
 	super (parent, checkStyle (parent, style, internal));
 
 	/*
@@ -163,7 +167,7 @@ static int checkStyle (Composite parent, int style, boolean internal) {
 	int newStyle = style & ~(SWT.H_SCROLL | SWT.V_SCROLL);
 
 	/*
-	 * Only internal clients can create an NSToolbar-based ToolBar.
+	 * Only internal clients can create an NSToolbar-based ToolBar_Old.
 	 */
 	if (!internal && (newStyle & SWT.SMOOTH) != 0) {
 		newStyle &= ~SWT.SMOOTH;
@@ -282,10 +286,10 @@ void createHandle () {
 	}
 }
 
-void createItem (ToolItem item, int index) {
+void createItem(ToolItem_Old item, int index) {
 	if (!(0 <= index && index <= itemCount)) error (SWT.ERROR_INVALID_RANGE);
 	if (itemCount == items.length) {
-		ToolItem [] newItems = new ToolItem [itemCount + 4];
+		ToolItem_Old[] newItems = new ToolItem_Old[itemCount + 4];
 		System.arraycopy (items, 0, newItems, 0, items.length);
 		items = newItems;
 	}
@@ -303,7 +307,7 @@ void createItem (ToolItem item, int index) {
 @Override
 void createWidget () {
 	super.createWidget ();
-	items = new ToolItem [4];
+	items = new ToolItem_Old[4];
 	itemCount = 0;
 }
 
@@ -318,7 +322,7 @@ void deregister () {
 	if (nsToolbar != null) display.removeWidget (nsToolbar);
 }
 
-void destroyItem (ToolItem item) {
+void destroyItem(ToolItem_Old item) {
 	int index = 0;
 	while (index < itemCount) {
 		if (items [index] == item) break;
@@ -348,7 +352,7 @@ void drawBackground (long id, NSGraphicsContext context, NSRect rect) {
 void enableWidget(boolean enabled) {
 	super.enableWidget(enabled);
 	for (int i = 0; i < itemCount; i++) {
-		ToolItem item = items[i];
+		ToolItem_Old item = items[i];
 		if (item != null) {
 			item.enableWidget(enabled && item.getEnabled());
 		}
@@ -359,7 +363,7 @@ void enableWidget(boolean enabled) {
 Widget findTooltip (NSPoint pt) {
 	pt = view.convertPoint_fromView_ (pt, null);
 	for (int i = 0; i < itemCount; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		if (OS.NSPointInRect(pt, item.view.frame())) return item;
 	}
 	return super.findTooltip (pt);
@@ -389,9 +393,9 @@ public Rectangle getBounds () {
 @Override
 boolean forceFocus (NSView focusView) {
 	if (lastFocus != null && lastFocus.setFocus ()) return true;
-	ToolItem [] items = getItems ();
+	ToolItem_Old[] items = getItems();
 	for (int i = 0; i < items.length; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		if (item.setFocus ()) {
 			lastFocus = item;
 			return true;
@@ -415,7 +419,7 @@ boolean forceFocus (NSView focusView) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public ToolItem getItem (int index) {
+public ToolItem_Old getItem(int index) {
 	checkWidget();
 	if (0 <= index && index < itemCount) return items [index];
 	error (SWT.ERROR_INVALID_RANGE);
@@ -438,7 +442,7 @@ public ToolItem getItem (int index) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public ToolItem getItem (Point point) {
+public ToolItem_Old getItem(Point point) {
 	checkWidget();
 	if (point == null) error (SWT.ERROR_NULL_ARGUMENT);
 	for (int i=0; i<itemCount; i++) {
@@ -464,24 +468,26 @@ public int getItemCount () {
 }
 
 /**
- * Returns an array of <code>ToolItem</code>s which are the items
- * in the receiver.
+ * Returns an array of <code>ToolItem_Old</code>s which are the items in the
+ * receiver.
  * <p>
- * Note: This is not the actual structure used by the receiver
- * to maintain its list of items, so modifying the array will
- * not affect the receiver.
+ * Note: This is not the actual structure used by the receiver to maintain its
+ * list of items, so modifying the array will not affect the receiver.
  * </p>
  *
  * @return the items in the receiver
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  */
-public ToolItem [] getItems () {
+public ToolItem_Old[] getItems() {
 	checkWidget();
-	ToolItem [] result = new ToolItem [itemCount];
+	ToolItem_Old[] result = new ToolItem_Old[itemCount];
 	System.arraycopy (items, 0, result, 0, itemCount);
 	return result;
 }
@@ -528,7 +534,7 @@ boolean hasKeyboardFocus(long inId) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public int indexOf (ToolItem item) {
+public int indexOf(ToolItem_Old item) {
 	checkWidget();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (item.isDisposed()) error(SWT.ERROR_INVALID_ARGUMENT);
@@ -551,7 +557,7 @@ int [] layoutHorizontal (int width, int height, boolean resize) {
 		itemHeight = Math.max (itemHeight, size.y);
 	}
 	for (int i=0; i<itemCount; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		Point size = sizes [i];
 		if (wrap && i != 0 && x + size.x > width) {
 			rows++;
@@ -597,7 +603,7 @@ int [] layoutUnified (int width, int height, boolean resize) {
 		itemHeight = Math.max (itemHeight, size.y);
 	}
 	for (int i=0; i<itemCount; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		Point size = sizes [i];
 		if (resize) {
 			item.setBounds (0, 0, size.x, itemHeight);
@@ -626,7 +632,7 @@ int [] layoutVertical (int width, int height, boolean resize) {
 		itemWidth = Math.max (itemWidth, size.x);
 	}
 	for (int i=0; i<itemCount; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		Point size = sizes [i];
 		if (wrap && i != 0 && y + size.y > height) {
 			cols++;
@@ -677,7 +683,7 @@ void relayout () {
 void releaseChildren (boolean destroy) {
 	if (items != null) {
 		for (int i=0; i<itemCount; i++) {
-			ToolItem item = items [i];
+			ToolItem_Old item = items[i];
 			if (item != null && !item.isDisposed ()) {
 				item.release (false);
 			}
@@ -705,7 +711,7 @@ void releaseHandle () {
 void removeControl (Control control) {
 	super.removeControl (control);
 	for (int i=0; i<itemCount; i++) {
-		ToolItem item = items [i];
+		ToolItem_Old item = items[i];
 		if (item.control == control) item.setControl (null);
 	}
 }
@@ -720,7 +726,7 @@ void resized () {
 void reskinChildren (int flags) {
 	if (items != null) {
 		for (int i=0; i<items.length; i++) {
-			ToolItem item = items [i];
+			ToolItem_Old item = items[i];
 			if (item != null) item.reskin (flags);
 		}
 	}
@@ -737,7 +743,7 @@ boolean sendMouseEvent (NSEvent nsEvent, int type, boolean send) {
 		NSPoint windowPoint = NSEvent.mouseLocation();
 		windowPoint = view.window().convertScreenToBase(windowPoint);
 		for (int i = 0; i < itemCount; i++) {
-			ToolItem item = items [i];
+			ToolItem_Old item = items[i];
 			int currState = item.state;
 			NSPoint viewPoint = item.view.convertPoint_fromView_(windowPoint, null);
 			if (item.view.mouse(viewPoint, item.view.bounds())) {
@@ -751,7 +757,7 @@ boolean sendMouseEvent (NSEvent nsEvent, int type, boolean send) {
 		break;
 	case SWT.MouseExit:
 		for (int i = 0; i < itemCount; i++) {
-			ToolItem item = items [i];
+			ToolItem_Old item = items[i];
 			int currState = item.state;
 			item.state &= ~Widget.HOT;
 			if (currState != item.state) item.updateImage(true);
@@ -802,7 +808,7 @@ public void setVisible(boolean visible) {
 long toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar(long id, long sel, long toolbar, long itemIdentifier, boolean flag) {
 	NSString itemID = new NSString(itemIdentifier);
 	for (int j = 0; j < itemCount; j++) {
-		ToolItem item = items[j];
+		ToolItem_Old item = items[j];
 		if (itemID.isEqual(item.nsItem.itemIdentifier())) {
 			return item.nsItem.id;
 		}
@@ -811,8 +817,8 @@ long toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar(long id, long sel, 
 }
 
 /*
- * Returns an array of all toolbar item IDs allowed to be in the toolbar. Since the ToolBar created all of the ToolItems
- * return all of the item IDs.
+ * Returns an array of all toolbar item IDs allowed to be in the toolbar. Since
+ * the ToolBar_Old created all of the ToolItem_Olds return all of the item IDs.
  */
 @Override
 long toolbarAllowedItemIdentifiers(long id, long sel, long toolbar) {
@@ -824,7 +830,8 @@ long toolbarAllowedItemIdentifiers(long id, long sel, long toolbar) {
 }
 
 /*
- * This delegate method isn't really needed because ToolBars aren't customizable, but it's required according to the documentation.
+ * This delegate method isn't really needed because ToolBar_Olds aren't
+ * customizable, but it's required according to the documentation.
  */
 @Override
 long toolbarDefaultItemIdentifiers(long id, long sel, long toolbar) {
@@ -872,8 +879,8 @@ boolean translateTraversal (int key, NSEvent theEvent, boolean[] consume) {
 		if (lastFocus.handleKeyDown()) return false;
 	}
 
-	ToolItem[] items = getItems();
-	ToolItem item = lastFocus;
+	ToolItem_Old[] items = getItems();
+	ToolItem_Old item = lastFocus;
 	int length = items.length;
 	int index = 0;
 	while (index < length) {
@@ -889,7 +896,7 @@ boolean translateTraversal (int key, NSEvent theEvent, boolean[] consume) {
 	if (index == length) return false;
 	int start = index, offset = (next) ? 1 : -1;
 	while ((index = (index + offset + length) % length) != start) {
-		ToolItem child = items [index];
+		ToolItem_Old child = items[index];
 		if (!child.isDisposed ()) {
 			if (child.setFocus ()) {
 				lastFocus = child;
