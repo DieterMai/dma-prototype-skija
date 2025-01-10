@@ -138,11 +138,11 @@ public class Snippet135 {
 		Label locationLb = new Label(shell, SWT.NONE);
 		locationLb.setText("Location:");
 		Composite locationComp = new Composite(shell, SWT.EMBEDDED);
-		ToolBar toolBar = new ToolBar(shell, SWT.FLAT);
-		ToolItem exitToolItem = new ToolItem(toolBar, SWT.PUSH);
+		ToolBar_Old toolBar = new ToolBar_Old(shell, SWT.FLAT);
+		ToolItem_Old exitToolItem = new ToolItem_Old(toolBar, SWT.PUSH);
 		exitToolItem.setText("&Exit");
 		exitToolItem.addListener(SWT.Selection, exitListener);
-		ToolItem aboutToolItem = new ToolItem(toolBar, SWT.PUSH);
+		ToolItem_Old aboutToolItem = new ToolItem_Old(toolBar, SWT.PUSH);
 		aboutToolItem.setText("&About");
 		aboutToolItem.addListener(SWT.Selection, aboutListener);
 		Label separator2 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);

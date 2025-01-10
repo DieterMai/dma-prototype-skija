@@ -42,8 +42,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolBar_Old;
+import org.eclipse.swt.widgets.ToolItem_Old;
 
 public class BrowserExample {
 	static ResourceBundle resourceBundle = ResourceBundle.getBundle("examples_browser");
@@ -55,9 +55,9 @@ public class BrowserExample {
 	Composite parent;
 	Text locationBar;
 	Browser browser;
-	ToolBar toolbar;
+	ToolBar_Old toolbar;
 	Canvas canvas;
-	ToolItem itemBack, itemForward;
+	ToolItem_Old itemBack, itemForward;
 	Label status;
 	ProgressBar progressBar;
 	SWTError error = null;
@@ -150,25 +150,25 @@ public class BrowserExample {
 		}
 		FormData data = null;
 		if (toolBar) {
-			toolbar = new ToolBar(parent, SWT.NONE);
+			toolbar = new ToolBar_Old(parent, SWT.NONE);
 			data = new FormData();
 			data.top = new FormAttachment(0, 5);
 			toolbar.setLayoutData(data);
-			itemBack = new ToolItem(toolbar, SWT.PUSH);
+			itemBack = new ToolItem_Old(toolbar, SWT.PUSH);
 			itemBack.setText(getResourceString("Back"));
-			itemForward = new ToolItem(toolbar, SWT.PUSH);
+			itemForward = new ToolItem_Old(toolbar, SWT.PUSH);
 			itemForward.setText(getResourceString("Forward"));
-			final ToolItem itemStop = new ToolItem(toolbar, SWT.PUSH);
+			final ToolItem_Old itemStop = new ToolItem_Old(toolbar, SWT.PUSH);
 			itemStop.setText(getResourceString("Stop"));
-			final ToolItem itemRefresh = new ToolItem(toolbar, SWT.PUSH);
+			final ToolItem_Old itemRefresh = new ToolItem_Old(toolbar, SWT.PUSH);
 			itemRefresh.setText(getResourceString("Refresh"));
-			final ToolItem itemGo = new ToolItem(toolbar, SWT.PUSH);
+			final ToolItem_Old itemGo = new ToolItem_Old(toolbar, SWT.PUSH);
 			itemGo.setText(getResourceString("Go"));
 
 			itemBack.setEnabled(browser.isBackEnabled());
 			itemForward.setEnabled(browser.isForwardEnabled());
 			Listener listener = event -> {
-				ToolItem item = (ToolItem)event.widget;
+				ToolItem_Old item = (ToolItem_Old)event.widget;
 				if (item == itemBack) browser.back();
 				else if (item == itemForward) browser.forward();
 				else if (item == itemStop) browser.stop();

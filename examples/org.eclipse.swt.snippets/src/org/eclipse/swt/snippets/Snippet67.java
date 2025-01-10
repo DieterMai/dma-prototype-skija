@@ -29,7 +29,7 @@ public static void main (String [] args) {
 	final Display display = new Display ();
 	final Shell shell = new Shell (display);
 	shell.setText("Snippet 67");
-	final ToolBar toolBar = new ToolBar (shell, SWT.NONE);
+	final ToolBar_Old toolBar = new ToolBar_Old (shell, SWT.NONE);
 	Rectangle clientArea = shell.getClientArea ();
 	toolBar.setLocation(clientArea.x, clientArea.y);
 	final Menu menu = new Menu (shell, SWT.POP_UP);
@@ -37,7 +37,7 @@ public static void main (String [] args) {
 		MenuItem item = new MenuItem (menu, SWT.PUSH);
 		item.setText ("Item " + i);
 	}
-	final ToolItem item = new ToolItem (toolBar, SWT.DROP_DOWN);
+	final ToolItem_Old item = new ToolItem_Old (toolBar, SWT.DROP_DOWN);
 	item.addListener (SWT.Selection, event -> {
 		if (event.detail == SWT.ARROW) {
 			Rectangle rect = item.getBounds ();

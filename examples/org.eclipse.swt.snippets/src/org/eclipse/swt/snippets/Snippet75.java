@@ -62,21 +62,21 @@ public static void main (String [] args) {
 	List l2 = new List (shell, SWT.SINGLE | SWT.BORDER);
 	l2.setItems ("L2");
 
-	ToolBar tb1 = new ToolBar (shell, SWT.FLAT | SWT.BORDER);
-	ToolItem i1 = new ToolItem (tb1, SWT.RADIO);
+	ToolBar_Old tb1 = new ToolBar_Old (shell, SWT.FLAT | SWT.BORDER);
+	ToolItem_Old i1 = new ToolItem_Old (tb1, SWT.RADIO);
 	i1.setText ("I1");
-	ToolItem i2 = new ToolItem (tb1, SWT.RADIO);
+	ToolItem_Old i2 = new ToolItem_Old (tb1, SWT.RADIO);
 	i2.setText ("I2");
 	Combo combo1 = new Combo (tb1, SWT.READ_ONLY | SWT.BORDER);
 	combo1.setItems ("C1");
 	combo1.setText ("C1");
 	combo1.pack ();
-	ToolItem i3 = new ToolItem (tb1, SWT.SEPARATOR);
+	ToolItem_Old i3 = new ToolItem_Old (tb1, SWT.SEPARATOR);
 	i3.setWidth (combo1.getSize ().x);
 	i3.setControl (combo1);
-	ToolItem i4 = new ToolItem (tb1, SWT.PUSH);
+	ToolItem_Old i4 = new ToolItem_Old (tb1, SWT.PUSH);
 	i4.setText ("I&4");
-	ToolItem i5 = new ToolItem (tb1, SWT.CHECK);
+	ToolItem_Old i5 = new ToolItem_Old (tb1, SWT.CHECK);
 	i5.setText ("I5");
 
 	Button b7 = new Button (shell, SWT.PUSH);

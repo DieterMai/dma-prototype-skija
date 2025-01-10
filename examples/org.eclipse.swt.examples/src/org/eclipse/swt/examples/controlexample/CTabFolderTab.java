@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolBar_Old;
+import org.eclipse.swt.widgets.ToolItem_Old;
 import org.eclipse.swt.widgets.Widget;
 
 class CTabFolderTab extends Tab {
@@ -65,7 +65,7 @@ class CTabFolderTab extends Tab {
 	Button simpleTabButton, singleTabButton, imageButton, showMinButton, showMaxButton,
 	topRightButton, unselectedCloseButton, unselectedImageButton;
 
-	ToolBar topRightControl;
+	ToolBar_Old topRightControl;
 
 	Button tabHeightDefault, tabHeightSmall, tabHeightMedium, tabHeightLarge;
 
@@ -477,10 +477,10 @@ class CTabFolderTab extends Tab {
 	 */
 	void setTopRight () {
 		if (topRightButton.getSelection ()) {
-			topRightControl = new ToolBar(tabFolder1, SWT.FLAT);
-			ToolItem item = new ToolItem(topRightControl, SWT.PUSH);
+			topRightControl = new ToolBar_Old(tabFolder1, SWT.FLAT);
+			ToolItem_Old item = new ToolItem_Old(topRightControl, SWT.PUSH);
 			item.setImage(instance.images[ControlExample.ciClosedFolder]);
-			item = new ToolItem(topRightControl, SWT.PUSH);
+			item = new ToolItem_Old(topRightControl, SWT.PUSH);
 			item.setImage(instance.images[ControlExample.ciOpenFolder]);
 			int topRightStyle = 0;
 			if (rightButton.getSelection ()) topRightStyle |= SWT.RIGHT;

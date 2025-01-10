@@ -56,8 +56,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolBar_Old;
+import org.eclipse.swt.widgets.ToolItem_Old;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -75,8 +75,8 @@ public class ControlsWithAccessibleNamesExample {
 	static Table table, overrideTable;
 	static Tree tree, overrideTree;
 	static Tree treeTable, overrideTreeTable;
-	static ToolBar toolBar, overrideToolBar;
-	static ToolBar imageToolBar, overrideImageToolBar;
+	static ToolBar_Old toolBar, overrideToolBar;
+	static ToolBar_Old imageToolBar, overrideImageToolBar;
 	static CoolBar coolBar, overrideCoolBar;
 	static Canvas canvas, overrideCanvas;
 	static Composite composite, overrideComposite;
@@ -325,16 +325,16 @@ public class ControlsWithAccessibleNamesExample {
 		overrideTreeTable.getAccessible().addAccessibleListener(overrideAccessibleAdapter);
 
 //		ToolBar toolBar, overrideToolBar;
-		toolBar = new ToolBar(shell, SWT.FLAT);
+		toolBar = new ToolBar_Old(shell, SWT.FLAT);
 		for (int i = 0; i < 3; i++) {
-			ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+			ToolItem_Old item = new ToolItem_Old(toolBar, SWT.PUSH);
 			item.setText("Item" + i);
 			item.setToolTipText("ToolItem ToolTip" + i);
 		}
 
-		overrideToolBar = new ToolBar(shell, SWT.FLAT);
+		overrideToolBar = new ToolBar_Old(shell, SWT.FLAT);
 		for (int i = 0; i < 3; i++) {
-			ToolItem item = new ToolItem(overrideToolBar, SWT.PUSH);
+			ToolItem_Old item = new ToolItem_Old(overrideToolBar, SWT.PUSH);
 			item.setText("Item" + i);
 			item.setToolTipText("ToolItem ToolTip" + i);
 		}
@@ -343,16 +343,16 @@ public class ControlsWithAccessibleNamesExample {
 		overrideToolBar.getAccessible().addAccessibleListener(overrideAccessibleAdapter);
 
 //		ToolBar imageToolBar, overrideImageToolBar;
-		imageToolBar = new ToolBar(shell, SWT.FLAT);
+		imageToolBar = new ToolBar_Old(shell, SWT.FLAT);
 		for (int i = 0; i < 3; i++) {
-			ToolItem item = new ToolItem(imageToolBar, SWT.PUSH);
+			ToolItem_Old item = new ToolItem_Old(imageToolBar, SWT.PUSH);
 			item.setImage(transparentImage);
 			item.setToolTipText("Image ToolItem ToolTip" + i);
 		}
 
-		overrideImageToolBar = new ToolBar(shell, SWT.FLAT);
+		overrideImageToolBar = new ToolBar_Old(shell, SWT.FLAT);
 		for (int i = 0; i < 3; i++) {
-			ToolItem item = new ToolItem(overrideImageToolBar, SWT.PUSH);
+			ToolItem_Old item = new ToolItem_Old(overrideImageToolBar, SWT.PUSH);
 			item.setImage(transparentImage);
 			item.setToolTipText("Image ToolItem ToolTip" + i);
 		}
@@ -364,10 +364,10 @@ public class ControlsWithAccessibleNamesExample {
 		coolBar = new CoolBar(shell, SWT.FLAT);
 		for (int i = 0; i < 2; i++) {
 			CoolItem coolItem = new CoolItem(coolBar, SWT.PUSH);
-			ToolBar coolItemToolBar = new ToolBar(coolBar, SWT.FLAT);
+			ToolBar_Old coolItemToolBar = new ToolBar_Old(coolBar, SWT.FLAT);
 			int toolItemWidth = 0;
 			for (int j = 0; j < 2; j++) {
-				ToolItem item = new ToolItem(coolItemToolBar, SWT.PUSH);
+				ToolItem_Old item = new ToolItem_Old(coolItemToolBar, SWT.PUSH);
 				item.setText("I" + i + j);
 				item.setToolTipText("ToolItem ToolTip" + i + j);
 				if (item.getWidth() > toolItemWidth) toolItemWidth = item.getWidth();
@@ -383,10 +383,10 @@ public class ControlsWithAccessibleNamesExample {
 		overrideCoolBar = new CoolBar(shell, SWT.FLAT);
 		for (int i = 0; i < 2; i++) {
 			CoolItem coolItem = new CoolItem(overrideCoolBar, SWT.PUSH);
-			ToolBar coolItemToolBar = new ToolBar(overrideCoolBar, SWT.FLAT);
+			ToolBar_Old coolItemToolBar = new ToolBar_Old(overrideCoolBar, SWT.FLAT);
 			int toolItemWidth = 0;
 			for (int j = 0; j < 2; j++) {
-				ToolItem item = new ToolItem(coolItemToolBar, SWT.PUSH);
+				ToolItem_Old item = new ToolItem_Old(coolItemToolBar, SWT.PUSH);
 				item.setText("I" + i + j);
 				item.setToolTipText("ToolItem ToolTip" + i + j);
 				if (item.getWidth() > toolItemWidth) toolItemWidth = item.getWidth();

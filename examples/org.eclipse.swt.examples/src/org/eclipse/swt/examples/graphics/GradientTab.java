@@ -26,16 +26,16 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolBar_Old;
+import org.eclipse.swt.widgets.ToolItem_Old;
 
 /**
  * This tab draws an image consisting of gradients of two colors.
  * */
 public class GradientTab extends GraphicsTab {
 
-	ToolBar toolBar;
-	ToolItem colorItem1, colorItem2;
+	ToolBar_Old toolBar;
+	ToolItem_Old colorItem1, colorItem2;
 	Menu menu1, menu2;
 	GraphicsBackground colorGB1, colorGB2;
 
@@ -78,7 +78,7 @@ public String getDescription() {
 public void createControlPanel(final Composite parent) {
 	final Display display = parent.getDisplay();
 
-	toolBar = new ToolBar(parent, SWT.FLAT);
+	toolBar = new ToolBar_Old(parent, SWT.FLAT);
 
 	ColorMenu colorMenu = new ColorMenu();
 
@@ -93,12 +93,12 @@ public void createControlPanel(final Composite parent) {
 	colorGB1 = (GraphicsBackground)menu1.getItem(4).getData();
 
 	// toolbar item for color1
-	colorItem1 = new ToolItem(toolBar, SWT.PUSH);
+	colorItem1 = new ToolItem_Old(toolBar, SWT.PUSH);
 	colorItem1.setText(GraphicsExample.getResourceString("GradientTabItem1"));
 	colorItem1.setImage(colorGB1.getThumbNail());
 	colorItem1.addListener(SWT.Selection, event -> {
-		final ToolItem toolItem = (ToolItem) event.widget;
-		final ToolBar  toolBar = toolItem.getParent();
+		final ToolItem_Old toolItem = (ToolItem_Old) event.widget;
+		final ToolBar_Old  toolBar = toolItem.getParent();
 		Rectangle toolItemBounds = toolItem.getBounds();
 		Point point = toolBar.toDisplay(new Point(toolItemBounds.x, toolItemBounds.y));
 		menu1.setLocation(point.x, point.y + toolItemBounds.height);
@@ -116,12 +116,12 @@ public void createControlPanel(final Composite parent) {
 	colorGB2 = (GraphicsBackground)menu2.getItem(2).getData();
 
 	// toolbar item for color2
-	colorItem2 = new ToolItem(toolBar, SWT.PUSH);
+	colorItem2 = new ToolItem_Old(toolBar, SWT.PUSH);
 	colorItem2.setText(GraphicsExample.getResourceString("GradientTabItem2"));
 	colorItem2.setImage(colorGB2.getThumbNail());
 	colorItem2.addListener(SWT.Selection, event -> {
-		final ToolItem toolItem = (ToolItem) event.widget;
-		final ToolBar  toolBar = toolItem.getParent();
+		final ToolItem_Old toolItem = (ToolItem_Old) event.widget;
+		final ToolBar_Old  toolBar = toolItem.getParent();
 		Rectangle toolItemBounds = toolItem.getBounds();
 		Point point = toolBar.toDisplay(new Point(toolItemBounds.x, toolItemBounds.y));
 		menu2.setLocation(point.x, point.y + toolItemBounds.height);
@@ -129,7 +129,7 @@ public void createControlPanel(final Composite parent) {
 	});
 
 	// toolbar item for swapping colors
-	ToolItem swapItem = new ToolItem(toolBar, SWT.PUSH);
+	ToolItem_Old swapItem = new ToolItem_Old(toolBar, SWT.PUSH);
 	swapItem.setText(GraphicsExample.getResourceString("SwapColors")); //$NON-NLS-1$
 	swapItem.setImage(example.loadImage(display, "swap.gif"));
 	swapItem.addListener(SWT.Selection, event -> {

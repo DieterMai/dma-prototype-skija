@@ -33,14 +33,14 @@ public static void main(String[] args) {
 	RowLayout layout = new RowLayout(SWT.VERTICAL);
 	layout.fill = true;
 	shell.setLayout(layout);
-	ToolBar bar = new ToolBar(shell, SWT.BORDER);
+	ToolBar_Old bar = new ToolBar_Old(shell, SWT.BORDER);
 	Label statusLine = new Label(shell, SWT.BORDER);
-	ToolItem toggle = new ToolItem(bar, SWT.CHECK);
+	ToolItem_Old toggle = new ToolItem_Old(bar, SWT.CHECK);
 	toggle.setText("Toggle Bar Colors");
-	new ToolItem(bar, SWT.SEPARATOR);
-	new ToolItem(bar, SWT.PUSH).setText("Push Button");
-	new ToolItem(bar, SWT.CHECK).setText("Check Button");
-	new ToolItem(bar, SWT.DROP_DOWN).setText("Drop Down");
+	new ToolItem_Old(bar, SWT.SEPARATOR);
+	new ToolItem_Old(bar, SWT.PUSH).setText("Push Button");
+	new ToolItem_Old(bar, SWT.CHECK).setText("Check Button");
+	new ToolItem_Old(bar, SWT.DROP_DOWN).setText("Drop Down");
 
 	toggle.addListener(SWT.Selection, event -> {
 		if (toggle.getSelection()) {
@@ -53,7 +53,7 @@ public static void main(String[] args) {
 	});
 
 	Listener barListener = new Listener() {
-		ToolItem item;
+		ToolItem_Old item;
 		String statusText = "";
 
 		@Override

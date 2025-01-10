@@ -29,9 +29,9 @@ public static void main (String [] args) {
 	Display display = new Display();
 	Shell shell = new Shell (display);
 	shell.setText("Snippet 18");
-	ToolBar bar = new ToolBar (shell, SWT.BORDER);
+	ToolBar_Old bar = new ToolBar_Old (shell, SWT.BORDER);
 	for (int i=0; i<8; i++) {
-		ToolItem item = new ToolItem (bar, SWT.PUSH);
+		ToolItem_Old item = new ToolItem_Old (bar, SWT.PUSH);
 		item.setText ("Item " + i);
 	}
 	Rectangle clientArea = shell.getClientArea ();

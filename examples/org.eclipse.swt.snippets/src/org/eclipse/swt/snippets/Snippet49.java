@@ -29,9 +29,9 @@ public static void main (String [] args) {
 	Display display = new Display ();
 	final Shell shell = new Shell (display);
 	shell.setText("Snippet 49");
-	final ToolBar toolBar = new ToolBar (shell, SWT.WRAP);
+	final ToolBar_Old toolBar = new ToolBar_Old (shell, SWT.WRAP);
 	for (int i=0; i<12; i++) {
-		ToolItem item = new ToolItem (toolBar, SWT.PUSH);
+		ToolItem_Old item = new ToolItem_Old (toolBar, SWT.PUSH);
 		item.setText ("Item " + i);
 	}
 	shell.addListener (SWT.Resize, e -> {

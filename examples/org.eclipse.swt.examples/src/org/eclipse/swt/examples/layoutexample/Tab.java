@@ -54,8 +54,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolBar_Old;
+import org.eclipse.swt.widgets.ToolItem_Old;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -88,7 +88,7 @@ abstract class Tab {
 	/* Common controls for modifying the example layout */
 	String [] names;
 	Control [] children;
-	ToolItem add, delete, clear, code;
+	ToolItem_Old add, delete, clear, code;
 	int prevSelected = 0;
 	/* Common values for working with TableEditors */
 	Table table;
@@ -130,14 +130,14 @@ abstract class Tab {
 		childGroup.setLayout(new GridLayout ());
 		childGroup.setLayoutData(new GridData (SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-		ToolBar toolBar = new ToolBar(childGroup, SWT.FLAT);
+		ToolBar_Old toolBar = new ToolBar_Old(childGroup, SWT.FLAT);
 		toolBar.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
-		add = new ToolItem(toolBar, SWT.DROP_DOWN);
+		add = new ToolItem_Old(toolBar, SWT.DROP_DOWN);
 		add.setText(LayoutExample.getResourceString("Add"));
 		add.addSelectionListener (widgetSelectedAdapter(event -> {
 			if (event.detail == SWT.ARROW) {
-				ToolItem item = (ToolItem)event.widget;
-				ToolBar bar = item.getParent ();
+				ToolItem_Old item = (ToolItem_Old)event.widget;
+				ToolBar_Old bar = item.getParent ();
 				final Menu menu = new Menu (shell, SWT.POP_UP);
 				for (int i = 0; i < OPTIONS.length; i++) {
 					final MenuItem newItem = new MenuItem (menu, SWT.RADIO);
@@ -183,9 +183,9 @@ abstract class Tab {
 			}
 		}));
 
-		new ToolItem(toolBar,SWT.SEPARATOR);
+		new ToolItem_Old(toolBar,SWT.SEPARATOR);
 
-		delete = new ToolItem(toolBar, SWT.PUSH);
+		delete = new ToolItem_Old(toolBar, SWT.PUSH);
 		delete.setText (LayoutExample.getResourceString ("Delete"));
 		delete.addSelectionListener (widgetSelectedAdapter(e -> {
 			resetEditors ();
@@ -201,8 +201,8 @@ abstract class Tab {
 			layoutGroup.layout (true);
 		}));
 
-		new ToolItem(toolBar,SWT.SEPARATOR);
-		clear = new ToolItem(toolBar, SWT.PUSH);
+		new ToolItem_Old(toolBar,SWT.SEPARATOR);
+		clear = new ToolItem_Old(toolBar, SWT.PUSH);
 		clear.setText (LayoutExample.getResourceString ("Clear"));
 		clear.addSelectionListener (widgetSelectedAdapter(e -> {
 			resetEditors ();
@@ -217,8 +217,8 @@ abstract class Tab {
 		}));
 		toolBar.pack();
 
-		new ToolItem (toolBar,SWT.SEPARATOR);
-		code = new ToolItem (toolBar, SWT.PUSH);
+		new ToolItem_Old (toolBar,SWT.SEPARATOR);
+		code = new ToolItem_Old (toolBar, SWT.PUSH);
 		code.setText (LayoutExample.getResourceString ("Generate_Code"));
 		code.addSelectionListener(widgetSelectedAdapter(e -> {
 			final Shell shell = new Shell();
@@ -644,17 +644,17 @@ abstract class Tab {
 				children [i] = composite;
 			} else if (control.equals ("CoolBar")) {
 				CoolBar coolBar = new CoolBar (layoutComposite, SWT.NONE);
-				ToolBar toolBar = new ToolBar (coolBar, SWT.BORDER);
-				ToolItem item = new ToolItem (toolBar, 0);
+				ToolBar_Old toolBar = new ToolBar_Old (coolBar, SWT.BORDER);
+				ToolItem_Old item = new ToolItem_Old (toolBar, 0);
 				item.setText (LayoutExample.getResourceString ("Item",new String [] {"1"}));
-				item = new ToolItem (toolBar, 0);
+				item = new ToolItem_Old (toolBar, 0);
 				item.setText (LayoutExample.getResourceString ("Item",new String [] {"2"}));
 				CoolItem coolItem1 = new CoolItem (coolBar, 0);
 				coolItem1.setControl (toolBar);
-				toolBar = new ToolBar (coolBar, SWT.BORDER);
-				item = new ToolItem (toolBar, 0);
+				toolBar = new ToolBar_Old (coolBar, SWT.BORDER);
+				item = new ToolItem_Old (toolBar, 0);
 				item.setText (LayoutExample.getResourceString ("Item",new String [] {"3"}));
-				item = new ToolItem (toolBar, 0);
+				item = new ToolItem_Old (toolBar, 0);
 				item.setText (LayoutExample.getResourceString ("Item",new String [] {"4"}));
 				CoolItem coolItem2 = new CoolItem (coolBar, 0);
 				coolItem2.setControl (toolBar);
@@ -706,10 +706,10 @@ abstract class Tab {
 				text.setText (controlName);
 				children [i] = text;
 			} else if (control.equals ("ToolBar")) {
-				ToolBar toolBar = new ToolBar (layoutComposite, SWT.BORDER);
-				ToolItem item1 = new ToolItem (toolBar, 0);
+				ToolBar_Old toolBar = new ToolBar_Old (layoutComposite, SWT.BORDER);
+				ToolItem_Old item1 = new ToolItem_Old (toolBar, 0);
 				item1.setText (LayoutExample.getResourceString ("Item",new String [] {"1"}));
-				ToolItem item2 = new ToolItem (toolBar, 0);
+				ToolItem_Old item2 = new ToolItem_Old (toolBar, 0);
 				item2.setText (LayoutExample.getResourceString ("Item",new String [] {"2"}));
 				children [i] = toolBar;
 			} else {

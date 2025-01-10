@@ -72,8 +72,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolBar_Old;
+import org.eclipse.swt.widgets.ToolItem_Old;
 
 public class TextEditor {
 	Display display;
@@ -81,7 +81,7 @@ public class TextEditor {
 	CoolBar coolBar;
 	StyledText styledText;
 	Label statusBar;
-	ToolItem boldControl, italicControl, leftAlignmentItem, centerAlignmentItem, rightAlignmentItem, justifyAlignmentItem, blockSelectionItem;
+	ToolItem_Old boldControl, italicControl, leftAlignmentItem, centerAlignmentItem, rightAlignmentItem, justifyAlignmentItem, blockSelectionItem;
 	Combo fontNameControl, fontSizeControl;
 	MenuItem underlineSingleItem, underlineDoubleItem, underlineErrorItem, underlineSquiggleItem, borderSolidItem, borderDashItem, borderDotItem;
 
@@ -502,13 +502,13 @@ public class TextEditor {
 
 	void createToolBar() {
 		coolBar = new CoolBar(shell, SWT.FLAT);
-		ToolBar styleToolBar = new ToolBar(coolBar, SWT.FLAT);
-		boldControl = new ToolItem(styleToolBar, SWT.CHECK);
+		ToolBar_Old styleToolBar = new ToolBar_Old(coolBar, SWT.FLAT);
+		boldControl = new ToolItem_Old(styleToolBar, SWT.CHECK);
 		boldControl.setImage(iBold);
 		boldControl.setToolTipText(getResourceString("Bold")); //$NON-NLS-1$
 		boldControl.addSelectionListener(widgetSelectedAdapter(event -> setStyle(BOLD)));
 
-		italicControl = new ToolItem(styleToolBar, SWT.CHECK);
+		italicControl = new ToolItem_Old(styleToolBar, SWT.CHECK);
 		italicControl.setImage(iItalic);
 		italicControl.setToolTipText(getResourceString("Italic")); //$NON-NLS-1$
 		italicControl.addSelectionListener(widgetSelectedAdapter(event -> setStyle(ITALIC)));
@@ -565,7 +565,7 @@ public class TextEditor {
 			}
 		}));
 
-		final ToolItem underlineControl = new ToolItem(styleToolBar, SWT.DROP_DOWN);
+		final ToolItem_Old underlineControl = new ToolItem_Old(styleToolBar, SWT.DROP_DOWN);
 		underlineControl.setImage(iUnderline);
 		underlineControl.setToolTipText(getResourceString("Underline")); //$NON-NLS-1$
 		underlineControl.addSelectionListener(widgetSelectedAdapter(event -> {
@@ -582,7 +582,7 @@ public class TextEditor {
 			}
 		}));
 
-		ToolItem strikeoutControl = new ToolItem(styleToolBar, SWT.DROP_DOWN);
+		ToolItem_Old strikeoutControl = new ToolItem_Old(styleToolBar, SWT.DROP_DOWN);
 		strikeoutControl.setImage(iStrikeout);
 		strikeoutControl.setToolTipText(getResourceString("Strikeout")); //$NON-NLS-1$
 		strikeoutControl.addSelectionListener(widgetSelectedAdapter(event -> {
@@ -642,7 +642,7 @@ public class TextEditor {
 			}
 		}));
 
-		final ToolItem borderControl = new ToolItem(styleToolBar, SWT.DROP_DOWN);
+		final ToolItem_Old borderControl = new ToolItem_Old(styleToolBar, SWT.DROP_DOWN);
 		borderControl.setImage(iBorderStyle);
 		borderControl.setToolTipText(getResourceString("Box")); //$NON-NLS-1$
 		borderControl.addSelectionListener(widgetSelectedAdapter(event -> {
@@ -658,7 +658,7 @@ public class TextEditor {
 			}
 		}));
 
-		ToolItem foregroundItem = new ToolItem(styleToolBar, SWT.DROP_DOWN);
+		ToolItem_Old foregroundItem = new ToolItem_Old(styleToolBar, SWT.DROP_DOWN);
 		foregroundItem.setImage(iTextForeground);
 		foregroundItem.setToolTipText(getResourceString("TextForeground")); //$NON-NLS-1$
 		foregroundItem.addSelectionListener(widgetSelectedAdapter(event -> {
@@ -675,7 +675,7 @@ public class TextEditor {
 			setStyle(FOREGROUND);
 		}));
 
-		ToolItem backgroundItem = new ToolItem(styleToolBar, SWT.DROP_DOWN);
+		ToolItem_Old backgroundItem = new ToolItem_Old(styleToolBar, SWT.DROP_DOWN);
 		backgroundItem.setImage(iTextBackground);
 		backgroundItem.setToolTipText(getResourceString("TextBackground")); //$NON-NLS-1$
 		backgroundItem.addSelectionListener(widgetSelectedAdapter(event -> {
@@ -692,7 +692,7 @@ public class TextEditor {
 			setStyle(BACKGROUND);
 		}));
 
-		ToolItem baselineUpItem = new ToolItem(styleToolBar, SWT.PUSH);
+		ToolItem_Old baselineUpItem = new ToolItem_Old(styleToolBar, SWT.PUSH);
 		baselineUpItem.setImage(iBaselineUp);
 		String tooltip = "IncreaseFont"; //$NON-NLS-1$
 		if (USE_BASELINE) tooltip = "IncreaseBaseline"; //$NON-NLS-1$
@@ -705,7 +705,7 @@ public class TextEditor {
 			}
 		}));
 
-		ToolItem baselineDownItem = new ToolItem(styleToolBar, SWT.PUSH);
+		ToolItem_Old baselineDownItem = new ToolItem_Old(styleToolBar, SWT.PUSH);
 		baselineDownItem.setImage(iBaselineDown);
 		tooltip = "DecreaseFont"; //$NON-NLS-1$
 		if (USE_BASELINE) tooltip = "DecreaseBaseline"; //$NON-NLS-1$
@@ -717,7 +717,7 @@ public class TextEditor {
 				adjustFontSize(-1);
 			}
 		}));
-		ToolItem linkItem = new ToolItem(styleToolBar, SWT.PUSH);
+		ToolItem_Old linkItem = new ToolItem_Old(styleToolBar, SWT.PUSH);
 		linkItem.setImage(iLink);
 		linkItem.setToolTipText(getResourceString("Link")); //$NON-NLS-1$
 		linkItem.addSelectionListener(widgetSelectedAdapter(event -> setLink()));
@@ -747,13 +747,13 @@ public class TextEditor {
 		coolItem = new CoolItem(coolBar, SWT.NONE);
 		coolItem.setControl(composite);
 
-		ToolBar alignmentToolBar = new ToolBar(coolBar, SWT.FLAT);
-		blockSelectionItem = new ToolItem(alignmentToolBar, SWT.CHECK);
+		ToolBar_Old alignmentToolBar = new ToolBar_Old(coolBar, SWT.FLAT);
+		blockSelectionItem = new ToolItem_Old(alignmentToolBar, SWT.CHECK);
 		blockSelectionItem.setImage(iBlockSelection);
 		blockSelectionItem.setToolTipText(getResourceString("BlockSelection")); //$NON-NLS-1$
 		blockSelectionItem.addSelectionListener(widgetSelectedAdapter(event -> styledText.invokeAction(ST.TOGGLE_BLOCKSELECTION)));
 
-		leftAlignmentItem = new ToolItem(alignmentToolBar, SWT.RADIO);
+		leftAlignmentItem = new ToolItem_Old(alignmentToolBar, SWT.RADIO);
 		leftAlignmentItem.setImage(iLeftAlignment);
 		leftAlignmentItem.setToolTipText(getResourceString("AlignLeft")); //$NON-NLS-1$
 		leftAlignmentItem.setSelection(true);
@@ -765,7 +765,7 @@ public class TextEditor {
 		}));
 		leftAlignmentItem.setEnabled(false);
 
-		centerAlignmentItem = new ToolItem(alignmentToolBar, SWT.RADIO);
+		centerAlignmentItem = new ToolItem_Old(alignmentToolBar, SWT.RADIO);
 		centerAlignmentItem.setImage(iCenterAlignment);
 		centerAlignmentItem.setToolTipText(getResourceString("Center_menuitem")); //$NON-NLS-1$
 		centerAlignmentItem.addSelectionListener(widgetSelectedAdapter(event -> {
@@ -776,7 +776,7 @@ public class TextEditor {
 		}));
 		centerAlignmentItem.setEnabled(false);
 
-		rightAlignmentItem = new ToolItem(alignmentToolBar, SWT.RADIO);
+		rightAlignmentItem = new ToolItem_Old(alignmentToolBar, SWT.RADIO);
 		rightAlignmentItem.setImage(iRightAlignment);
 		rightAlignmentItem.setToolTipText(getResourceString("AlignRight")); //$NON-NLS-1$
 		rightAlignmentItem.addSelectionListener(widgetSelectedAdapter(event -> {
@@ -787,7 +787,7 @@ public class TextEditor {
 		}));
 		rightAlignmentItem.setEnabled(false);
 
-		justifyAlignmentItem = new ToolItem(alignmentToolBar, SWT.CHECK);
+		justifyAlignmentItem = new ToolItem_Old(alignmentToolBar, SWT.CHECK);
 		justifyAlignmentItem.setImage(iJustifyAlignment);
 		justifyAlignmentItem.setToolTipText(getResourceString("Justify")); //$NON-NLS-1$
 		justifyAlignmentItem.addSelectionListener(widgetSelectedAdapter(event -> {
@@ -798,12 +798,12 @@ public class TextEditor {
 		}));
 		justifyAlignmentItem.setEnabled(false);
 
-		ToolItem bulletListItem = new ToolItem(alignmentToolBar, SWT.PUSH);
+		ToolItem_Old bulletListItem = new ToolItem_Old(alignmentToolBar, SWT.PUSH);
 		bulletListItem.setImage(iBulletList);
 		bulletListItem.setToolTipText(getResourceString("BulletList")); //$NON-NLS-1$
 		bulletListItem.addSelectionListener(widgetSelectedAdapter(event -> setBullet(ST.BULLET_DOT)));
 
-		ToolItem numberedListItem = new ToolItem(alignmentToolBar, SWT.PUSH);
+		ToolItem_Old numberedListItem = new ToolItem_Old(alignmentToolBar, SWT.PUSH);
 		numberedListItem.setImage(iNumberedList);
 		numberedListItem.setToolTipText(getResourceString("NumberedList")); //$NON-NLS-1$
 		numberedListItem.addSelectionListener(widgetSelectedAdapter(event -> setBullet(ST.BULLET_NUMBER | ST.BULLET_TEXT)));

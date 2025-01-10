@@ -35,12 +35,12 @@ public static void main (String [] args) {
 	gc.dispose ();
 	Shell shell = new Shell (display);
 	shell.setText("Snippet 36");
-	ToolBar toolBar = new ToolBar (shell, SWT.FLAT | SWT.BORDER);
+	ToolBar_Old toolBar = new ToolBar_Old (shell, SWT.FLAT | SWT.BORDER);
 	Rectangle clientArea = shell.getClientArea ();
 	toolBar.setLocation (clientArea.x, clientArea.y);
 	for (int i=0; i<12; i++) {
 		int style = i % 3 == 2 ? SWT.DROP_DOWN : SWT.PUSH;
-		ToolItem item = new ToolItem (toolBar, style);
+		ToolItem_Old item = new ToolItem_Old (toolBar, style);
 		item.setImage (image);
 	}
 	toolBar.pack ();

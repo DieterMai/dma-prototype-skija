@@ -35,7 +35,7 @@ public class Snippet288 {
 	static ImageData[][] imageDataArray;
 	static Thread animateThread[];
 	static Image[][] image;
-	private static ToolItem item[];
+	private static ToolItem_Old item[];
 	static final boolean useGIFBackground = false;
 
 	public static void main (String [] args) {
@@ -56,10 +56,10 @@ public class Snippet288 {
 				System.err.println("There was an error loading an image.");
 				e.printStackTrace();
 			}
-			ToolBar toolBar = new ToolBar (shell, SWT.FLAT | SWT.BORDER | SWT.WRAP);
-			item = new ToolItem[numToolBarItems];
+			ToolBar_Old toolBar = new ToolBar_Old (shell, SWT.FLAT | SWT.BORDER | SWT.WRAP);
+			item = new ToolItem_Old[numToolBarItems];
 			for (int i = 0; i < numToolBarItems; i++) {
-				item[i] = new ToolItem (toolBar, SWT.PUSH);
+				item[i] = new ToolItem_Old (toolBar, SWT.PUSH);
 				item[i].setImage(image[i][0]);
 			}
 			toolBar.pack ();

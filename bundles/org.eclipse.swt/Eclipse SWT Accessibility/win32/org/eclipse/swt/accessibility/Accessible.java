@@ -83,7 +83,7 @@ public class Accessible {
 	int [] tableChange; // type, rowStart, rowCount, columnStart, columnCount
 	Object [] textDeleted; // type, start, end, text
 	Object [] textInserted; // type, start, end, text
-	ToolItem item;
+	ToolItem_Old item;
 
 	static {
 		String property = System.getProperty (PROPERTY_USEIA2);
@@ -2121,9 +2121,9 @@ public class Accessible {
 			/* Get the default child from the OS. */
 			code = iaccessible.get_accChild(varChild, ppdispChild);
 			if (code == COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
-			if (code == COM.S_OK && control instanceof ToolBar) {
-				ToolBar toolBar = (ToolBar) control;
-				final ToolItem item = toolBar.getItem(childID);
+			if (code == COM.S_OK && control instanceof ToolBar_Old) {
+				ToolBar_Old toolBar = (ToolBar_Old) control;
+				final ToolItem_Old item = toolBar.getItem(childID);
 				if (item != null && (item.getStyle() & SWT.DROP_DOWN) != 0) {
 					long[] addr = new long[1];
 					OS.MoveMemory(addr, ppdispChild, C.PTR_SIZEOF);

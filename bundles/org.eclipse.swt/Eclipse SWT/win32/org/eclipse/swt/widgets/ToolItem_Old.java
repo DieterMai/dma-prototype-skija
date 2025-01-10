@@ -40,8 +40,8 @@ import org.eclipse.swt.internal.win32.*;
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class ToolItem extends Item {
-	ToolBar parent;
+public class ToolItem_Old extends Item {
+	ToolBar_Old parent;
 	Control control;
 	String toolTipText;
 	Image disabledImage, hotImage;
@@ -84,7 +84,7 @@ public class ToolItem extends Item {
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public ToolItem (ToolBar parent, int style) {
+public ToolItem_Old (ToolBar_Old parent, int style) {
 	super (parent, checkStyle (style));
 	this.parent = parent;
 	parent.createItem (this, parent.getItemCount ());
@@ -126,7 +126,7 @@ public ToolItem (ToolBar parent, int style) {
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public ToolItem (ToolBar parent, int style, int index) {
+public ToolItem_Old (ToolBar_Old parent, int style, int index) {
 	super (parent, checkStyle (style));
 	this.parent = parent;
 	parent.createItem (this, index);
@@ -391,7 +391,7 @@ public Image getImage () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public ToolBar getParent () {
+public ToolBar_Old getParent () {
 	checkWidget();
 	return parent;
 }
@@ -480,16 +480,16 @@ public boolean isEnabled () {
 }
 
 boolean isTabGroup () {
-	ToolItem [] tabList = parent._getTabItemList ();
+	ToolItem_Old [] tabList = parent._getTabItemList ();
 	if (tabList != null) {
-		for (ToolItem item : tabList) {
+		for (ToolItem_Old item : tabList) {
 			if (item == this) return true;
 		}
 	}
 	if ((style & SWT.SEPARATOR) != 0) return true;
 	int index = parent.indexOf (this);
 	if (index == 0) return true;
-	ToolItem previous = parent.getItem (index - 1);
+	ToolItem_Old previous = parent.getItem (index - 1);
 	return (previous.getStyle () & SWT.SEPARATOR) != 0;
 }
 
@@ -590,7 +590,7 @@ void resizeControl () {
 
 void selectRadio () {
 	int index = 0;
-	ToolItem [] items = parent.getItems ();
+	ToolItem_Old [] items = parent.getItems ();
 	while (index < items.length && items [index] != this) index++;
 	int i = index - 1;
 	while (i >= 0 && items [i].setRadioSelection (false)) --i;
