@@ -56,6 +56,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 	private Listener listener;
 
 	private final IToolBarRenderer renderer;
+	private final boolean flat;
 
 	private Point size = new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
@@ -137,11 +138,17 @@ public class ToolBar extends Composite implements ICustomWidget {
 //		addListener(SWT.MouseVerticalWheel, listener);
 		addListener(SWT.Paint, listener);
 
+		flat = (style & SWT.FLAT) == SWT.FLAT;
+
 		renderer = new ToolBarRenderer(this); // TODO move up before listener?
 	}
 
 	static int checkStyle(int style) {
 		return style & ~(SWT.H_SCROLL | SWT.V_SCROLL);
+	}
+
+	public boolean isFlat() {
+		return flat;
 	}
 
 	private void onPaint(Event event) {
