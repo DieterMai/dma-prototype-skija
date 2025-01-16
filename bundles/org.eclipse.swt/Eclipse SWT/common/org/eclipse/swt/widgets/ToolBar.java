@@ -51,16 +51,15 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ToolBar extends Composite implements ICustomWidget {
-	private static final int DEFAULT_WIDTH = 24;
-	private static final int DEFAULT_HEIGHT = 22;
-
 	private java.util.List<ToolItem> items = new ArrayList<>();
 
 	private Listener listener;
 
 	private final IToolBarRenderer renderer;
 
-	public interface IToolBarRenderer {
+	private Point size = new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+	public static interface IToolBarRenderer {
 
 		/**
 		 * Renders the handle.
@@ -69,6 +68,10 @@ public class ToolBar extends Composite implements ICustomWidget {
 		 * @param bounds
 		 */
 		void render(GC gc, Rectangle bounds);
+
+		int computeWidth();
+
+		int computeHeight();
 	}
 
 	/**
@@ -134,7 +137,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 //		addListener(SWT.MouseVerticalWheel, listener);
 		addListener(SWT.Paint, listener);
 
-		renderer = new ToolBarRenderer(this);
+		renderer = new ToolBarRenderer(this); // TODO move up before listener?
 	}
 
 	static int checkStyle(int style) {
@@ -168,8 +171,13 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	@Override
 	Point computeSizeInPixels(int wHint, int hHint, boolean changed) {
-		NOT_IMPLEMENTED();
-		return new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		int computedWidth;
+		int computedHeight;
+
+		computedWidth = (wHint == SWT.DEFAULT) ? renderer.computeWidth() : wHint;
+		computedHeight = (hHint == SWT.DEFAULT) ? renderer.computeHeight() : hHint;
+
+		return size = new Point(computedWidth, computedHeight);
 	}
 
 	@Override
@@ -191,7 +199,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 	}
 
 	void createItem(ToolItem item, int index) {
-		NOT_IMPLEMENTED();
+		items.add(index, item);
 	}
 
 	@Override
@@ -223,6 +231,10 @@ public class ToolBar extends Composite implements ICustomWidget {
 	 */
 	public ToolItem getItem(int index) {
 		return items.get(index);
+	}
+
+	public int getItemIndex(ToolItem item) {
+		return items.indexOf(item);
 	}
 
 	/**
@@ -397,6 +409,8 @@ public class ToolBar extends Composite implements ICustomWidget {
 	@Override
 	void setBoundsInPixels(int x, int y, int width, int height, int flags) {
 		NOT_IMPLEMENTED();
+		Rectangle newBounds = new Rectangle(x, y, width, height);
+		System.out.println("ToolBar.setBoundsInPixels() " + newBounds);
 		super.setBoundsInPixels(x, y, width, height, flags);
 	}
 

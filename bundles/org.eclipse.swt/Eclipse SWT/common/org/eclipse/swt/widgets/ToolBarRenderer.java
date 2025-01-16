@@ -5,6 +5,9 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.ToolBar.IToolBarRenderer;
 
 class ToolBarRenderer implements IToolBarRenderer {
+	private static final int DEFAULT_WIDTH = 24;
+	private static final int DEFAULT_HEIGHT = 22;
+
 	private static Color background;
 
 	private final ToolBar toolbar;
@@ -57,7 +60,78 @@ class ToolBarRenderer implements IToolBarRenderer {
 	}
 
 	private void renderToolbar(IGraphicsContext gc, int x, int y, int w, int h) {
+		// just to see where the widget is
 		gc.setForeground(toolbar.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
-		gc.drawRectangle(new Rectangle(x, y, w, h));
+		gc.fillRectangle(x, y, w, h);
+
+		int nextPos = 3;
+		for (int i = 0; i < toolbar.getItemCount(); i++) {
+			System.out.println("ToolBarRenderer.renderToolbar() render item " + i);
+			ToolItem item = toolbar.getItem(i);
+			int width = switch(item.getStyleType()) {
+			case SWT.CHECK -> drawSimpleItem(gc, item, nextPos);
+			case SWT.PUSH -> drawSimpleItem(gc, item, nextPos);
+			case SWT.RADIO -> drawSimpleItem(gc, item, nextPos);
+			case SWT.SEPARATOR -> drawSeparatorItem(gc, item, nextPos);
+			case SWT.DROP_DOWN -> drawDropDown(gc, item, nextPos);
+			default -> 0;
+			};
+
+			nextPos += width + 7;
+
+		}
+	}
+
+	private int drawSimpleItem(IGraphicsContext gc, ToolItem item, int position) {
+		Image image = item.getImage();
+		if (image != null) {
+			gc.drawImage(image, position, 0);
+
+			Rectangle imageBounds = image.getBounds();
+			return imageBounds.width;
+		} else {
+			return 0; // TODO
+		}
+	}
+
+	private int drawSeparatorItem(IGraphicsContext gc, ToolItem item, int position) {
+		return 2;
+	}
+
+	private int drawDropDown(IGraphicsContext gc, ToolItem item, int position) {
+		int width = 0;
+		Image image = item.getImage();
+		if (image != null) {
+			gc.drawImage(image, position, 0);
+
+			Rectangle imageBounds = image.getBounds();
+			width = imageBounds.width;
+		}
+
+		Point topLeft = new Point(position + width + 7, 5);
+		Point topRight = new Point(topLeft.x + 8, topLeft.y);
+		Point bottom = new Point(topLeft.x + 3, topLeft.y + 4);
+
+//		gc.setForeground(toolbar.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+		gc.setBackground(toolbar.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+
+		gc.fillPolygon(new int[] { topLeft.x, topLeft.y, topRight.x, topRight.y, bottom.x, bottom.y });
+//		gc.drawPolygon(new int[] { topLeft.x, topLeft.y, topRight.x, topRight.y, bottom.x, bottom.y });
+
+		return width;
+	}
+
+	@Override
+	public int computeWidth() {
+		int totalWidth = 0;
+		for (int i = 0; i < toolbar.getItemCount(); i++) {
+			totalWidth += toolbar.getItem(i).getWidth();
+		}
+		return totalWidth + 100; // TODO
+	}
+
+	@Override
+	public int computeHeight() {
+		return DEFAULT_HEIGHT;
 	}
 }

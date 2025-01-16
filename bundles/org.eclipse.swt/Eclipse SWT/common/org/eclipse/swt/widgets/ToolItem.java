@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.*;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -91,9 +93,7 @@ public class ToolItem extends Item {
 	 * @see Widget#getStyle
 	 */
 	public ToolItem(ToolBar parent, int style) {
-		super(parent, checkStyle(style));
-		this.parent = parent;
-		parent.createItem(this, parent.getItemCount());
+		this(parent, checkStyle(style), parent.getItemCount());
 	}
 
 	/**
@@ -144,6 +144,8 @@ public class ToolItem extends Item {
 		this.parent = parent;
 		parent.createItem(this, index);
 	}
+
+
 
 	/**
 	 * Adds the listener to the collection of listeners who will be notified when
@@ -368,7 +370,6 @@ public class ToolItem extends Item {
 	@Override
 	public Image getImage() {
 		checkWidget();
-		NOT_IMPLEMENTED();
 		return super.getImage();
 	}
 
@@ -448,8 +449,12 @@ public class ToolItem extends Item {
 	 */
 	public int getWidth() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return DEFAULT_WIDTH;
+		// TODO this should be calculated by the renderer
+		if (image != null) {
+			return image.getBounds().width;
+		} else {
+			return 20;
+		}
 	}
 
 	/**
@@ -769,6 +774,10 @@ public class ToolItem extends Item {
 	public void setWidth(int width) {
 		checkWidget();
 		NOT_IMPLEMENTED();
+	}
+
+	int getStyleType() {
+		return style & (SWT.CHECK | SWT.PUSH | SWT.RADIO | SWT.SEPARATOR | SWT.DROP_DOWN);
 	}
 
 	private void NOT_IMPLEMENTED() {
