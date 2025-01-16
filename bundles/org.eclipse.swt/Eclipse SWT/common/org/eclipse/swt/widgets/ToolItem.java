@@ -41,14 +41,14 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ToolItem extends Item {
+	private static final int DEFAULT_WIDTH = 20;
+	private static final int DEFAULT_HEIGHT = 20;
+
 	private ToolBar parent;
 	private Control control;
 	private String toolTipText;
 	private Image disabledImage;
 	private Image hotImage;
-
-	private static final int DEFAULT_WIDTH = 20;
-	private static final int DEFAULT_HEIGHT = 20;
 
 	/**
 	 * Constructs a new instance of this class given its parent (which must be a

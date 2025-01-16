@@ -50,11 +50,26 @@ import org.eclipse.swt.graphics.*;
  *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class ToolBar extends Composite {
-	private java.util.List<ToolItem> items = new ArrayList<>();
-
+public class ToolBar extends Composite implements ICustomWidget {
 	private static final int DEFAULT_WIDTH = 24;
 	private static final int DEFAULT_HEIGHT = 22;
+
+	private java.util.List<ToolItem> items = new ArrayList<>();
+
+	private Listener listener;
+
+	private final IToolBarRenderer renderer;
+
+	public interface IToolBarRenderer {
+
+		/**
+		 * Renders the handle.
+		 *
+		 * @param gc
+		 * @param bounds
+		 */
+		void render(GC gc, Rectangle bounds);
+	}
 
 	/**
 	 * Constructs a new instance of this class given its parent and a style value
@@ -97,11 +112,59 @@ public class ToolBar extends Composite {
 	 */
 	public ToolBar(Composite parent, int style) {
 		super(parent, checkStyle(style));
+
+		listener = event -> {
+			switch (event.type) {
+//			case SWT.KeyDown -> onKeyDown(event);
+//			case SWT.MouseDown -> onMouseDown(event);
+//			case SWT.MouseMove -> onMouseMove(event);
+//			case SWT.MouseUp -> onMouseUp(event);
+//			case SWT.MouseHorizontalWheel -> onMouseHorizontalWheel(event);
+//			case SWT.MouseVerticalWheel -> onMouseVerticalWheel(event);
+			case SWT.Paint -> onPaint(event);
+
+			}
+		};
+
+//		addListener(SWT.KeyDown, listener);
+//		addListener(SWT.MouseDown, listener);
+//		addListener(SWT.MouseMove, listener);
+//		addListener(SWT.MouseUp, listener);
+//		addListener(SWT.MouseHorizontalWheel, listener);
+//		addListener(SWT.MouseVerticalWheel, listener);
+		addListener(SWT.Paint, listener);
+
+		renderer = new ToolBarRenderer(this);
 	}
 
 	static int checkStyle(int style) {
 		return style & ~(SWT.H_SCROLL | SWT.V_SCROLL);
 	}
+
+	private void onPaint(Event event) {
+		System.out.println("ToolBar.onPaint()");
+		if (!isVisible()) {
+			return;
+		}
+
+		try {
+			event.gc = Objects.requireNonNullElseGet(event.gc, () -> new GC(this));
+			doPaint(event);
+		} finally {
+			event.gc.dispose();
+		}
+	}
+
+	private void doPaint(Event e) {
+		Rectangle bounds = getBounds();
+		if (bounds.width == 0 && bounds.height == 0) {
+			return;
+		}
+
+		renderer.render(e.gc, bounds);
+	}
+
+
 
 	@Override
 	Point computeSizeInPixels(int wHint, int hHint, boolean changed) {
