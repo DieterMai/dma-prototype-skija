@@ -210,13 +210,13 @@ class ToolBarTab extends Tab {
 	private void createTxtToolBarOld(int style) {
 		textToolBar = new ToolBar_Old (textToolBarGroup, style);
 		ToolItem_Old item = new ToolItem_Old (textToolBar, SWT.PUSH);
-		item.setText (ControlExample.getResourceString("Push"));
+		item.setText (ControlExample.getResourceString("PushBlaBlub"));
 		item.setToolTipText("SWT.PUSH");
 		item = new ToolItem_Old (textToolBar, SWT.PUSH);
 		item.setText (ControlExample.getResourceString("Push"));
 		item.setToolTipText("SWT.PUSH");
 		item = new ToolItem_Old (textToolBar, SWT.RADIO);
-		item.setText (ControlExample.getResourceString("Radio"));
+		item.setText (ControlExample.getResourceString("r"));
 		item.setToolTipText("SWT.RADIO");
 		item = new ToolItem_Old (textToolBar, SWT.RADIO);
 		item.setText (ControlExample.getResourceString("Radio"));
@@ -249,13 +249,13 @@ class ToolBarTab extends Tab {
 	private void createTxtToolBarNew(int style) {
 		textToolBar2 = new ToolBar (textToolBarGroup, style);
 		ToolItem item = new ToolItem (textToolBar2, SWT.PUSH);
-		item.setText (ControlExample.getResourceString("Push"));
+		item.setText (ControlExample.getResourceString("PushBlaBlub"));
 		item.setToolTipText("SWT.PUSH");
 		item = new ToolItem (textToolBar2, SWT.PUSH);
 		item.setText (ControlExample.getResourceString("Push"));
 		item.setToolTipText("SWT.PUSH");
 		item = new ToolItem (textToolBar2, SWT.RADIO);
-		item.setText (ControlExample.getResourceString("Radio"));
+		item.setText (ControlExample.getResourceString("r"));
 		item.setToolTipText("SWT.RADIO");
 		item = new ToolItem (textToolBar2, SWT.RADIO);
 		item.setText (ControlExample.getResourceString("Radio"));
@@ -289,7 +289,7 @@ class ToolBarTab extends Tab {
 		imageTextToolBar = new ToolBar_Old (imageTextToolBarGroup, style);
 		ToolItem_Old item = new ToolItem_Old (imageTextToolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
-		item.setText (ControlExample.getResourceString("Push"));
+		item.setText (ControlExample.getResourceString("PushBlaBlub"));
 		item.setToolTipText("SWT.PUSH");
 		item = new ToolItem_Old (imageTextToolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
@@ -297,7 +297,7 @@ class ToolBarTab extends Tab {
 		item.setToolTipText("SWT.PUSH");
 		item = new ToolItem_Old (imageTextToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);
-		item.setText (ControlExample.getResourceString("Radio"));
+		item.setText (ControlExample.getResourceString("r"));
 		item.setToolTipText("SWT.RADIO");
 		item = new ToolItem_Old (imageTextToolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);

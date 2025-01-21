@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.*;
-
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -46,11 +44,14 @@ public class ToolItem extends Item {
 	private static final int DEFAULT_WIDTH = 20;
 	private static final int DEFAULT_HEIGHT = 20;
 
+	private final ToolItemRenderer renderer;
+
 	private ToolBar parent;
 	private Control control;
 	private String toolTipText;
 	private Image disabledImage;
 	private Image hotImage;
+
 
 	/**
 	 * Constructs a new instance of this class given its parent (which must be a
@@ -109,7 +110,7 @@ public class ToolItem extends Item {
 	 * applicable to the class. Style bits are also inherited from superclasses.
 	 * </p>
 	 *
-	 * @param parent a composite control which will be the parent of the new
+	 * @param bar a composite control which will be the parent of the new
 	 *               instance (cannot be null)
 	 * @param style  the style of control to construct
 	 * @param index  the zero-relative index to store the receiver in its parent
@@ -139,10 +140,13 @@ public class ToolItem extends Item {
 	 * @see Widget#checkSubclass
 	 * @see Widget#getStyle
 	 */
-	public ToolItem(ToolBar parent, int style, int index) {
-		super(parent, checkStyle(style));
-		this.parent = parent;
-		parent.createItem(this, index);
+	public ToolItem(ToolBar bar, int style, int index) {
+		super(bar, checkStyle(style));
+		this.parent = bar;
+
+		this.renderer = new ToolItemRenderer(bar, this);
+
+		bar.createItem(this, index);
 	}
 
 
@@ -782,5 +786,9 @@ public class ToolItem extends Item {
 
 	private void NOT_IMPLEMENTED() {
 		System.err.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
+	}
+
+	public Point render(IGraphicsContext gc, int pos) {
+		return renderer.render(gc, pos);
 	}
 }
