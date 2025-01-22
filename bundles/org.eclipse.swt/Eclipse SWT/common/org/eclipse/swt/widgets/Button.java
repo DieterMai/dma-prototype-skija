@@ -86,7 +86,6 @@ public class Button extends Control implements ICustomWidget {
 	private static int DRAW_FLAGS = SWT.DRAW_MNEMONIC | SWT.DRAW_TAB
 			| SWT.DRAW_TRANSPARENT | SWT.DRAW_DELIMITER;
 
-	private static Color background;
 
 	private Accessible acc;
 	private AccessibleAdapter accAdapter;
@@ -392,39 +391,13 @@ public class Button extends Control implements ICustomWidget {
 			return;
 		}
 
-		e.gc.setForeground(getForeground());
-		e.gc.setBackground(getBackground());
-		e.gc.setClipping(new Rectangle(0, 0, r.width, r.height));
-		e.gc.setAntialias(SWT.ON);
-
-		GC originalGC = e.gc;
-		IGraphicsContext gc = originalGC;
-		Image doubleBufferingImage = null;
-
-		if (SWT.getPlatform().equals("win32") | SWT.getPlatform().equals("gtk")) {
-			// Extract background color on first execution
-			if (background == null) {
-				extractAndStoreBackgroundColor(r, originalGC);
-			}
-			style |= SWT.NO_BACKGROUND;
+		try (GCHandler gcHandler = GCHandler.of(e, this)) {
+			style = gcHandler.applyStyle(style);
+			doPaint(gcHandler.getGraphicsContext(), r);
 		}
+	}
 
-		if (SWT.USE_SKIJA) {
-			gc = new SkijaGC(originalGC, background);
-		} else {
-			if (SWT.getPlatform().equals("win32")) {
-				// Use double buffering on windows
-				doubleBufferingImage = new Image(getDisplay(), r.width, r.height);
-				originalGC.copyArea(doubleBufferingImage, 0, 0);
-				GC doubleBufferingGC = new GC(doubleBufferingImage);
-				doubleBufferingGC.setForeground(originalGC.getForeground());
-				doubleBufferingGC.setBackground(background);
-				doubleBufferingGC.setAntialias(SWT.ON);
-				doubleBufferingGC.fillRectangle(0, 0, r.width, r.height);
-				gc = doubleBufferingGC;
-			}
-		}
-
+	private void doPaint(IGraphicsContext gc, Rectangle r) {
 		boolean isRightAligned = (style & SWT.RIGHT) != 0;
 		boolean isCentered = (style & SWT.CENTER) != 0;
 		boolean isPushOrToggleButton = (style & (SWT.PUSH | SWT.TOGGLE)) != 0;
@@ -449,8 +422,7 @@ public class Button extends Control implements ICustomWidget {
 		gc.setAdvanced(false);
 
 		// Calculate area for button content (image + text)
-		int horizontalSpaceForContent = r.width - RIGHT_MARGIN - LEFT_MARGIN
-				- boxSpace;
+		int horizontalSpaceForContent = r.width - RIGHT_MARGIN - LEFT_MARGIN - boxSpace;
 		int textWidth = 0;
 		int textHeight = 0;
 		if (text != null && !text.isEmpty()) {
@@ -471,14 +443,12 @@ public class Button extends Control implements ICustomWidget {
 				imageSpace += SPACING;
 			}
 		}
-		Rectangle contentArea = new Rectangle(LEFT_MARGIN + boxSpace,
-				TOP_MARGIN, imageSpace + textWidth,
+		Rectangle contentArea = new Rectangle(LEFT_MARGIN + boxSpace, TOP_MARGIN, imageSpace + textWidth,
 				r.height - TOP_MARGIN - BOTTOM_MARGIN);
 		if (isRightAligned) {
 			contentArea.x += horizontalSpaceForContent - contentArea.width;
 		} else if (isCentered) {
-			contentArea.x += (horizontalSpaceForContent - contentArea.width)
-					/ 2;
+			contentArea.x += (horizontalSpaceForContent - contentArea.width) / 2;
 		}
 
 		// Draw image
@@ -487,8 +457,7 @@ public class Button extends Control implements ICustomWidget {
 			int imageLeftOffset = contentArea.x;
 			if (!isEnabled()) {
 				if (disabledImage == null) {
-					disabledImage = new Image(getDisplay(), image,
-							SWT.IMAGE_GRAY);
+					disabledImage = new Image(getDisplay(), image, SWT.IMAGE_GRAY);
 				}
 				gc.drawImage(disabledImage, imageLeftOffset, imageTopOffset);
 			} else {
@@ -501,8 +470,7 @@ public class Button extends Control implements ICustomWidget {
 			if (isEnabled()) {
 				gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
 			} else {
-				gc.setForeground(getDisplay()
-						.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+				gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
 			}
 			int textTopOffset = (r.height - 1 - textHeight) / 2;
 			int textLeftOffset = contentArea.x + imageSpace;
@@ -512,8 +480,7 @@ public class Button extends Control implements ICustomWidget {
 			if (((style & SWT.RADIO) | (style & SWT.CHECK)) != 0) {
 				int textTopOffset = (r.height - 1 - textHeight) / 2;
 				int textLeftOffset = contentArea.x + imageSpace;
-				gc.drawFocus(textLeftOffset - 2, textTopOffset, textWidth + 4,
-						textHeight);
+				gc.drawFocus(textLeftOffset - 2, textTopOffset, textWidth + 4, textHeight);
 			} else {
 				gc.drawFocus(3, 3, r.width - 7, r.height - 7);
 			}
@@ -522,8 +489,7 @@ public class Button extends Control implements ICustomWidget {
 		if (isArrowButton()) {
 			Color bg2 = gc.getBackground();
 
-			gc.setBackground(
-					getDisplay().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
+			gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
 
 			int centerHeight = r.height / 2;
 			int centerWidth = r.width / 2;
@@ -538,46 +504,27 @@ public class Button extends Control implements ICustomWidget {
 			int[] curve = null;
 
 			if ((style & SWT.DOWN) != 0) {
-				curve = new int[]{centerWidth, centerHeight + 5,
-						centerWidth - 5, centerHeight - 5, centerWidth + 5,
-						centerHeight - 5};
+				curve = new int[] { centerWidth, centerHeight + 5, centerWidth - 5, centerHeight - 5, centerWidth + 5,
+						centerHeight - 5 };
 
 			} else if ((style & SWT.LEFT) != 0) {
-				curve = new int[]{centerWidth - 5, centerHeight,
-						centerWidth + 5, centerHeight + 5, centerWidth + 5,
-						centerHeight - 5};
+				curve = new int[] { centerWidth - 5, centerHeight, centerWidth + 5, centerHeight + 5, centerWidth + 5,
+						centerHeight - 5 };
 
 			} else if ((style & SWT.RIGHT) != 0) {
-				curve = new int[]{centerWidth + 5, centerHeight,
-						centerWidth - 5, centerHeight - 5, centerWidth - 5,
-						centerHeight + 5};
+				curve = new int[] { centerWidth + 5, centerHeight, centerWidth - 5, centerHeight - 5, centerWidth - 5,
+						centerHeight + 5 };
 
 			} else {
-				curve = new int[]{centerWidth, centerHeight - 5,
-						centerWidth - 5, centerHeight + 5, centerWidth + 5,
-						centerHeight + 5};
+				curve = new int[] { centerWidth, centerHeight - 5, centerWidth - 5, centerHeight + 5, centerWidth + 5,
+						centerHeight + 5 };
 			}
 
 			gc.fillPolygon(curve);
 			gc.setBackground(bg2);
 		}
-
-		gc.commit();
-		gc.dispose();
-		if (doubleBufferingImage != null) {
-			originalGC.drawImage(doubleBufferingImage, 0, 0);
-			doubleBufferingImage.dispose();
-		}
-		originalGC.dispose();
 	}
 
-	private void extractAndStoreBackgroundColor(Rectangle r, GC originalGC) {
-		Image backgroundColorImage = new Image(getDisplay(), r.width, r.height);
-		originalGC.copyArea(backgroundColorImage, 0, 0);
-		int pixel = backgroundColorImage.getImageData().getPixel(0, 0);
-		backgroundColorImage.dispose();
-		background = SWT.convertPixelToColor(pixel);
-	}
 
 	private boolean isArrowButton() {
 		return (style & SWT.ARROW) != 0;
@@ -724,10 +671,7 @@ public class Button extends Control implements ICustomWidget {
 			boxSpace = BOX_SIZE + SPACING;
 		}
 		if (text != null && !text.isEmpty()) {
-			GC originalGC = new GC(this);
-			IGraphicsContext gc = SWT.USE_SKIJA
-					? new SkijaGC(originalGC, null)
-					: originalGC;
+			IGraphicsContext gc = GCUtil.toGraphicsContext(this);
 			gc.setFont(getFont());
 			Point textExtent = gc.textExtent(text, DRAW_FLAGS);
 			textWidth = textExtent.x + 1;

@@ -109,7 +109,7 @@ public class Scale extends Control implements ICustomWidget {
 		 * @param gc
 		 * @param bounds
 		 */
-		void render(GC gc, Rectangle bounds);
+		void render(Event event, Rectangle bounds);
 	}
 
 	/**
@@ -355,13 +355,13 @@ public class Scale extends Control implements ICustomWidget {
 		}
 	}
 
-	private void doPaint(Event e) {
+	private void doPaint(Event event) {
 		Rectangle bounds = getBounds();
 		if (bounds.width == 0 && bounds.height == 0) {
 			return;
 		}
 
-		renderer.render(e.gc, bounds);
+		renderer.render(event, bounds);
 	}
 
 	@Override

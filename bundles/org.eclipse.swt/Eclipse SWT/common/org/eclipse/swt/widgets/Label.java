@@ -524,6 +524,13 @@ public class Label extends Control implements ICustomWidget {
 	}
 
 	void onPaint(PaintEvent event) {
+		try (GCHandler gcHandler = GCHandler.of(event.gc, this)) {
+			onPaint(gcHandler);
+
+		}
+	}
+
+	void onPaint(GCHandler gcHandler) {
 		Rectangle rect = getBounds();
 		if (rect.width == 0 && rect.height == 0) {
 			return;
@@ -532,16 +539,12 @@ public class Label extends Control implements ICustomWidget {
 			return;
 		}
 
-		event.gc.setFont(font);
-		event.gc.setBackground(getBackground());
-		event.gc.setClipping(new Rectangle(0, 0, rect.width, rect.height));
-		IGraphicsContext gc = SWT.USE_SKIJA ? new SkijaGC(event.gc) : event.gc;
+		IGraphicsContext gc = gcHandler.getGraphicsContext();
 
 		boolean shortenText = false;
 		String t = text;
 		Image img = image;
-		int availableWidth = Math.max(0,
-				rect.width - (leftMargin + rightMargin));
+		int availableWidth = Math.max(0, rect.width - (leftMargin + rightMargin));
 		Point extent = getTotalSize(gc, img, t);
 		if (extent.x > availableWidth) {
 			img = null;
@@ -560,8 +563,7 @@ public class Label extends Control implements ICustomWidget {
 				Point e = gc.textExtent(lines[i], DRAW_FLAGS);
 				if (e.x > availableWidth) {
 					lines[i] = shortenText(gc, lines[i], availableWidth);
-					extent.x = Math.max(extent.x,
-							getTotalSize(event.gc, null, lines[i]).x);
+					extent.x = Math.max(extent.x, getTotalSize(gc, null, lines[i]).x);
 				} else {
 					extent.x = Math.max(extent.x, e.x);
 				}
@@ -622,16 +624,12 @@ public class Label extends Control implements ICustomWidget {
 						}
 						gc.setBackground(lastColor);
 						if (gradientVertical) {
-							final int gradientHeight = (gradientPercents[i]
-									* rect.height / 100) - pos;
-							gc.fillGradientRectangle(0, pos, rect.width,
-									gradientHeight, true);
+							final int gradientHeight = (gradientPercents[i] * rect.height / 100) - pos;
+							gc.fillGradientRectangle(0, pos, rect.width, gradientHeight, true);
 							pos += gradientHeight;
 						} else {
-							final int gradientWidth = (gradientPercents[i]
-									* rect.width / 100) - pos;
-							gc.fillGradientRectangle(pos, 0, gradientWidth,
-									rect.height, false);
+							final int gradientWidth = (gradientPercents[i] * rect.width / 100) - pos;
+							gc.fillGradientRectangle(pos, 0, gradientWidth, rect.height, false);
 							pos += gradientWidth;
 						}
 					}
@@ -666,9 +664,9 @@ public class Label extends Control implements ICustomWidget {
 		}
 
 		/*
-		 * Compute text height and image height. If image height is more than
-		 * the text height, draw image starting from top margin. Else draw text
-		 * starting from top margin.
+		 * Compute text height and image height. If image height is more than the text
+		 * height, draw image starting from top margin. Else draw text starting from top
+		 * margin.
 		 */
 		Rectangle imageRect = null;
 		int lineHeight = 0, textHeight = 0, imageHeight = 0;
@@ -703,8 +701,7 @@ public class Label extends Control implements ICustomWidget {
 
 		// draw the image
 		if (img != null) {
-			gc.drawImage(img, 0, 0, imageRect.width, imageHeight, x, imageY,
-					imageRect.width, imageHeight);
+			gc.drawImage(img, 0, 0, imageRect.width, imageHeight, x, imageY, imageRect.width, imageHeight);
 			x += imageRect.width + GAP;
 			extent.x -= imageRect.width + GAP;
 		}
@@ -732,16 +729,13 @@ public class Label extends Control implements ICustomWidget {
 					}
 					if (align == SWT.RIGHT) {
 						int lineWidth = gc.textExtent(line, DRAW_FLAGS).x;
-						lineX = Math.max(x,
-								rect.x + rect.width - rightMargin - lineWidth);
+						lineX = Math.max(x, rect.x + rect.width - rightMargin - lineWidth);
 					}
 				}
 				gc.drawText(line, lineX, lineY, DRAW_FLAGS);
 				lineY += lineHeight;
 			}
 		}
-
-		gc.commit();
 	}
 
 	@Override
