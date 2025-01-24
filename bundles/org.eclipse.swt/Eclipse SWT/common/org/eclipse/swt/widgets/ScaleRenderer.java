@@ -32,7 +32,7 @@ class ScaleRenderer implements IScaleRenderer {
 
 		IGraphicsContext sgc = initSkijaGc(nativeGc, bounds);
 
-		renderScale(sgc, 0, 0, bounds.width - 1, bounds.height - 1);
+		renderScale(sgc, 0, 0, bounds.width, bounds.height);
 
 		sgc.commit();
 		sgc.dispose();
@@ -57,7 +57,7 @@ class ScaleRenderer implements IScaleRenderer {
 	}
 
 	public IGraphicsContext initSkijaGc(GC originalGC, Rectangle bounds) {
-		IGraphicsContext gc = new SkijaGC(originalGC, background);
+		IGraphicsContext gc = GCUtil.toGraphicsContext(originalGC, DRAG_COLOR);
 
 		originalGC.setClipping(bounds.x, bounds.y, bounds.width, bounds.height);
 
@@ -80,7 +80,7 @@ class ScaleRenderer implements IScaleRenderer {
 		// draw background
 		if (background != null) {
 			gc.setBackground(background);
-			gc.fillRectangle(max, y, w - 1, h - 1);
+			gc.fillRectangle(x, y, w, h);
 		}
 
 		int firstNotch;

@@ -410,7 +410,7 @@ public class Button extends Control implements ICustomWidget {
 		}
 
 		if (SWT.USE_SKIJA) {
-			gc = new SkijaGC(originalGC, background);
+			gc = GCUtil.toGraphicsContext(originalGC, background);
 		} else {
 			if (SWT.getPlatform().equals("win32")) {
 				// Use double buffering on windows
@@ -724,10 +724,7 @@ public class Button extends Control implements ICustomWidget {
 			boxSpace = BOX_SIZE + SPACING;
 		}
 		if (text != null && !text.isEmpty()) {
-			GC originalGC = new GC(this);
-			IGraphicsContext gc = SWT.USE_SKIJA
-					? new SkijaGC(originalGC, null)
-					: originalGC;
+			IGraphicsContext gc = GCUtil.toGraphicsContext(this);
 			gc.setFont(getFont());
 			Point textExtent = gc.textExtent(text, DRAW_FLAGS);
 			textWidth = textExtent.x + 1;
