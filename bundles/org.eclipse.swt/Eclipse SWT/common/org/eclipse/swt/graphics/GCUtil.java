@@ -19,6 +19,8 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.*;
 
 public class GCUtil {
+	private static Color background;
+
 	public static IGraphicsContext toGraphicsContext(GC nativeGC) {
 		if (SWT.USE_SKIJA) {
 			return new SkijaGC(nativeGC);
@@ -46,5 +48,20 @@ public class GCUtil {
 
 	public static GC toNativeGC(GC gc, Control control) {
 		return Objects.requireNonNullElseGet(gc, () -> new GC(control));
+	}
+
+	public static Color getBackground(GC gc, Control control) {
+		if(background == null) {
+			extractAndStoreBackgroundColor(gc, control);
+		}
+		return background;
+	}
+
+	private static void extractAndStoreBackgroundColor(GC gc, Control control) {
+		Image backgroundColorImage = new Image(control.getDisplay(), gc.getClipping().width, gc.getClipping().height);
+		gc.copyArea(backgroundColorImage, 0, 0);
+		int pixel = backgroundColorImage.getImageData().getPixel(0, 0);
+		backgroundColorImage.dispose();
+		background = SWT.convertPixelToColor(pixel);
 	}
 }
