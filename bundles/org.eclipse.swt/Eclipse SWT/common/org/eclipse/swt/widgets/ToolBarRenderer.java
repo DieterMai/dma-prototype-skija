@@ -5,10 +5,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.ToolBar.IToolBarRenderer;
 
 class ToolBarRenderer implements IToolBarRenderer {
-	private static final int DEFAULT_WIDTH = 24;
-	private static final int DEFAULT_HEIGHT = 22;
-
-
 	private static Color background;
 
 	private final ToolBar toolbar;

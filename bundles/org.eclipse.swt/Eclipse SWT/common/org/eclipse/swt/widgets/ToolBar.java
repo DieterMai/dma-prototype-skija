@@ -58,8 +58,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 	private final IToolBarRenderer renderer;
 	private final boolean flat;
 
-	private Point size = new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
 	public static interface IToolBarRenderer {
 
 		/**
@@ -183,7 +181,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 		computedWidth = (wHint == SWT.DEFAULT) ? renderer.computeWidth() : wHint;
 		computedHeight = (hHint == SWT.DEFAULT) ? renderer.computeHeight() : hHint;
 
-		return size = new Point(computedWidth, computedHeight);
+		return new Point(computedWidth, computedHeight);
 	}
 
 	@Override
