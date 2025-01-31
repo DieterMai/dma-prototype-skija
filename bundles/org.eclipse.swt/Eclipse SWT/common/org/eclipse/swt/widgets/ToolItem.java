@@ -453,7 +453,12 @@ public class ToolItem extends Item {
 	 */
 	public int getWidth() {
 		checkWidget();
-		return renderer.calculateWidth();
+		return renderer.getPreferedWidth();
+	}
+
+	public int getHeight() {
+		checkWidget();
+		return renderer.getPreferedHeight();
 	}
 
 	/**
@@ -783,7 +788,7 @@ public class ToolItem extends Item {
 		System.err.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
 
-	public Point render(IGraphicsContext gc, int pos) {
-		return renderer.render(gc, pos);
+	public Point render(IGraphicsContext gc, int pos, int maxSize) {
+		return renderer.render(gc, pos, maxSize);
 	}
 }

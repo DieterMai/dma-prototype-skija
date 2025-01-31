@@ -415,8 +415,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 	@Override
 	void setBoundsInPixels(int x, int y, int width, int height, int flags) {
 		NOT_IMPLEMENTED();
-		Rectangle newBounds = new Rectangle(x, y, width, height);
-		System.out.println("ToolBar.setBoundsInPixels() " + newBounds);
 		super.setBoundsInPixels(x, y, width, height, flags);
 	}
 

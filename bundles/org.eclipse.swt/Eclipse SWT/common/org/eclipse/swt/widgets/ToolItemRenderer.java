@@ -42,18 +42,18 @@ public class ToolItemRenderer {
 		}
 	}
 
-	public Point render(IGraphicsContext gc, int pos) {
+	public Point render(IGraphicsContext gc, int pos, int maxSze) {
 		Point size = switch (item.getStyleType()) {
 		case SWT.CHECK -> drawSimpleItem(gc, pos);
 		case SWT.PUSH -> drawSimpleItem(gc, pos);
 		case SWT.RADIO -> drawSimpleItem(gc, pos);
-		case SWT.SEPARATOR -> drawSeparatorItem(gc, pos);
+		case SWT.SEPARATOR -> drawSeparatorItem(gc, pos, maxSze);
 		case SWT.DROP_DOWN -> drawDropDown(gc, pos);
 		default -> new Point(WIDTH, HEIGHT);
 		};
 
-		gc.setBackground(bar.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-		gc.drawRectangle(new Rectangle(pos, 0, size.x, size.y));
+//		gc.setBackground(bar.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+//		gc.drawRectangle(new Rectangle(pos, 0, size.x, size.y));
 		return size;
 	}
 
@@ -106,7 +106,7 @@ public class ToolItemRenderer {
 		return new Point(WIDTH, HEIGHT);
 	}
 
-	private int calculatePushWidth() {
+	private int getPreferedPushWidth() {
 		ContentType type = getContentYpe();
 		return switch (type) {
 		case TEXT_AND_IMAGE -> 5;
@@ -115,6 +115,14 @@ public class ToolItemRenderer {
 		};
 	}
 
+	private int getPreferedPushHeight() {
+		ContentType type = getContentYpe();
+		return switch (type) {
+		case TEXT_AND_IMAGE -> 5;
+		case ONLY_IMAGE -> IMAGE_SIZE.y + PADDING * 2;
+		case ONLY_TEXT -> 5;
+		};
+	}
 	private Color getTextColor() {
 		if (bar.isEnabled()) {
 			return bar.getDisplay().getSystemColor(SWT.COLOR_BLACK);
@@ -123,25 +131,25 @@ public class ToolItemRenderer {
 		}
 	}
 
-	private Point drawSeparatorItem(IGraphicsContext gc, int offset) {
+	private Point drawSeparatorItem(IGraphicsContext gc, int offset, int maxSze) {
 		Point linePos = new Point(offset + SEPARATOR_PADDING_START, 0);
-		Point size = new Point(SEPARATOR_PADDING_START + SEPARATOR_PADDING_END + 1, HEIGHT);
+		Point size = new Point(getPreferedSeparatorWidth(), maxSze);
 		if (bar.isFlat()) {
 			gc.setForeground(bar.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
-			gc.drawLine(linePos.x, linePos.y, linePos.x, HEIGHT);
+			gc.drawLine(linePos.x, linePos.y, linePos.x, maxSze);
 		}
 
 		return size;
 	}
 
-	private int calculateSeparatorWidth() {
+	private int getPreferedSeparatorWidth() {
 		return SEPARATOR_PADDING_START + SEPARATOR_PADDING_END + 1;
 	}
 
 	private Point drawDropDown(IGraphicsContext gc, int position) {
 		Point itemSize = drawSimpleItem(gc, position);
 		Point arrowSize = drawArrow(gc, position + itemSize.x);
-		return new Point(itemSize.x + arrowSize.x, HEIGHT);
+		return new Point(itemSize.x + arrowSize.x, itemSize.y);
 	}
 
 	private Point drawArrow(IGraphicsContext gc, int position) {
@@ -156,20 +164,37 @@ public class ToolItemRenderer {
 		return new Point(PADDING * 2 + ARROW_WIDTH, HEIGHT);
 	}
 
-	public int calculateWidth() {
+	public int getPreferedWidth() {
 		return switch (item.getStyleType()) {
-		case SWT.CHECK, SWT.PUSH, SWT.RADIO -> calculatePushWidth();
-		case SWT.SEPARATOR -> calculateSeparatorWidth();
-		case SWT.DROP_DOWN -> calculateDropDownWidth();
+		case SWT.CHECK, SWT.PUSH, SWT.RADIO -> getPreferedPushWidth();
+		case SWT.SEPARATOR -> getPreferedSeparatorWidth();
+		case SWT.DROP_DOWN -> getPreferedDropDownWidth();
 		default -> 5; // TODO
 		};
 	}
 
-	private int calculateDropDownWidth() {
-		return calculatePushWidth() + calculateArrowWidth();
+	public int getPreferedHeight() {
+		return switch (item.getStyleType()) {
+		case SWT.CHECK, SWT.PUSH, SWT.RADIO -> getPreferedPushHeight();
+		case SWT.SEPARATOR -> 1; // TODO
+		case SWT.DROP_DOWN -> getPreferedDropDownHeight();
+		default -> 5; // TODO
+		};
 	}
 
-	private int calculateArrowWidth() {
+	private int getPreferedDropDownWidth() {
+		return getPreferedPushWidth() + getPreferedArrowWidth();
+	}
+
+	private int getPreferedDropDownHeight() {
+		return getPreferedPushHeight();
+	}
+
+	private int getPreferedArrowWidth() {
 		return PADDING * 2 + ARROW_WIDTH;
+	}
+
+	private int calculateArrowHeight() {
+		return 5 + 3 + 5; // TODO
 	}
 }
