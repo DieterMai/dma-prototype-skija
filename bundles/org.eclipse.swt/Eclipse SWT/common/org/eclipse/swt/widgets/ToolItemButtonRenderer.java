@@ -55,36 +55,37 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 	public Point render(IGraphicsContext gc, int pos, int maxSize) {
 		ContentType type = getContenType();
 		return switch (type) {
-		case TEXT_AND_IMAGE -> drawSimpleTextImage(gc, pos);
-		case ONLY_IMAGE -> drawSimpleImage(gc, pos);
-		case ONLY_TEXT -> drawSimpleText(gc, pos);
+		case TEXT_AND_IMAGE -> drawTextImageItem(gc, pos);
+		case ONLY_IMAGE -> drawImageItem(gc, pos);
+		case ONLY_TEXT -> drawTextItem(gc, pos);
 		};
 	}
 
-	private Point drawSimpleTextImage(IGraphicsContext gc, int position) {
+	private Point drawTextImageItem(IGraphicsContext gc, int position) {
+		Point imageSize = getPreferedImageSize();
+		Point textSize = getPreferedTextSize();
+
+		int itemWidth = Math.max(imageSize.x, textSize.x);
+		int itemHeight = imageSize.y + textSize.y;
+		Point itemSize = new Point(itemWidth, itemHeight);
+
+		Point imagePos = new Point(position + (itemSize.x - imageSize.x) / 2, PADDING_IMAGE);
+		Point textPoint = new Point(position + (itemSize.x - imageSize.x) / 2, imagePos.y + imageSize.y);
+
 		Image image = item.getImage();
-		Rectangle imageBounds = image.getBounds();
+		gc.drawImage(image, imagePos.x, imagePos.y);
 
 		String text = item.getText();
-		Point textSize = gc.textExtent(text, DRAW_FLAGS);
-
-		int maxWidth = Math.max(imageBounds.width, textSize.x + TEXT_PADDING * 2);
-		int totalHeight = imageBounds.height + textSize.y;
-
-		int imagePosition = position + (maxWidth / 2) - (imageBounds.width / 2);
-		int textPosition = position + (maxWidth / 2) - (textSize.x / 2);
-
-		gc.drawImage(image, imagePosition, 0);
-
+//
 		gc.setForeground(getTextColor());
-		gc.drawText(text, textPosition + TEXT_PADDING, imageBounds.height + 5);
+		gc.drawText(text, position + textPoint.x, textPoint.y);
 
-		return new Point(maxWidth, totalHeight);
+		return itemSize;
 	}
 
-	private Point drawSimpleImage(IGraphicsContext gc, int position) {
+	private Point drawImageItem(IGraphicsContext gc, int position) {
 		Point imagePos = new Point(position + PADDING_IMAGE, PADDING_IMAGE);
-		Point itemSize = new Point(getPreferedImageWidth(), getPreferedImageHeight());
+		Point itemSize = getPreferedImageSize();
 
 		Image image = item.getImage();
 		gc.drawImage(image, imagePos.x, imagePos.y);
@@ -92,7 +93,7 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 		return itemSize;
 	}
 
-	private Point drawSimpleText(IGraphicsContext gc, int position) {
+	private Point drawTextItem(IGraphicsContext gc, int position) {
 		String text = item.getText();
 		Point itemSize = getPreferedTextSize();
 
@@ -113,14 +114,24 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 	public int getPreferedWidth() {
 		ContentType type = getContenType();
 		return switch (type) {
-		case TEXT_AND_IMAGE -> 5; // TODO
-		case ONLY_IMAGE -> getPreferedImageWidth();
+		case TEXT_AND_IMAGE -> getPreferedTextImageSize().y;
+		case ONLY_IMAGE -> getPreferedImageSize().x;
 		case ONLY_TEXT -> getPreferedTextSize().x;
 		};
 	}
 
-	private int getPreferedImageWidth() {
-		return IMAGE_SIZE.x + PADDING_IMAGE * 2;
+	@Override
+	public int getPreferedHeight() {
+		ContentType type = getContenType();
+		return switch (type) {
+		case TEXT_AND_IMAGE -> getPreferedTextImageSize().y;
+		case ONLY_IMAGE -> getPreferedImageSize().y;
+		case ONLY_TEXT -> getPreferedTextSize().y;
+		};
+	}
+
+	private Point getPreferedImageSize() {
+		return new Point(IMAGE_SIZE.x + PADDING_IMAGE * 2, IMAGE_SIZE.y + PADDING_IMAGE * 2);
 	}
 
 	private Point getPreferedTextSize() {
@@ -133,22 +144,14 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 		return new Point(w, h);
 	}
 
+	private Point getPreferedTextImageSize() {
+		return new Point(30, 50);
+	}
+
 	private IGraphicsContext getSimpleGC() {
 		GC originalGC = new GC(bar);
 		return SWT.USE_SKIJA ? new SkijaGC(originalGC, null) : originalGC;
 	}
 
-	@Override
-	public int getPreferedHeight() {
-		ContentType type = getContenType();
-		return switch (type) {
-		case TEXT_AND_IMAGE -> 5; // TODO
-		case ONLY_IMAGE -> getPreferedImageHeight();
-		case ONLY_TEXT -> getPreferedTextSize().y;
-		};
-	}
 
-	private int getPreferedImageHeight() {
-		return IMAGE_SIZE.y + PADDING_IMAGE * 2;
-	}
 }
