@@ -152,7 +152,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 	}
 
 	private void onPaint(Event event) {
-		System.out.println("ToolBar.onPaint()");
 		if (!isVisible()) {
 			return;
 		}

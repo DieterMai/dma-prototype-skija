@@ -4,6 +4,8 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 
 public class ToolItemRenderer {
+	private static final Point IMAGE_SIZE = new Point(16, 16);
+	private static final int PADDING = 3;
 	private static final int HEIGHT = 43;
 	private static final int WIDTH = 37;
 	private static final int TEXT_PADDING = 3;
@@ -58,11 +60,13 @@ public class ToolItemRenderer {
 
 			return new Point(maxWidth, totalHeight);
 		} else if (hasImage) {
-			Image image = item.getImage();
-			gc.drawImage(image, position, 0);
+			Point imagePos = new Point(position + PADDING, PADDING);
+			Point itemSize = new Point(IMAGE_SIZE.x + PADDING * 2, IMAGE_SIZE.y + PADDING * 2);
 
-			Rectangle imageBounds = image.getBounds();
-			return new Point(WIDTH, HEIGHT);
+			Image image = item.getImage();
+			gc.drawImage(image, imagePos.x, imagePos.y);
+
+			return itemSize;
 		} else if (hasText) {
 			String text = item.getText();
 			Point size = gc.textExtent(text, DRAW_FLAGS);
@@ -83,13 +87,17 @@ public class ToolItemRenderer {
 		}
 	}
 
-	private Point drawSeparatorItem(IGraphicsContext gc, int position) {
+	private Point drawSeparatorItem(IGraphicsContext gc, int offset) {
+		final int PADDING_START = 2;
+		final int PADDING_END = 5;
+		Point linePos = new Point(offset + PADDING_START, 0);
+		Point size = new Point(PADDING_START + PADDING_END + 1, HEIGHT);
 		if (bar.isFlat()) {
 			gc.setForeground(bar.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
-			gc.drawLine(position, 0, position, HEIGHT);
+			gc.drawLine(linePos.x, linePos.y, linePos.x, HEIGHT);
 		}
 
-		return new Point(2, HEIGHT);
+		return size;
 	}
 
 	private Point drawDropDown(IGraphicsContext gc, int position) {
@@ -99,13 +107,16 @@ public class ToolItemRenderer {
 	}
 
 	private Point drawArrow(IGraphicsContext gc, int position) {
-		Point topLeft = new Point(position + 7, 5);
-		Point topRight = new Point(topLeft.x + 8, topLeft.y);
-		Point bottom = new Point(topLeft.x + 3, topLeft.y + 4);
+		int PADDING = 4;
+		int ARROW_WIDTH = 8;
+		int ARROW_HEIGHT = 4;
+		Point topLeft = new Point(position + PADDING, 5);
+		Point topRight = new Point(topLeft.x + ARROW_WIDTH, topLeft.y);
+		Point bottom = new Point(topLeft.x + 3, topLeft.y + ARROW_HEIGHT);
 
 		gc.setBackground(bar.getDisplay().getSystemColor(SWT.COLOR_BLACK));
 		gc.fillPolygon(new int[] { topLeft.x, topLeft.y, topRight.x, topRight.y, bottom.x, bottom.y });
 
-		return new Point(7, HEIGHT);
+		return new Point(PADDING * 2 + ARROW_WIDTH, HEIGHT);
 	}
 }

@@ -65,13 +65,12 @@ class ToolBarRenderer implements IToolBarRenderer {
 		gc.setForeground(toolbar.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
 		gc.fillRectangle(x, y, w, h);
 
-		int nextPos = 3;
+		int nextPos = 0;
 		for (int i = 0; i < toolbar.getItemCount(); i++) {
-			System.out.println("ToolBarRenderer.renderToolbar() render item " + i);
 			ToolItem item = toolbar.getItem(i);
 			Point itemBounds = item.render(gc, nextPos);
 
-			nextPos += itemBounds.x + 7;
+			nextPos += itemBounds.x + 1;
 		}
 	}
 
@@ -83,11 +82,11 @@ class ToolBarRenderer implements IToolBarRenderer {
 		for (int i = 0; i < toolbar.getItemCount(); i++) {
 			totalWidth += toolbar.getItem(i).getWidth();
 		}
-		return totalWidth + 250; // TODO
+		return totalWidth + 250;// TODO
 	}
 
 	@Override
 	public int computeHeight() {
-		return DEFAULT_HEIGHT + 50;
+		return DEFAULT_HEIGHT + 50; // TODO
 	}
 }
