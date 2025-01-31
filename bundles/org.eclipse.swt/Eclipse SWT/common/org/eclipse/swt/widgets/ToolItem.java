@@ -144,7 +144,14 @@ public class ToolItem extends Item {
 		super(bar, checkStyle(style));
 		this.parent = bar;
 
-		this.renderer = new ToolItemRenderer(bar, this);
+		this.renderer = switch (this.style) {
+		case SWT.CHECK -> new ToolItemButtonRenderer(bar, this);
+		case SWT.PUSH -> new ToolItemButtonRenderer(bar, this);
+		case SWT.RADIO -> new ToolItemButtonRenderer(bar, this);
+		case SWT.SEPARATOR -> new ToolItemSeparatorRenderer(bar);
+		case SWT.DROP_DOWN -> new ToolItemDropDownRenderer(bar, this);
+		default -> throw new IllegalArgumentException("Invalid Style: " + style);
+		};
 
 		bar.createItem(this, index);
 	}
