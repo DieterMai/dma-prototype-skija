@@ -19,7 +19,7 @@ class ToolBarRenderer implements IToolBarRenderer {
 
 		IGraphicsContext sgc = initSkijaGc(nativeGc, bounds);
 
-		renderToolbar(sgc, 0, 0, bounds.width - 1, bounds.height - 1);
+		renderToolbar(sgc, 0, 0, bounds.width, bounds.height);
 
 		sgc.commit();
 		sgc.dispose();

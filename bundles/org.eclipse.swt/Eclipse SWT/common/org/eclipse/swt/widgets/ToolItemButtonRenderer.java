@@ -18,9 +18,11 @@ import org.eclipse.swt.graphics.*;
 
 public class ToolItemButtonRenderer implements ToolItemRenderer {
 	private static final Point IMAGE_SIZE = new Point(16, 16);
-	private static final int PADDING = 3;
-	private static final int HEIGHT = 43;
-	private static final int WIDTH = 37;
+	private static final int PADDING_IMAGE = 3;
+	private static final int PADDING_TEXT_H = 5;
+	private static final int PADDING_TEXT_TOP = 9;
+	private static final int PADDING_TEXT_BOT = 7;
+
 	private static final int TEXT_PADDING = 3;
 
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
@@ -81,8 +83,8 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 	}
 
 	private Point drawSimpleImage(IGraphicsContext gc, int position) {
-		Point imagePos = new Point(position + PADDING, PADDING);
-		Point itemSize = new Point(IMAGE_SIZE.x + PADDING * 2, IMAGE_SIZE.y + PADDING * 2);
+		Point imagePos = new Point(position + PADDING_IMAGE, PADDING_IMAGE);
+		Point itemSize = new Point(getPreferedImageWidth(), getPreferedImageHeight());
 
 		Image image = item.getImage();
 		gc.drawImage(image, imagePos.x, imagePos.y);
@@ -92,11 +94,11 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 
 	private Point drawSimpleText(IGraphicsContext gc, int position) {
 		String text = item.getText();
-		Point size = gc.textExtent(text, DRAW_FLAGS);
+		Point itemSize = getPreferedTextSize();
 
 		gc.setForeground(getTextColor());
-		gc.drawText(text, position + (WIDTH / 2) - (size.x / 2), 5);
-		return new Point(WIDTH, HEIGHT);
+		gc.drawText(text, position + PADDING_TEXT_H, PADDING_TEXT_TOP);
+		return itemSize;
 	}
 
 	private Color getTextColor() {
@@ -112,9 +114,28 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 		ContentType type = getContenType();
 		return switch (type) {
 		case TEXT_AND_IMAGE -> 5; // TODO
-		case ONLY_IMAGE -> IMAGE_SIZE.x + PADDING * 2;
-		case ONLY_TEXT -> 5; // TODO
+		case ONLY_IMAGE -> getPreferedImageWidth();
+		case ONLY_TEXT -> getPreferedTextSize().x;
 		};
+	}
+
+	private int getPreferedImageWidth() {
+		return IMAGE_SIZE.x + PADDING_IMAGE * 2;
+	}
+
+	private Point getPreferedTextSize() {
+		IGraphicsContext gc = getSimpleGC();
+		gc.setFont(bar.getFont());
+		Point textExtent = gc.textExtent(item.getText(), DRAW_FLAGS);
+
+		int w = PADDING_TEXT_H + textExtent.x + PADDING_TEXT_H;
+		int h = PADDING_TEXT_TOP + textExtent.y + PADDING_TEXT_BOT;
+		return new Point(w, h);
+	}
+
+	private IGraphicsContext getSimpleGC() {
+		GC originalGC = new GC(bar);
+		return SWT.USE_SKIJA ? new SkijaGC(originalGC, null) : originalGC;
 	}
 
 	@Override
@@ -122,8 +143,12 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 		ContentType type = getContenType();
 		return switch (type) {
 		case TEXT_AND_IMAGE -> 5; // TODO
-		case ONLY_IMAGE -> IMAGE_SIZE.y + PADDING * 2;
-		case ONLY_TEXT -> 5; // TODO
+		case ONLY_IMAGE -> getPreferedImageHeight();
+		case ONLY_TEXT -> getPreferedTextSize().y;
 		};
+	}
+
+	private int getPreferedImageHeight() {
+		return IMAGE_SIZE.y + PADDING_IMAGE * 2;
 	}
 }

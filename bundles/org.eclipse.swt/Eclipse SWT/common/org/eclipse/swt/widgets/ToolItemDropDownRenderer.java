@@ -62,7 +62,7 @@ public class ToolItemDropDownRenderer implements ToolItemRenderer {
 	}
 
 	private int getPreferedDropDownHeight() {
-		return button.getPreferedWidth();
+		return button.getPreferedHeight();
 	}
 
 	private int getPreferedArrowWidth() {
