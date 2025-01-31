@@ -4,6 +4,12 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 
 public class ToolItemRenderer {
+	private static final int SEPARATOR_PADDING_START = 2;
+	private static final int SEPARATOR_PADDING_END = 5;
+
+	private static final int ARROW_WIDTH = 8;
+	private static final int ARROW_HEIGHT = 4;
+
 	private static final Point IMAGE_SIZE = new Point(16, 16);
 	private static final int PADDING = 3;
 	private static final int HEIGHT = 43;
@@ -15,9 +21,25 @@ public class ToolItemRenderer {
 	private final ToolBar bar;
 	private final ToolItem item;
 
+	private enum ContentType {
+		ONLY_TEXT, ONLY_IMAGE, TEXT_AND_IMAGE
+	}
+
 	ToolItemRenderer(ToolBar bar, ToolItem item) {
 		this.bar = bar;
 		this.item = item;
+	}
+
+	private ContentType getContentYpe() {
+		boolean hasImage = item.getImage() != null;
+		boolean hasText = item.getText() != null && !item.getText().isBlank();
+		if (hasImage && hasText) {
+			return ContentType.TEXT_AND_IMAGE;
+		} else if (hasImage) {
+			return ContentType.ONLY_IMAGE;
+		} else {
+			return ContentType.ONLY_TEXT;
+		}
 	}
 
 	public Point render(IGraphicsContext gc, int pos) {
@@ -36,47 +58,61 @@ public class ToolItemRenderer {
 	}
 
 	private Point drawSimpleItem(IGraphicsContext gc, int position) {
-		boolean hasImage = item.getImage() != null;
-		boolean hasText = item.getText() != null && !item.getText().isBlank();
+		ContentType type = getContentYpe();
+		return switch (type) {
+		case TEXT_AND_IMAGE -> drawSimpleTextImage(gc, position);
+		case ONLY_IMAGE -> drawSimpleImage(gc, position);
+		case ONLY_TEXT -> drawSimpleText(gc, position);
+		};
+	}
 
-		if (hasImage && hasText) {
-			Image image = item.getImage();
-			Rectangle imageBounds = image.getBounds();
+	private Point drawSimpleTextImage(IGraphicsContext gc, int position) {
+		Image image = item.getImage();
+		Rectangle imageBounds = image.getBounds();
 
+		String text = item.getText();
+		Point textSize = gc.textExtent(text, DRAW_FLAGS);
 
-			String text = item.getText();
-			Point textSize = gc.textExtent(text, DRAW_FLAGS);
+		int maxWidth = Math.max(imageBounds.width, textSize.x + TEXT_PADDING * 2);
+		int totalHeight = imageBounds.height + textSize.y;
 
-			int maxWidth = Math.max(imageBounds.width, textSize.x + TEXT_PADDING * 2);
-			int totalHeight = imageBounds.height + textSize.y;
+		int imagePosition = position + (maxWidth / 2) - (imageBounds.width / 2);
+		int textPosition = position + (maxWidth / 2) - (textSize.x / 2);
 
-			int imagePosition = position + (maxWidth / 2) - (imageBounds.width / 2);
-			int textPosition = position + (maxWidth / 2) - (textSize.x / 2);
+		gc.drawImage(image, imagePosition, 0);
 
-			gc.drawImage(image, imagePosition, 0);
+		gc.setForeground(getTextColor());
+		gc.drawText(text, textPosition + TEXT_PADDING, imageBounds.height + 5);
 
-			gc.setForeground(getTextColor());
-			gc.drawText(text, textPosition + TEXT_PADDING, imageBounds.height + 5);
+		return new Point(maxWidth, totalHeight);
+	}
 
-			return new Point(maxWidth, totalHeight);
-		} else if (hasImage) {
-			Point imagePos = new Point(position + PADDING, PADDING);
-			Point itemSize = new Point(IMAGE_SIZE.x + PADDING * 2, IMAGE_SIZE.y + PADDING * 2);
+	private Point drawSimpleImage(IGraphicsContext gc, int position) {
+		Point imagePos = new Point(position + PADDING, PADDING);
+		Point itemSize = new Point(IMAGE_SIZE.x + PADDING * 2, IMAGE_SIZE.y + PADDING * 2);
 
-			Image image = item.getImage();
-			gc.drawImage(image, imagePos.x, imagePos.y);
+		Image image = item.getImage();
+		gc.drawImage(image, imagePos.x, imagePos.y);
 
-			return itemSize;
-		} else if (hasText) {
-			String text = item.getText();
-			Point size = gc.textExtent(text, DRAW_FLAGS);
+		return itemSize;
+	}
 
-			gc.setForeground(getTextColor());
-			gc.drawText(text, position + (WIDTH / 2) - (size.x / 2), 5);
-			return new Point(WIDTH, HEIGHT);
-		} else {
-			return new Point(WIDTH, HEIGHT);// can this happen?
-		}
+	private Point drawSimpleText(IGraphicsContext gc, int position) {
+		String text = item.getText();
+		Point size = gc.textExtent(text, DRAW_FLAGS);
+
+		gc.setForeground(getTextColor());
+		gc.drawText(text, position + (WIDTH / 2) - (size.x / 2), 5);
+		return new Point(WIDTH, HEIGHT);
+	}
+
+	private int calculatePushWidth() {
+		ContentType type = getContentYpe();
+		return switch (type) {
+		case TEXT_AND_IMAGE -> 5;
+		case ONLY_IMAGE -> IMAGE_SIZE.x + PADDING * 2;
+		case ONLY_TEXT -> 5;
+		};
 	}
 
 	private Color getTextColor() {
@@ -88,16 +124,18 @@ public class ToolItemRenderer {
 	}
 
 	private Point drawSeparatorItem(IGraphicsContext gc, int offset) {
-		final int PADDING_START = 2;
-		final int PADDING_END = 5;
-		Point linePos = new Point(offset + PADDING_START, 0);
-		Point size = new Point(PADDING_START + PADDING_END + 1, HEIGHT);
+		Point linePos = new Point(offset + SEPARATOR_PADDING_START, 0);
+		Point size = new Point(SEPARATOR_PADDING_START + SEPARATOR_PADDING_END + 1, HEIGHT);
 		if (bar.isFlat()) {
 			gc.setForeground(bar.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
 			gc.drawLine(linePos.x, linePos.y, linePos.x, HEIGHT);
 		}
 
 		return size;
+	}
+
+	private int calculateSeparatorWidth() {
+		return SEPARATOR_PADDING_START + SEPARATOR_PADDING_END + 1;
 	}
 
 	private Point drawDropDown(IGraphicsContext gc, int position) {
@@ -108,8 +146,6 @@ public class ToolItemRenderer {
 
 	private Point drawArrow(IGraphicsContext gc, int position) {
 		int PADDING = 4;
-		int ARROW_WIDTH = 8;
-		int ARROW_HEIGHT = 4;
 		Point topLeft = new Point(position + PADDING, 5);
 		Point topRight = new Point(topLeft.x + ARROW_WIDTH, topLeft.y);
 		Point bottom = new Point(topLeft.x + 3, topLeft.y + ARROW_HEIGHT);
@@ -118,5 +154,22 @@ public class ToolItemRenderer {
 		gc.fillPolygon(new int[] { topLeft.x, topLeft.y, topRight.x, topRight.y, bottom.x, bottom.y });
 
 		return new Point(PADDING * 2 + ARROW_WIDTH, HEIGHT);
+	}
+
+	public int calculateWidth() {
+		return switch (item.getStyleType()) {
+		case SWT.CHECK, SWT.PUSH, SWT.RADIO -> calculatePushWidth();
+		case SWT.SEPARATOR -> calculateSeparatorWidth();
+		case SWT.DROP_DOWN -> calculateDropDownWidth();
+		default -> 5; // TODO
+		};
+	}
+
+	private int calculateDropDownWidth() {
+		return calculatePushWidth() + calculateArrowWidth();
+	}
+
+	private int calculateArrowWidth() {
+		return PADDING * 2 + ARROW_WIDTH;
 	}
 }

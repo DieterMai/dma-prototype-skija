@@ -80,9 +80,9 @@ class ToolBarRenderer implements IToolBarRenderer {
 	public int computeWidth() {
 		int totalWidth = 0;
 		for (int i = 0; i < toolbar.getItemCount(); i++) {
-			totalWidth += toolbar.getItem(i).getWidth();
+			totalWidth += toolbar.getItem(i).getWidth() + 1;
 		}
-		return totalWidth + 250;// TODO
+		return totalWidth;
 	}
 
 	@Override

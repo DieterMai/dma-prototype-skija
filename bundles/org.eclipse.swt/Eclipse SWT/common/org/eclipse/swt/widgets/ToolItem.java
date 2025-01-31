@@ -453,12 +453,7 @@ public class ToolItem extends Item {
 	 */
 	public int getWidth() {
 		checkWidget();
-		// TODO this should be calculated by the renderer
-		if (image != null) {
-			return image.getBounds().width;
-		} else {
-			return 20;
-		}
+		return renderer.calculateWidth();
 	}
 
 	/**
