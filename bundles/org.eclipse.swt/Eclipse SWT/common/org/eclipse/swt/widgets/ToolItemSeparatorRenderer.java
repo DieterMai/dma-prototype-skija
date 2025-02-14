@@ -21,9 +21,15 @@ public class ToolItemSeparatorRenderer implements ToolItemRenderer {
 	private static final int EMPTY_WIDTH = 7;
 
 	private final ToolBar bar;
+	private int separatorWidth = -1;
 
 	ToolItemSeparatorRenderer(ToolBar bar) {
 		this.bar = bar;
+	}
+
+	@Override
+	public void setSeparatorWidth(int separatorWidth) {
+		this.separatorWidth = separatorWidth;
 	}
 
 	@Override
@@ -45,7 +51,11 @@ public class ToolItemSeparatorRenderer implements ToolItemRenderer {
 		if (bar.isVertical()) {
 			return new Point(-1, EMPTY_WIDTH);
 		} else {
-			return new Point(EMPTY_WIDTH, -1);
+			if (separatorWidth != -1) {
+				return new Point(separatorWidth, -1);
+			} else {
+				return new Point(EMPTY_WIDTH, -1);
+			}
 		}
 	}
 }

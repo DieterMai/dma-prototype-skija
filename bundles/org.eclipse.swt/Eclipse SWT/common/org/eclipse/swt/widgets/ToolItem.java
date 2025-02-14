@@ -51,6 +51,9 @@ public class ToolItem extends Item {
 			return null;
 		}
 
+		default void setSeparatorWidth(int width) {
+		};
+
 	}
 
 	public static enum State {
@@ -793,8 +796,15 @@ public class ToolItem extends Item {
 	 */
 	public void setWidth(int width) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		if (!isSeparator()) {
+			return;
+		}
+		if (width < 0) {
+			return;
+		}
+		renderer.setSeparatorWidth(width);
 	}
+
 
 	int getStyleType() {
 		return style & (SWT.CHECK | SWT.PUSH | SWT.RADIO | SWT.SEPARATOR | SWT.DROP_DOWN);
@@ -805,6 +815,11 @@ public class ToolItem extends Item {
 	}
 
 	public void render(GC gc, Rectangle bounds) {
+		Control control = getControl();
+		if (control != null && isSeparator()) {
+			control.setBounds(bounds);
+		}
+
 		renderer.render(gc, bounds);
 		this.bounds = bounds;
 	}

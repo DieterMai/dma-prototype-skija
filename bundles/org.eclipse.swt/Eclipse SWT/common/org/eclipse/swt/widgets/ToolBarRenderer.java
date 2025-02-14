@@ -92,8 +92,7 @@ class ToolBarRenderer implements IToolBarRenderer {
 
 	@Override
 	public void render(GC gc, Rectangle bounds) {
-		Point size = new Point(bounds.width, bounds.height);
-		List<Row> rows = computeRows(size);
+		List<Row> rows = computeRows(bounds);
 
 		render(gc, bounds, rows);
 	}
@@ -125,7 +124,8 @@ class ToolBarRenderer implements IToolBarRenderer {
 		gc.drawLine(0, pos, row.totalSize.y, pos);
 	}
 
-	private List<Row> computeRows(Point size) {
+	private List<Row> computeRows(Rectangle bounds) {
+		Point size = new Point(bounds.width, bounds.height);
 		// Collect all item sizes
 		List<ItemRecord> itemRecords = new ArrayList<>();
 		for (int i = 0; i < bar.getItemCount(); i++) {
