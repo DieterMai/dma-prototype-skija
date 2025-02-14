@@ -24,6 +24,7 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 	private final ToolItem item;
 
 	private Image disabledImage;
+	private Rectangle bounds;
 
 	public static enum LayoutType {
 		TEXT_ONLY, IMAGE_ONLY, STACKED, SIDE_BY_SIDE
@@ -67,6 +68,7 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 
 	@Override
 	public void render(GC gc, Rectangle bounds) {
+		this.bounds = bounds;
 		Blueprint blueprint = getBlueprint(new Point(bounds.width, bounds.height));
 
 		renderHighlight(gc, bounds);
@@ -271,6 +273,10 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 		int width = Math.max(sizeA.x, sizeB.x);
 		int height = Math.max(sizeA.y, sizeB.y);
 		return new Point(width, height);
+	}
 
+	@Override
+	public boolean isOnButton(Point location) {
+		return bounds.contains(location);
 	}
 }

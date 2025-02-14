@@ -52,7 +52,15 @@ public class ToolItem extends Item {
 		}
 
 		default void setSeparatorWidth(int width) {
-		};
+		}
+
+		default boolean isOnButton(Point location) {
+			return false;
+		}
+
+		default boolean isOnArrow(Point location) {
+			return false;
+		}
 
 	}
 
@@ -228,7 +236,6 @@ public class ToolItem extends Item {
 
 	@Override
 	void destroyWidget() {
-		NOT_IMPLEMENTED();
 	}
 
 	/**
@@ -265,7 +272,6 @@ public class ToolItem extends Item {
 	 *                         </ul>
 	 */
 	public Control getControl() {
-		NOT_IMPLEMENTED();
 		return control;
 	}
 
@@ -853,10 +859,13 @@ public class ToolItem extends Item {
 
 	public boolean notifyMouseDown(Point location) {
 		State newState;
-		if (getBounds().contains(location)) {
+		if (renderer.isOnButton(location)) {
 			newState = State.DOWN;
 		} else {
 			newState = State.IDLE;
+		}
+
+		if (renderer.isOnArrow(location)) {
 		}
 
 		if (state != newState) {

@@ -483,7 +483,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	@Override
 	void releaseWidget() {
-		NOT_IMPLEMENTED();
 		super.releaseWidget();
 	}
 

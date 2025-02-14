@@ -28,6 +28,9 @@ public class ToolItemDropDownRenderer implements ToolItemRenderer {
 	private final ToolItem item;
 	private final ToolItemButtonRenderer buttonRenderer;
 
+	private Rectangle button = new Rectangle(0, 0, 0, 0);
+	private Rectangle arrow = new Rectangle(0, 0, 0, 0);
+
 	ToolItemDropDownRenderer(ToolBar bar, ToolItem item) {
 		this.bar = bar;
 		this.item = item;
@@ -36,9 +39,6 @@ public class ToolItemDropDownRenderer implements ToolItemRenderer {
 
 	@Override
 	public void render(GC gc, Rectangle bounds) {
-		Rectangle button;
-		Rectangle arrow;
-
 		if (bar.isLeftToRight()) {
 			button = new Rectangle(bounds.x, bounds.y, bounds.width - ARROW_SECTION_WIDTH, bounds.height);
 			arrow = new Rectangle(bounds.x + button.width, bounds.y, ARROW_SECTION_WIDTH, bounds.height);
@@ -96,5 +96,15 @@ public class ToolItemDropDownRenderer implements ToolItemRenderer {
 
 	private int getArrowWidth() {
 		return ARROW_PADDING * 2 + ARROW_WIDTH;
+	}
+
+	@Override
+	public boolean isOnButton(Point location) {
+		return button.contains(location);
+	}
+
+	@Override
+	public boolean isOnArrow(Point location) {
+		return arrow.contains(location);
 	}
 }
