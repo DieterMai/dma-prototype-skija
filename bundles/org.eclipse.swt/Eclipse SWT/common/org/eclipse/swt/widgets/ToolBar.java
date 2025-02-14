@@ -408,8 +408,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 	 */
 	public ToolItem[] getItems() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return items.toArray(ToolItem[]::new); // TODO optimize
+		return items.toArray(ToolItem[]::new);
 	}
 
 	/**
@@ -476,12 +475,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 	}
 
 	@Override
-	void releaseChildren(boolean destroy) {
-		NOT_IMPLEMENTED();
-		super.releaseChildren(destroy);
-	}
-
-	@Override
 	void releaseWidget() {
 		super.releaseWidget();
 	}
@@ -507,26 +500,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 	void setBackgroundPixel(int pixel) {
 		NOT_IMPLEMENTED();
 		super.setBackgroundPixel(pixel);
-	}
-
-	@Override
-	void setBoundsInPixels(int x, int y, int width, int height, int flags) {
-		NOT_IMPLEMENTED();
-		super.setBoundsInPixels(x, y, width, height, flags);
-	}
-
-	@Override
-	public void setFont(Font font) {
-		checkWidget();
-		NOT_IMPLEMENTED();
-		super.setFont(font);
-	}
-
-	@Override
-	public boolean setParent(Composite parent) {
-		checkWidget();
-		NOT_IMPLEMENTED();
-		return true;
 	}
 
 	@Override
