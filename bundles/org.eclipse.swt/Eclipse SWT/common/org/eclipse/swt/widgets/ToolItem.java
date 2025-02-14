@@ -838,10 +838,10 @@ public class ToolItem extends Item {
 			newState = State.IDLE;
 		}
 
-		if(state != newState) {
+		if (state != newState) {
 			state = newState;
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
@@ -861,6 +861,13 @@ public class ToolItem extends Item {
 		State newState;
 		if (renderer.isOnButton(location)) {
 			newState = State.DOWN;
+		} else if (renderer.isOnArrow(location)) {
+			newState = State.IDLE;
+			Event event = new Event();
+			event.detail = SWT.ARROW;
+			event.setLocation(location.x, location.y);
+			event.stateMask |= SWT.NO_FOCUS;
+			sendEvent(SWT.Selection, event);
 		} else {
 			newState = State.IDLE;
 		}
@@ -878,7 +885,10 @@ public class ToolItem extends Item {
 
 	public boolean notifyMouseUp(Point location) {
 		State newState;
-		if (getBounds().contains(location)) {
+		if (renderer.isOnButton(location)) {
+			if (state == State.DOWN) {
+				sendEvent(SWT.Selection, new Event());
+			}
 			newState = State.HOVER;
 		} else {
 			newState = State.IDLE;

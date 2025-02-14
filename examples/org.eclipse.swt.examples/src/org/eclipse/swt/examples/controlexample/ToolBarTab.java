@@ -165,7 +165,7 @@ class ToolBarTab extends Tab {
 		item = new ToolItem_Old (imageToolBar, SWT.DROP_DOWN);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setToolTipText ("SWT.DROP_DOWN");
-		item.addSelectionListener(new DropDownSelectionListener());
+		item.addSelectionListener(new DropDownSelectionListener_OLD());
 	}
 
 	private void createImageToolBarNew(int style) {
@@ -204,7 +204,7 @@ class ToolBarTab extends Tab {
 		item = new ToolItem (imageToolBar2, SWT.DROP_DOWN);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setToolTipText ("SWT.DROP_DOWN");
-		item.addSelectionListener(new DropDownSelectionListener());
+		item.addSelectionListener(new DropDownSelectionListener_NEW());
 	}
 
 	private void createTxtToolBarOld(int style) {
@@ -243,7 +243,7 @@ class ToolBarTab extends Tab {
 		item = new ToolItem_Old (textToolBar, SWT.DROP_DOWN);
 		item.setText (ControlExample.getResourceString("Drop_Down"));
 		item.setToolTipText("SWT.DROP_DOWN");
-		item.addSelectionListener(new DropDownSelectionListener());
+		item.addSelectionListener(new DropDownSelectionListener_OLD());
 	}
 
 	private void createTxtToolBarNew(int style) {
@@ -282,7 +282,7 @@ class ToolBarTab extends Tab {
 		item = new ToolItem (textToolBar2, SWT.DROP_DOWN);
 		item.setText (ControlExample.getResourceString("Drop_Down"));
 		item.setToolTipText("SWT.DROP_DOWN");
-		item.addSelectionListener(new DropDownSelectionListener());
+		item.addSelectionListener(new DropDownSelectionListener_NEW());
 	}
 
 	private void createImageTextToolBarOld(int style) {
@@ -329,7 +329,7 @@ class ToolBarTab extends Tab {
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setText (ControlExample.getResourceString("Drop_Down"));
 		item.setToolTipText("SWT.DROP_DOWN");
-		item.addSelectionListener(new DropDownSelectionListener());
+		item.addSelectionListener(new DropDownSelectionListener_OLD());
 
 	}
 
@@ -377,7 +377,7 @@ class ToolBarTab extends Tab {
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setText (ControlExample.getResourceString("Drop_Down"));
 		item.setToolTipText("SWT.DROP_DOWN");
-		item.addSelectionListener(new DropDownSelectionListener());
+		item.addSelectionListener(new DropDownSelectionListener_NEW());
 
 	}
 
@@ -508,7 +508,7 @@ class ToolBarTab extends Tab {
 	 * Listens to widgetSelected() events on SWT.DROP_DOWN type ToolItems
 	 * and opens/closes a menu when appropriate.
 	 */
-	class DropDownSelectionListener extends SelectionAdapter {
+	class DropDownSelectionListener_OLD extends SelectionAdapter {
 		private Menu    menu = null;
 
 		@Override
@@ -543,6 +543,53 @@ class ToolBarTab extends Tab {
 				// Position the menu below and vertically aligned with the the drop down tool button.
 				final ToolItem_Old toolItem = (ToolItem_Old) event.widget;
 				final ToolBar_Old  toolBar = toolItem.getParent();
+
+				Point point = toolBar.toDisplay(new Point(event.x, event.y));
+				menu.setLocation(point.x, point.y);
+				menu.setVisible(true);
+			}
+		}
+	}
+
+	/**
+	 * Listens to widgetSelected() events on SWT.DROP_DOWN type ToolItems
+	 * and opens/closes a menu when appropriate.
+	 */
+	class DropDownSelectionListener_NEW extends SelectionAdapter {
+		private Menu    menu = null;
+
+		@Override
+		public void widgetSelected(SelectionEvent event) {
+			// Create the menu if it has not already been created
+			if (menu == null) {
+				// Lazy create the menu.
+				ToolBar toolbar = ((ToolItem) event.widget).getParent();
+				int style = toolbar.getStyle() & (SWT.RIGHT_TO_LEFT | SWT.LEFT_TO_RIGHT);
+				menu = new Menu(shell, style | SWT.POP_UP);
+				for (int i = 0; i < 9; ++i) {
+					final String text = ControlExample.getResourceString("DropDownData_" + i);
+					if (text.length() != 0) {
+						MenuItem menuItem = new MenuItem(menu, SWT.NONE);
+						menuItem.setText(text);
+					} else {
+						new MenuItem(menu, SWT.SEPARATOR);
+					}
+				}
+			}
+
+			/**
+			 * A selection event will be fired when a drop down tool
+			 * item is selected in the main area and in the drop
+			 * down arrow.  Examine the event detail to determine
+			 * where the widget was selected.
+			 */
+			if (event.detail == SWT.ARROW) {
+				/*
+				 * The drop down arrow was selected.
+				 */
+				// Position the menu below and vertically aligned with the the drop down tool button.
+				final ToolItem toolItem = (ToolItem) event.widget;
+				final ToolBar  toolBar = toolItem.getParent();
 
 				Point point = toolBar.toDisplay(new Point(event.x, event.y));
 				menu.setLocation(point.x, point.y);
