@@ -259,6 +259,12 @@ class ToolBarTab extends Tab {
 		ToolItem item = new ToolItem (textToolBar2, SWT.PUSH);
 		item.setText (ControlExample.getResourceString("PushBlaBlub"));
 		item.setToolTipText("SWT.PUSH");
+		item.addListener(SWT.Selection, event -> {
+			System.out.println("ToolBarTab.createTxtToolBarNew()");
+			ToolItem newItem = new ToolItem(textToolBar2, SWT.PUSH, 3);
+			newItem.setText ("New");
+			newItem.setToolTipText("SWT.PUSH");
+		});
 
 		item = new ToolItem (textToolBar2, SWT.PUSH);
 		item.setText (ControlExample.getResourceString("Push"));

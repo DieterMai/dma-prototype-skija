@@ -14,6 +14,7 @@
 package org.eclipse.swt.widgets;
 
 import java.util.*;
+import java.util.List;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
@@ -212,7 +213,8 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	private void onMouseExit(Event event) {
 		boolean paintRequested = false;
-		for (ToolItem item : items) {
+		List<ToolItem> copy = List.copyOf(items);
+		for (ToolItem item : copy) {
 			paintRequested |= item.notifyMouseExit();
 		}
 
@@ -223,7 +225,8 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	private void onMouseMove(Event event) {
 		boolean paintRequested = false;
-		for (ToolItem item : items) {
+		List<ToolItem> copy = List.copyOf(items);
+		for (ToolItem item : copy) {
 			paintRequested |= item.notifyMouseMove(toPoint(event));
 		}
 
@@ -234,7 +237,8 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	private void onMouseDown(Event event) {
 		boolean paintRequested = false;
-		for (ToolItem item : items) {
+		List<ToolItem> copy = List.copyOf(items);
+		for (ToolItem item : copy) {
 			paintRequested |= item.notifyMouseDown(toPoint(event));
 		}
 
@@ -245,7 +249,8 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	private void onMouseUp(Event event) {
 		boolean paintRequested = false;
-		for (ToolItem item : items) {
+		List<ToolItem> copy = List.copyOf(items);
+		for (ToolItem item : copy) {
 			paintRequested |= item.notifyMouseUp(toPoint(event));
 		}
 

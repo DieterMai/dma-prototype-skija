@@ -270,17 +270,17 @@ class ToolBarRenderer implements IToolBarRenderer {
 		}
 	}
 
-	private void dumpRows(List<Row> rows) {
-		System.out.println("Dump rows:");
-		for (Row row : rows) {
-			dumpRow(row);
-		}
-	}
-
-	private void dumpRow(Row row) {
-		System.out.println("Row");
-		for (ItemRecord item : row.items) {
-			System.out.println("    Item " + item.bounds + " - " + item.item);
-		}
-	}
+//	private void dumpRows(List<Row> rows) {
+//		System.out.println("Dump rows:");
+//		for (Row row : rows) {
+//			dumpRow(row);
+//		}
+//	}
+//
+//	private void dumpRow(Row row) {
+//		System.out.println("Row");
+//		for (ItemRecord item : row.items) {
+//			System.out.println("    Item " + item.bounds + " - " + item.item);
+//		}
+//	}
 }
