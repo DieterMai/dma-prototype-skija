@@ -889,11 +889,7 @@ public class ToolItem extends Item {
 		State newState;
 		if (renderer.isOnButton(location)) {
 			if (state == State.DOWN) {
-				isSelected = true;
-				sendEvent(SWT.Selection, new Event());
-				if (isRadio()) {
-					parent.radioItemSelected(this);
-				}
+				handleClick();
 			}
 			newState = State.HOVER;
 		} else {
@@ -905,6 +901,18 @@ public class ToolItem extends Item {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	private void handleClick() {
+		sendEvent(SWT.Selection, new Event());
+
+		switch (this.style) {
+		case SWT.CHECK -> isSelected = !isSelected;
+		case SWT.RADIO -> {
+			isSelected = true;
+			parent.radioItemSelected(this);
+		}
 		}
 	}
 
