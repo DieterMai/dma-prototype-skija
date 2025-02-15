@@ -741,12 +741,6 @@ public class ToolItem extends Item {
 		internalSelect();
 	}
 
-	@Override
-	boolean setTabItemFocus() {
-		NOT_IMPLEMENTED();
-		return false;
-	}
-
 	/**
 	 * Sets the receiver's tool tip text to the argument, which may be null
 	 * indicating that the default tool tip for the control will be shown. For a
