@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar_Old;
-import org.eclipse.swt.widgets.ToolItem_Old;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 
 class CoolBarTab extends Tab {
@@ -118,21 +118,21 @@ class CoolBarTab extends Tab {
 		coolBar = new CoolBar (coolBarGroup, style);
 
 		/* Create the push button toolbar cool item */
-		ToolBar_Old toolBar = new ToolBar_Old (coolBar, toolBarStyle);
-		ToolItem_Old item = new ToolItem_Old (toolBar, SWT.PUSH);
+		ToolBar toolBar = new ToolBar (coolBar, toolBarStyle);
+		ToolItem item = new ToolItem (toolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.PUSH");
-		item = new ToolItem_Old (toolBar, SWT.PUSH);
+		item = new ToolItem (toolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);
 		item.setToolTipText ("SWT.PUSH");
-		item = new ToolItem_Old (toolBar, SWT.PUSH);
+		item = new ToolItem (toolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setToolTipText ("SWT.PUSH");
-		item = new ToolItem_Old (toolBar, SWT.SEPARATOR);
-		item = new ToolItem_Old (toolBar, SWT.PUSH);
+		item = new ToolItem (toolBar, SWT.SEPARATOR);
+		item = new ToolItem (toolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.PUSH");
-		item = new ToolItem_Old (toolBar, SWT.PUSH);
+		item = new ToolItem (toolBar, SWT.PUSH);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);
 		item.setToolTipText ("SWT.PUSH");
 		pushItem = new CoolItem (coolBar, itemStyle);
@@ -140,12 +140,12 @@ class CoolBarTab extends Tab {
 		pushItem.addSelectionListener (new CoolItemSelectionListener());
 
 		/* Create the dropdown toolbar cool item */
-		toolBar = new ToolBar_Old (coolBar, toolBarStyle);
-		item = new ToolItem_Old (toolBar, SWT.DROP_DOWN);
+		toolBar = new ToolBar (coolBar, toolBarStyle);
+		item = new ToolItem (toolBar, SWT.DROP_DOWN);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);
 		item.setToolTipText ("SWT.DROP_DOWN");
 		item.addSelectionListener (new DropDownSelectionListener());
-		item = new ToolItem_Old (toolBar, SWT.DROP_DOWN);
+		item = new ToolItem (toolBar, SWT.DROP_DOWN);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.DROP_DOWN");
 		item.addSelectionListener (new DropDownSelectionListener());
@@ -154,14 +154,14 @@ class CoolBarTab extends Tab {
 		dropDownItem.addSelectionListener (new CoolItemSelectionListener());
 
 		/* Create the radio button toolbar cool item */
-		toolBar = new ToolBar_Old (coolBar, toolBarStyle);
-		item = new ToolItem_Old (toolBar, SWT.RADIO);
+		toolBar = new ToolBar (coolBar, toolBarStyle);
+		item = new ToolItem (toolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.RADIO");
-		item = new ToolItem_Old (toolBar, SWT.RADIO);
+		item = new ToolItem (toolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.RADIO");
-		item = new ToolItem_Old (toolBar, SWT.RADIO);
+		item = new ToolItem (toolBar, SWT.RADIO);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.RADIO");
 		radioItem = new CoolItem (coolBar, itemStyle);
@@ -169,17 +169,17 @@ class CoolBarTab extends Tab {
 		radioItem.addSelectionListener (new CoolItemSelectionListener());
 
 		/* Create the check button toolbar cool item */
-		toolBar = new ToolBar_Old (coolBar, toolBarStyle);
-		item = new ToolItem_Old (toolBar, SWT.CHECK);
+		toolBar = new ToolBar (coolBar, toolBarStyle);
+		item = new ToolItem (toolBar, SWT.CHECK);
 		item.setImage (instance.images[ControlExample.ciClosedFolder]);
 		item.setToolTipText ("SWT.CHECK");
-		item = new ToolItem_Old (toolBar, SWT.CHECK);
+		item = new ToolItem (toolBar, SWT.CHECK);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setToolTipText ("SWT.CHECK");
-		item = new ToolItem_Old (toolBar, SWT.CHECK);
+		item = new ToolItem (toolBar, SWT.CHECK);
 		item.setImage (instance.images[ControlExample.ciOpenFolder]);
 		item.setToolTipText ("SWT.CHECK");
-		item = new ToolItem_Old (toolBar, SWT.CHECK);
+		item = new ToolItem (toolBar, SWT.CHECK);
 		item.setImage (instance.images[ControlExample.ciTarget]);
 		item.setToolTipText ("SWT.CHECK");
 		checkItem = new CoolItem (coolBar, itemStyle);
@@ -205,8 +205,8 @@ class CoolBarTab extends Tab {
 			Control control = coolItem.getControl();
 			Point size = control.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 			Point coolSize = coolItem.computeSize(size.x, size.y);
-			if (control instanceof ToolBar_Old) {
-				ToolBar_Old bar = (ToolBar_Old)control;
+			if (control instanceof ToolBar) {
+				ToolBar bar = (ToolBar)control;
 				if (bar.getItemCount() > 0) {
 					if (vertical) {
 						size.y = bar.getItem(0).getBounds().height;
@@ -380,8 +380,8 @@ class CoolBarTab extends Tab {
 					setMenuVisible(false);
 				} else {
 					// Position the menu below and vertically aligned with the the drop down tool button.
-					final ToolItem_Old toolItem = (ToolItem_Old) event.widget;
-					final ToolBar_Old  toolBar = toolItem.getParent();
+					final ToolItem toolItem = (ToolItem) event.widget;
+					final ToolBar  toolBar = toolItem.getParent();
 
 					Rectangle toolItemBounds = toolItem.getBounds();
 					Point point = toolBar.toDisplay(new Point(toolItemBounds.x, toolItemBounds.y));
@@ -435,8 +435,8 @@ class CoolBarTab extends Tab {
 				itemBounds.y = pt.y;
 
 				/* Get the toolbar from the cool item. */
-				ToolBar_Old toolBar = (ToolBar_Old) coolItem.getControl ();
-				ToolItem_Old[] tools = toolBar.getItems ();
+				ToolBar toolBar = (ToolBar) coolItem.getControl ();
+				ToolItem[] tools = toolBar.getItems ();
 				int toolCount = tools.length;
 
 				/* Convert the bounds of each tool item to display coordinates,
@@ -456,7 +456,7 @@ class CoolBarTab extends Tab {
 				/* Create a pop-up menu with items for each of the hidden buttons. */
 				menu = new Menu (shell, SWT.POP_UP | (coolBar.getStyle() & (SWT.RIGHT_TO_LEFT | SWT.LEFT_TO_RIGHT)));
 				for (int j = i; j < toolCount; j++) {
-					ToolItem_Old tool = tools[j];
+					ToolItem tool = tools[j];
 					Image image = tool.getImage();
 					if (image == null) {
 						new MenuItem (menu, SWT.SEPARATOR);
