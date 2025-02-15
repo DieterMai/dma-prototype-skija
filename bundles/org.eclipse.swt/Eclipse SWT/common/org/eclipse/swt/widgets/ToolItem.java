@@ -924,10 +924,6 @@ public class ToolItem extends Item {
 		return isSelected;
 	}
 
-	boolean isRadio() {
-		return (style & SWT.RADIO) == SWT.RADIO;
-	}
-
 	boolean internalUnselect() {
 		if (isSelected) {
 			isSelected = false;
