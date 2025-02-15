@@ -372,7 +372,11 @@ public class ToolBar extends Composite implements ICustomWidget {
 	 *                                     </ul>
 	 */
 	public ToolItem getItem(Point point) {
-		NOT_IMPLEMENTED();
+		for (ToolItem item : getItems()) {
+			if (item.getBounds().contains(point)) {
+				return item;
+			}
+		}
 		return null;
 	}
 
