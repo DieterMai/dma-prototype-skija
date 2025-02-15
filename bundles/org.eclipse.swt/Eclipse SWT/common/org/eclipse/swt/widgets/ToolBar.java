@@ -515,8 +515,44 @@ public class ToolBar extends Composite implements ICustomWidget {
 		redraw();
 	}
 
+	void radioItemSelected(ToolItem selectedItem) {
+		int selectedIndex = getItemIndex(selectedItem);
+		if (selectedIndex < 0) {
+			return;
+		}
+
+		// if a radio item is selected, we need to un-select
+		// each other radio item in the same group. A group
+		// is a uninterrupted series of items of the same type
+
+		boolean redrawRequired = false;
+		// un-select each radio item before the selected one
+		for (int i = selectedIndex - 1; i >= 0; i--) {
+			ToolItem item = getItem(i);
+			if ((item.style & SWT.RADIO) == SWT.RADIO) {
+				redrawRequired |= item.internalUnselect();
+			} else {
+				break;
+			}
+
+		}
+
+		// un-select each radio item before the selected one
+		for (int i = selectedIndex + 1; i < getItemCount(); i++) {
+			ToolItem item = getItem(i);
+			if ((item.style & SWT.RADIO) == SWT.RADIO) {
+				redrawRequired |= item.internalUnselect();
+			} else {
+				break;
+			}
+		}
+
+		if (redrawRequired) {
+			redraw();
+		}
+	}
+
 	private void NOT_IMPLEMENTED() {
 		System.err.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
-
 }

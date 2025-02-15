@@ -89,6 +89,11 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 	}
 
 	private void renderHighlight(GC gc, Rectangle bounds) {
+		if (item.isSelected()) {
+			drawHighlight(gc, bounds, new Color(153, 209, 255), new Color(204, 232, 255));
+			return;
+		}
+
 		switch(item.getState()) {
 		case IDLE -> {
 		}

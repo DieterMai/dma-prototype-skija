@@ -215,6 +215,14 @@ class ToolBarTab extends Tab {
 		item = new ToolItem_Old (textToolBar, SWT.PUSH);
 		item.setText (ControlExample.getResourceString("Push"));
 		item.setToolTipText("SWT.PUSH");
+		item.addListener(SWT.Selection, event -> {
+			System.out.println("ToolBarTab.createTxtToolBarNew()");
+			ToolItem_Old newItem = new ToolItem_Old(textToolBar, SWT.PUSH, 3);
+			newItem.setText ("New");
+			newItem.setToolTipText("SWT.PUSH");
+		});
+
+
 		item = new ToolItem_Old (textToolBar, SWT.RADIO);
 		item.setText (ControlExample.getResourceString("r"));
 		item.setToolTipText("SWT.RADIO");
@@ -251,6 +259,7 @@ class ToolBarTab extends Tab {
 		ToolItem item = new ToolItem (textToolBar2, SWT.PUSH);
 		item.setText (ControlExample.getResourceString("PushBlaBlub"));
 		item.setToolTipText("SWT.PUSH");
+
 		item = new ToolItem (textToolBar2, SWT.PUSH);
 		item.setText (ControlExample.getResourceString("Push"));
 		item.setToolTipText("SWT.PUSH");

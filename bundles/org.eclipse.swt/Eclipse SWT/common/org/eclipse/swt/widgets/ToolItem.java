@@ -69,12 +69,14 @@ public class ToolItem extends Item {
 	}
 
 
+
 	private final ToolItemRenderer renderer;
 
 	private ToolBar parent;
 	private Control control;
 	private String toolTipText;
 	private boolean enabled = true;;
+	private boolean isSelected;
 
 	private State state = State.IDLE;
 
@@ -887,7 +889,11 @@ public class ToolItem extends Item {
 		State newState;
 		if (renderer.isOnButton(location)) {
 			if (state == State.DOWN) {
+				isSelected = true;
 				sendEvent(SWT.Selection, new Event());
+				if (isRadio()) {
+					parent.radioItemSelected(this);
+				}
 			}
 			newState = State.HOVER;
 		} else {
@@ -904,5 +910,22 @@ public class ToolItem extends Item {
 
 	public boolean isSeparator() {
 		return (style & SWT.SEPARATOR) == SWT.SEPARATOR;
+	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	boolean isRadio() {
+		return (style & SWT.RADIO) == SWT.RADIO;
+	}
+
+	boolean internalUnselect() {
+		if (isSelected) {
+			isSelected = false;
+			sendEvent(SWT.Selection, new Event());
+			return true;
+		}
+		return false;
 	}
 }
