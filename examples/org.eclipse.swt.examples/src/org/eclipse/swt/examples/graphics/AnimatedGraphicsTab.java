@@ -22,16 +22,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.ToolBar_Old;
-import org.eclipse.swt.widgets.ToolItem_Old;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 /**
  * This class extends the GraphicsTab class to create animated graphics.
  * */
 public abstract class AnimatedGraphicsTab extends GraphicsTab {
 
-	ToolBar_Old toolBar;
-	ToolItem_Old playItem, pauseItem;
+	ToolBar toolBar;
+	ToolItem playItem, pauseItem;
 	Spinner timerSpinner;		// to input the speed of the animation
 	private boolean animate;	// flag that indicates whether or not to animate the graphic
 
@@ -65,7 +65,7 @@ public abstract class AnimatedGraphicsTab extends GraphicsTab {
 	void createToolBar(final Composite parent) {
 		final Display display = parent.getDisplay();
 
-		toolBar = new ToolBar_Old(parent, SWT.FLAT);
+		toolBar = new ToolBar(parent, SWT.FLAT);
 		Listener toolBarListener = event -> {
 			switch (event.type) {
 				case SWT.Selection: {
@@ -84,13 +84,13 @@ public abstract class AnimatedGraphicsTab extends GraphicsTab {
 		};
 
 		// play tool item
-		playItem = new ToolItem_Old(toolBar, SWT.PUSH);
+		playItem = new ToolItem(toolBar, SWT.PUSH);
 		playItem.setText(GraphicsExample.getResourceString("Play")); //$NON-NLS-1$
 		playItem.setImage(example.loadImage(display, "play.gif")); //$NON-NLS-1$
 		playItem.addListener(SWT.Selection, toolBarListener);
 
 		// pause tool item
-		pauseItem = new ToolItem_Old(toolBar, SWT.PUSH);
+		pauseItem = new ToolItem(toolBar, SWT.PUSH);
 		pauseItem.setText(GraphicsExample.getResourceString("Pause")); //$NON-NLS-1$
 		pauseItem.setImage(example.loadImage(display, "pause.gif")); //$NON-NLS-1$
 		pauseItem.addListener(SWT.Selection, toolBarListener);

@@ -40,8 +40,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.ToolBar_Old;
-import org.eclipse.swt.widgets.ToolItem_Old;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
@@ -163,9 +163,9 @@ public class HoverHelp {
 		if (platform.equals("gtk")) helpKey = "Ctrl+F1";
 		if (platform.equals("cocoa")) helpKey = "Help";
 
-		ToolBar_Old bar = new ToolBar_Old (frame, SWT.BORDER);
+		ToolBar bar = new ToolBar (frame, SWT.BORDER);
 		for (int i=0; i<5; i++) {
-			ToolItem_Old item = new ToolItem_Old (bar, SWT.PUSH);
+			ToolItem item = new ToolItem (bar, SWT.PUSH);
 			item.setText (getResourceString("ToolItem.text", new Object[] { Integer.valueOf(i) }));
 			item.setData ("TIP_TEXT", getResourceString("ToolItem.tooltip",
 				new Object[] { item.getText(), helpKey }));
@@ -289,8 +289,8 @@ public class HoverHelp {
 				public void mouseHover (MouseEvent event) {
 					Point pt = new Point (event.x, event.y);
 					Widget widget = event.widget;
-					if (widget instanceof ToolBar_Old) {
-						ToolBar_Old w = (ToolBar_Old) widget;
+					if (widget instanceof ToolBar) {
+						ToolBar w = (ToolBar) widget;
 						widget = w.getItem (pt);
 					}
 					if (widget instanceof Table) {

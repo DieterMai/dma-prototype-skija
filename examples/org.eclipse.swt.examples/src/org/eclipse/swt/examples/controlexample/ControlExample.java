@@ -123,6 +123,7 @@ public class ControlExample {
 			new CanvasTab (this),
 			new ColorTab(this),
 			new ComboTab (this),
+			new CTabFolderTab (this),
 			new CoolBarTab (this),
 			new DateTimeTab (this),
 			new DialogTab (this),
