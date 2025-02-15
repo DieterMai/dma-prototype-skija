@@ -445,8 +445,7 @@ public class ToolItem extends Item {
 	 */
 	public boolean getSelection() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return true;
+		return isSelected;
 	}
 
 	/**

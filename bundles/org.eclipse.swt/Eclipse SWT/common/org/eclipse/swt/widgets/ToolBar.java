@@ -298,18 +298,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 		return new Point(computedWidth, computedHeight);
 	}
 
-	@Override
-	Rectangle computeTrimInPixels(int x, int y, int width, int height) {
-		NOT_IMPLEMENTED();
-		return super.computeTrimInPixels(x, y, width, height);
-	}
-
-	@Override
-	Widget computeTabGroup() {
-		NOT_IMPLEMENTED();
-		return super.computeTabGroup();
-	}
-
 	void createItem(ToolItem item, int index) {
 		items.add(index, item);
 	}
