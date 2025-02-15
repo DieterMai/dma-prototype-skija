@@ -738,7 +738,7 @@ public class ToolItem extends Item {
 	 */
 	public void setSelection(boolean selected) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		internalSelect();
 	}
 
 	@Override
@@ -889,7 +889,8 @@ public class ToolItem extends Item {
 		State newState;
 		if (renderer.isOnButton(location)) {
 			if (state == State.DOWN) {
-				handleClick();
+				sendEvent(SWT.Selection, new Event());
+				internalSelect();
 			}
 			newState = State.HOVER;
 		} else {
@@ -904,9 +905,7 @@ public class ToolItem extends Item {
 		}
 	}
 
-	private void handleClick() {
-		sendEvent(SWT.Selection, new Event());
-
+	private void internalSelect() {
 		switch (this.style) {
 		case SWT.CHECK -> isSelected = !isSelected;
 		case SWT.RADIO -> {

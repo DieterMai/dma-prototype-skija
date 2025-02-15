@@ -310,12 +310,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 		return super.computeTabGroup();
 	}
 
-	@Override
-	Widget[] computeTabList() {
-		NOT_IMPLEMENTED();
-		return super.computeTabList();
-	}
-
 	void createItem(ToolItem item, int index) {
 		items.add(index, item);
 	}
@@ -466,9 +460,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 	 *                                     </ul>
 	 */
 	public int indexOf(ToolItem item) {
-		checkWidget();
-		NOT_IMPLEMENTED();
-		return 0;
+		return items.indexOf(item);
 	}
 
 	@Override
@@ -554,10 +546,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 			} else {
 				break;
 			}
-		}
-
-		if (redrawRequired) {
-			redraw();
 		}
 	}
 

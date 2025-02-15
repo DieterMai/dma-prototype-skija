@@ -44,8 +44,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar_Old;
-import org.eclipse.swt.widgets.ToolItem_Old;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 public class PaintExample {
 	private static ResourceBundle resourceBundle =
@@ -142,15 +142,15 @@ public class PaintExample {
 	 * Note: Only called by standalone.
 	 */
 	private void createToolBar(Composite parent) {
-		ToolBar_Old toolbar = new ToolBar_Old (parent, SWT.NONE);
+		ToolBar toolbar = new ToolBar (parent, SWT.NONE);
 		String group = null;
 		for (int i = 0; i < tools.length; i++) {
 			Tool tool = tools[i];
 			if (group != null && !tool.group.equals(group)) {
-				new ToolItem_Old (toolbar, SWT.SEPARATOR);
+				new ToolItem (toolbar, SWT.SEPARATOR);
 			}
 			group = tool.group;
-			ToolItem_Old item = addToolItem(toolbar, tool);
+			ToolItem item = addToolItem(toolbar, tool);
 			if (i == Default_tool || i == Default_fill || i == Default_linestyle) item.setSelection(true);
 		}
 	}
@@ -159,9 +159,9 @@ public class PaintExample {
 	 * Adds a tool item to the toolbar.
 	 * Note: Only called by standalone.
 	 */
-	private ToolItem_Old addToolItem(final ToolBar_Old toolbar, final Tool tool) {
+	private ToolItem addToolItem(final ToolBar toolbar, final Tool tool) {
 		final String id = tool.group + '.' + tool.name;
-		ToolItem_Old item = new ToolItem_Old (toolbar, tool.type);
+		ToolItem item = new ToolItem (toolbar, tool.type);
 		item.setText (getResourceString(id + ".label"));
 		item.setToolTipText(getResourceString(id + ".tooltip"));
 		item.setImage(tool.image);
