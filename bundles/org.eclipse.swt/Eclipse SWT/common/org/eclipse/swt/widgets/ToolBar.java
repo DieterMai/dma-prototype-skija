@@ -86,6 +86,9 @@ public class ToolBar extends Composite implements ICustomWidget {
 	/** The {@link ToolItem}s contained in the {@link ToolBar} */
 	private java.util.List<ToolItem> items = new ArrayList<>();
 
+	@Deprecated
+	public int itemCount;
+
 	private Listener listener;
 
 	/** The renderer used to render to {@link ToolBar}. */
@@ -98,6 +101,10 @@ public class ToolBar extends Composite implements ICustomWidget {
 	private final boolean border;
 	private final boolean vertical;
 	private final boolean rightToLeft;
+
+	public ToolBar(Composite parent, int style) {
+		this(parent, style, false);
+	}
 
 	/**
 	 * Constructs a new instance of this class given its parent and a style value
@@ -138,7 +145,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 	 * @see Widget#checkSubclass()
 	 * @see Widget#getStyle()
 	 */
-	public ToolBar(Composite parent, int style) {
+	public ToolBar(Composite parent, int style, boolean internal) {
 		super(parent, checkStyle(style));
 		renderer = new ToolBarRenderer(this);
 
@@ -303,7 +310,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, bounds));
 	}
 
-	@Override
 	Point computeSizeInPixels(int wHint, int hHint, boolean changed) {
 		Point sizeHint = new Point(wHint, hHint);
 		Point size = renderer.computeSize(sizeHint);
@@ -318,6 +324,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	void createItem(ToolItem item, int index) {
 		items.add(index, item);
+		itemCount = items.size();
 	}
 
 	/**
@@ -522,5 +529,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	void notifyItemDisposed(ToolItem toolItem) {
 		items.remove(toolItem);
+		itemCount = items.size();
 	}
 }
