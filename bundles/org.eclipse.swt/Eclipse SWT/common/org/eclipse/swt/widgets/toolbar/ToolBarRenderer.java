@@ -91,20 +91,6 @@ public class ToolBarRenderer implements IToolBarRenderer {
 	public Point computeSize(Point size) {
 		ToolBarLayout layout = computeRows(size);
 		return layout.size();
-
-//		if (bar.isHorizontal()) {
-//			int totalWidth = 0;
-//			for (int i = 0; i < bar.getItemCount(); i++) {
-//				totalWidth += bar.getItem(i).getWidth() + 1;
-//			}
-//			return totalWidth;
-//		} else {
-//			int max = 1;
-//			for (int i = 0; i < bar.getItemCount(); i++) {
-//				max = Math.max(max, bar.getItem(i).getWidth());
-//			}
-//			return max;
-//		}
 	}
 
 

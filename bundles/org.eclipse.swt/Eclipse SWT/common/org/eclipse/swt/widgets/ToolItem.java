@@ -162,7 +162,19 @@ public class ToolItem extends Item {
 	 * @see Widget#getStyle
 	 */
 	public ToolItem(ToolBar parent, int style) {
-		this(parent, checkStyle(style), parent.getItemCount());
+		super(checkParent(parent), checkStyle(style));
+		this.parent = parent;
+
+		this.renderer = switch (this.style) {
+		case SWT.CHECK -> new ToolItemButtonRenderer(parent, this);
+		case SWT.PUSH -> new ToolItemButtonRenderer(parent, this);
+		case SWT.RADIO -> new ToolItemButtonRenderer(parent, this);
+		case SWT.SEPARATOR -> new ToolItemSeparatorRenderer(parent);
+		case SWT.DROP_DOWN -> new ToolItemDropDownRenderer(parent, this);
+		default -> throw new IllegalArgumentException("Invalid Style: " + style);
+		};
+
+		parent.createItem(this, parent.getItemCount());
 	}
 
 	/**
@@ -178,7 +190,7 @@ public class ToolItem extends Item {
 	 * applicable to the class. Style bits are also inherited from superclasses.
 	 * </p>
 	 *
-	 * @param bar   a composite control which will be the parent of the new instance
+	 * @param parent   a composite control which will be the parent of the new instance
 	 *              (cannot be null)
 	 * @param style the style of control to construct
 	 * @param index the zero-relative index to store the receiver in its parent
@@ -208,20 +220,33 @@ public class ToolItem extends Item {
 	 * @see Widget#checkSubclass
 	 * @see Widget#getStyle
 	 */
-	public ToolItem(ToolBar bar, int style, int index) {
-		super(bar, checkStyle(style));
-		this.parent = bar;
+	public ToolItem(ToolBar parent, int style, int index) {
+		super(checkParent(parent), checkStyle(style));
+		this.parent = parent;
 
 		this.renderer = switch (this.style) {
-		case SWT.CHECK -> new ToolItemButtonRenderer(bar, this);
-		case SWT.PUSH -> new ToolItemButtonRenderer(bar, this);
-		case SWT.RADIO -> new ToolItemButtonRenderer(bar, this);
-		case SWT.SEPARATOR -> new ToolItemSeparatorRenderer(bar);
-		case SWT.DROP_DOWN -> new ToolItemDropDownRenderer(bar, this);
+		case SWT.CHECK -> new ToolItemButtonRenderer(parent, this);
+		case SWT.PUSH -> new ToolItemButtonRenderer(parent, this);
+		case SWT.RADIO -> new ToolItemButtonRenderer(parent, this);
+		case SWT.SEPARATOR -> new ToolItemSeparatorRenderer(parent);
+		case SWT.DROP_DOWN -> new ToolItemDropDownRenderer(parent, this);
 		default -> throw new IllegalArgumentException("Invalid Style: " + style);
 		};
 
-		bar.createItem(this, index);
+		parent.createItem(this, index);
+	}
+
+	private static ToolBar checkParent(ToolBar parent) {
+		if (parent == null) {
+			throw new IllegalArgumentException();
+		}
+		return parent;
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		state |= DISPOSED;
 	}
 
 	/**

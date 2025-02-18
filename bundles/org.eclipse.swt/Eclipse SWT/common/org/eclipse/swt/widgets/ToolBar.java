@@ -343,7 +343,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 	 *                                     </ul>
 	 */
 	public ToolItem getItem(int index) {
-		checkRange(index);
+		checkRange(index, items.size());
 		checkWidget();
 		return items.get(index);
 	}
@@ -469,7 +469,7 @@ public class ToolBar extends Composite implements ICustomWidget {
 	 *                                     </ul>
 	 */
 	public int indexOf(ToolItem item) {
-		checkItem(item);
+		checkClient(item);
 		checkWidget();
 		return items.indexOf(item);
 	}
@@ -518,22 +518,10 @@ public class ToolBar extends Composite implements ICustomWidget {
 		}
 	}
 
-	private void checkRange(int i) {
-		if (i < 0 || i >= items.size()) {
-			error(SWT.ERROR_INVALID_RANGE);
+	@Override
+	void releaseChildren(boolean destroy) {
+		for (ToolItem item : items) {
+			item.dispose();
 		}
-	}
-
-	private void checkItem(ToolItem item) {
-		if (item == null) {
-			error(SWT.ERROR_NULL_ARGUMENT);
-		} else if (item.isDisposed()) {
-			error(SWT.ERROR_INVALID_ARGUMENT);
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void NOT_IMPLEMENTED() {
-		System.err.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
 }

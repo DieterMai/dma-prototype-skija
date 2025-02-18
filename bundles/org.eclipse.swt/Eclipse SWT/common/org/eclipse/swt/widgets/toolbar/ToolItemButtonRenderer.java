@@ -20,7 +20,15 @@ import org.eclipse.swt.widgets.ToolItem.*;
 
 public class ToolItemButtonRenderer implements ToolItemRenderer {
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
+
+	/*
+	 * The background color is displayed when the button is pressed or hovered - but
+	 * not as-is. The background color is shifted in the direction of the target
+	 * color by the ratio defined in ColorType.
+	 */
 	private static final RGB TARGET_RGB = new RGB(0, 139, 255);
+
+	/* If no color is set, this is used as fallback. */
 	private static final RGB DEFAULT_RGB = new RGB(225, 241, 255);
 
 	private final ToolBar bar;
@@ -108,7 +116,7 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 			return;
 		}
 
-		switch(item.getState()) {
+		switch (item.getState()) {
 		case IDLE -> {
 		}
 		case HOVER -> drawHighlight(gc, bounds, getColor(ColorType.BORDER_HOVER), getColor(ColorType.FILL_HOVER));
@@ -119,9 +127,9 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 	private Color getColor(ColorType type) {
 		Color backgroundColor = item.getBackground();
 		RGB set;
-		if(backgroundColor != null) {
+		if (backgroundColor != null) {
 			set = backgroundColor.getRGB();
-		}else {
+		} else {
 			set = DEFAULT_RGB;
 		}
 
@@ -144,7 +152,7 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 	private Image getUsedImage() {
 		Image image = null;
 		if (!item.isEnabled() || !bar.isEnabled()) {
-			image = getDisabledImage_();
+			image = getDisabledImage();
 		} else if (item.isSelected() || item.getState() != MouseState.IDLE) {
 			image = item.getHotImage();
 		}
@@ -154,7 +162,7 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 		return image;
 	}
 
-	private Image getDisabledImage_() {
+	private Image getDisabledImage() {
 		if (item.getDisabledImage() != null) {
 			return item.getDisabledImage();
 		}
@@ -283,7 +291,6 @@ public class ToolItemButtonRenderer implements ToolItemRenderer {
 		Point size = maxSize(requestedSize, minSize);
 		int imagePos = (size.x - imageBounds.width) / 2;
 		int textPosX = (size.x - textExtent.x) / 2;
-
 
 		imageBounds.x = imagePos;
 		imageBounds.y = PADDING_TOP;
