@@ -246,6 +246,7 @@ public class ToolItem extends Item {
 	@Override
 	public void dispose() {
 		super.dispose();
+		parent.notifyItemDisposed(this);
 		state |= DISPOSED;
 	}
 

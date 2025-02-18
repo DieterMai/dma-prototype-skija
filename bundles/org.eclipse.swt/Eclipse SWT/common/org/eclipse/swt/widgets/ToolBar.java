@@ -520,8 +520,13 @@ public class ToolBar extends Composite implements ICustomWidget {
 
 	@Override
 	void releaseChildren(boolean destroy) {
-		for (ToolItem item : items) {
+		List<ToolItem> copy = List.copyOf(items);
+		for (ToolItem item : copy) {
 			item.dispose();
 		}
+	}
+
+	void notifyItemDisposed(ToolItem toolItem) {
+		items.remove(toolItem);
 	}
 }

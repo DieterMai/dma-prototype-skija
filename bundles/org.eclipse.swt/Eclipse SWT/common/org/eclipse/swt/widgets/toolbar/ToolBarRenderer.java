@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class ToolBarRenderer implements IToolBarRenderer {
 	private final ToolBar bar;
-	private int rowCount;
+	private int rowCount = SWT.DEFAULT;
 
 	public ToolBarRenderer(ToolBar toolbar) {
 		this.bar = toolbar;
@@ -37,7 +37,7 @@ public class ToolBarRenderer implements IToolBarRenderer {
 	@Override
 	public void render(GC gc, Rectangle bounds) {
 		Point size = new Point(bounds.width, bounds.height);
-		ToolBarLayout layout = computeRows(size);
+		ToolBarLayout layout = computeLayout(size);
 		rowCount = layout.rows().size();
 
 		render(gc, bounds, layout.rows());
@@ -69,7 +69,7 @@ public class ToolBarRenderer implements IToolBarRenderer {
 		gc.drawLine(0, pos, row.availableSpace.y, pos);
 	}
 
-	private ToolBarLayout computeRows(Point size) {
+	private ToolBarLayout computeLayout(Point size) {
 		// Collect all item sizes
 		List<ItemRecord> itemRecords = new ArrayList<>();
 		for (int i = 0; i < bar.getItemCount(); i++) {
@@ -89,13 +89,18 @@ public class ToolBarRenderer implements IToolBarRenderer {
 
 	@Override
 	public Point computeSize(Point size) {
-		ToolBarLayout layout = computeRows(size);
+		ToolBarLayout layout = computeLayout(size);
 		return layout.size();
 	}
 
 
 	@Override
 	public int rowCount() {
+		if (rowCount == SWT.DEFAULT) {
+			Rectangle bounds = bar.getBounds();
+			Point size = new Point(bounds.x, bounds.y);
+			rowCount = computeLayout(size).rows().size();
+		}
 		return rowCount;
 	}
 }
