@@ -310,7 +310,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, bounds));
 	}
 
-	@Override
 	Point computeSizeInPixels(int wHint, int hHint, boolean changed) {
 		Point sizeHint = new Point(wHint, hHint);
 		Point size = renderer.computeSize(sizeHint);
