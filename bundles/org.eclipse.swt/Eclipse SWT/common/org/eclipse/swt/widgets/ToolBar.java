@@ -474,12 +474,6 @@ public class ToolBar extends Composite implements ICustomWidget {
 		return items.indexOf(item);
 	}
 
-
-	@Override
-	void setBackgroundImage(long hBitmap) {
-		redraw();
-	}
-
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
