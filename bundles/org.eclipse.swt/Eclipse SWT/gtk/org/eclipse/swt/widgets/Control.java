@@ -6896,7 +6896,7 @@ void createHandle(int index) {
 	if (this instanceof ICustomWidget) {
 
 		state |= HANDLE | CANVAS | CHECK_SUBWINDOW;
-		boolean scrolled = isScrolled();
+		boolean scrolled = (style & (SWT.H_SCROLL | SWT.V_SCROLL)) != 0;
 		if (!scrolled)
 			state |= THEME_BACKGROUND;
 		createCompositeHandle(index, true, scrolled || (style & SWT.BORDER) != 0);
@@ -6904,10 +6904,6 @@ void createHandle(int index) {
 	} else {
 		super.createHandle(index);
 	}
-}
-
-protected boolean isScrolled() {
-	return (style & (SWT.H_SCROLL | SWT.V_SCROLL)) != 0;
 }
 
 void createCompositeHandle(int index, boolean fixed, boolean scrolled) {

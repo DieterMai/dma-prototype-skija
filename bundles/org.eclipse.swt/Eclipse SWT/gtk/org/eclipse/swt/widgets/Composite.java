@@ -303,14 +303,14 @@ Widget [] computeTabList () {
 @Override
 void createHandle (int index) {
 	state |= HANDLE | CANVAS | CHECK_SUBWINDOW;
-	boolean scrolled = isScrolled();
+	boolean scrolled = (style & (SWT.H_SCROLL | SWT.V_SCROLL)) != 0;
 	if (!scrolled) state |= THEME_BACKGROUND;
 	createHandle (index, true, scrolled || (style & SWT.BORDER) != 0);
 }
 
 @Override
 int applyThemeBackground () {
-	return (backgroundAlpha == 0 || isScrolled()) ? 1 : 0;
+	return (backgroundAlpha == 0 || (style & (SWT.H_SCROLL | SWT.V_SCROLL)) != 0) ? 1 : 0;
 }
 
 void createHandle (int index, boolean fixed, boolean scrolled) {
@@ -379,12 +379,8 @@ void createHandle (int index, boolean fixed, boolean scrolled) {
 			display.setWarnings (warnings);
 		}
 
-		int hsp = GTK.GTK_POLICY_NEVER;
-		int vsp = GTK.GTK_POLICY_NEVER;
-		if (isScrolled()) {
-			hsp = (style & SWT.H_SCROLL) != 0 ? GTK.GTK_POLICY_ALWAYS : GTK.GTK_POLICY_NEVER;
-			vsp = (style & SWT.V_SCROLL) != 0 ? GTK.GTK_POLICY_ALWAYS : GTK.GTK_POLICY_NEVER;
-		}
+		int hsp = (style & SWT.H_SCROLL) != 0 ? GTK.GTK_POLICY_ALWAYS : GTK.GTK_POLICY_NEVER;
+		int vsp = (style & SWT.V_SCROLL) != 0 ? GTK.GTK_POLICY_ALWAYS : GTK.GTK_POLICY_NEVER;
 		GTK.gtk_scrolled_window_set_policy (scrolledHandle, hsp, vsp);
 		if (hasBorder ()) {
 			if (GTK.GTK4) {

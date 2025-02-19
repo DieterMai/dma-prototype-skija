@@ -44,9 +44,6 @@ public class ToolBarRenderer implements IToolBarRenderer {
 	}
 
 	private void render(GC gc, Rectangle bounds, List<Row> rows) {
-		gc.setBackground(bar.getBackground());
-		gc.fillRectangle(0, 0, bounds.width, bounds.height);
-
 		if (bar.isShadowOut()) {
 			gc.setForeground(new Color(160, 160, 160));
 			gc.drawLine(0, 0, bounds.width, 0);

@@ -271,7 +271,7 @@ Widget [] computeTabList () {
 @Override
 void createHandle () {
 	state |= CANVAS;
-	boolean scrolled = isScrolled();
+	boolean scrolled = (style & (SWT.H_SCROLL | SWT.V_SCROLL)) != 0;
 	if (!scrolled)  state |= THEME_BACKGROUND;
 	NSRect rect = new NSRect();
 	if (scrolled || hasBorder ()) {

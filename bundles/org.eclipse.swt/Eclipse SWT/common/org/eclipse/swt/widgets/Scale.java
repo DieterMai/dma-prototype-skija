@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.*;
-
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -174,23 +172,18 @@ public class Scale extends Control implements ICustomWidget {
 		alignment = style & (SWT.HORIZONTAL | SWT.VERTICAL);
 		orientation = style & (SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT);
 
+		if ((style & SWT.VERTICAL) != 0) {
+			super.style |= SWT.VERTICAL;
+		} else {
+			super.style |= SWT.HORIZONTAL;
+		}
+
 		renderer = new ScaleRenderer(this);
 	}
 
-	@Override
-	protected boolean isScrolled() {
-		return false;
-	}
-
 	private static int checkStyle(int style) {
-		if ((style & SWT.HORIZONTAL) != 0) {
-			style &= ~SWT.VERTICAL;
-		} else if ((style & SWT.VERTICAL) != 0) {
-			style &= ~SWT.HORIZONTAL;
-		} else {
-			style |= SWT.HORIZONTAL;
-			style &= ~SWT.VERTICAL;
-		}
+		style &= SWT.HORIZONTAL;
+		style &= SWT.VERTICAL;
 
 		if ((style & SWT.LEFT_TO_RIGHT) != 0) {
 			style &= ~SWT.RIGHT_TO_LEFT;

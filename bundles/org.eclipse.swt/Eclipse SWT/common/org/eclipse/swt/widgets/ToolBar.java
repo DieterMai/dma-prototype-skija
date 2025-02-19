@@ -176,21 +176,17 @@ public class ToolBar extends Composite implements ICustomWidget {
 		vertical = isFlag(style, SWT.VERTICAL);
 		rightToLeft = isFlag(style, SWT.RIGHT_TO_LEFT);
 
+		super.style |= vertical ? SWT.VERTICAL : SWT.HORIZONTAL;
+
 	}
 
 	private static boolean isFlag(int style, int flag) {
 		return (style & flag) == flag;
 	}
 
-	@Override
-	protected boolean isScrolled() {
-		return false;
-	}
-
 	static int checkStyle(int style) {
-		if (!isFlag(style, SWT.VERTICAL)) {
-			style |= SWT.HORIZONTAL;
-		}
+		style &= ~SWT.VERTICAL;
+		style &= ~SWT.HORIZONTAL;
 
 		return style;
 	}

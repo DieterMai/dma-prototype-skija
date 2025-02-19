@@ -5998,9 +5998,4 @@ public abstract class Control extends Widget implements Drawable {
 			super.createHandle();
 		}
 	}
-
-	protected boolean isScrolled() {
-		return (style & (SWT.H_SCROLL | SWT.V_SCROLL)) != 0;
-	}
-
 }

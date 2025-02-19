@@ -119,8 +119,8 @@ public abstract class Scrollable extends Control {
 			// Always include the scroll bar in the trim even when the scroll style is
 			// overlay
 
-			size = NSScrollView.frameSizeForContentSize(size, isHScroll() ? OS.class_NSScroller : 0,
-					isVScroll() ? OS.class_NSScroller : 0, border, OS.NSRegularControlSize,
+			size = NSScrollView.frameSizeForContentSize(size, (style & SWT.H_SCROLL) != 0 ? OS.class_NSScroller : 0,
+					(style & SWT.V_SCROLL) != 0 ? OS.class_NSScroller : 0, border, OS.NSRegularControlSize,
 					OS.NSScrollerStyleLegacy);
 			width = (int) size.width;
 			height = (int) size.height;
@@ -129,14 +129,6 @@ public abstract class Scrollable extends Control {
 			y -= frame.y;
 		}
 		return new Rectangle(x, y, width, height);
-	}
-
-	private boolean isHScroll() {
-		return isScrolled() && (style & SWT.H_SCROLL) != 0;
-	}
-
-	private boolean isVScroll() {
-		return isScrolled() && (style & SWT.V_SCROLL) != 0;
 	}
 
 	ScrollBar createScrollBar(int style) {
@@ -149,14 +141,14 @@ public abstract class Scrollable extends Control {
 		NSScroller scroller;
 		long actionSelector;
 		NSRect rect = new NSRect();
-		if (isHScroll()) {
+		if ((style & SWT.H_SCROLL) != 0) {
 			rect.width = 1;
 		} else {
 			rect.height = 1;
 		}
 		scroller = (NSScroller) new SWTScroller().alloc();
 		scroller.initWithFrame(rect);
-		if (isHScroll()) {
+		if ((style & SWT.H_SCROLL) != 0) {
 			scrollView.setHorizontalScroller(scroller);
 			actionSelector = OS.sel_sendHorizontalSelection;
 		} else {
@@ -181,9 +173,9 @@ public abstract class Scrollable extends Control {
 	@Override
 	void createWidget() {
 		super.createWidget();
-		if (isHScroll())
+		if ((style & SWT.H_SCROLL) != 0)
 			horizontalBar = createScrollBar(SWT.H_SCROLL);
-		if (isVScroll())
+		if ((style & SWT.V_SCROLL) != 0)
 			verticalBar = createScrollBar(SWT.V_SCROLL);
 	}
 
@@ -487,7 +479,7 @@ public abstract class Scrollable extends Control {
 	void createHandle() {
 		if (this instanceof ICustomWidget) {
 			state |= CANVAS;
-			boolean scrolled = isScrolled();
+			boolean scrolled = (style & (SWT.H_SCROLL | SWT.V_SCROLL)) != 0;
 			if (!scrolled)
 				state |= THEME_BACKGROUND;
 			NSRect rect = new NSRect();
@@ -495,9 +487,9 @@ public abstract class Scrollable extends Control {
 				NSScrollView scrollWidget = (NSScrollView) new SWTScrollView().alloc();
 				scrollWidget.initWithFrame(rect);
 				scrollWidget.setDrawsBackground(false);
-				if (isHScroll())
+				if ((style & SWT.H_SCROLL) != 0)
 					scrollWidget.setHasHorizontalScroller(true);
-				if (isVScroll())
+				if ((style & SWT.V_SCROLL) != 0)
 					scrollWidget.setHasVerticalScroller(true);
 				scrollWidget.setBorderType(hasBorder() ? OS.NSBezelBorder : OS.NSNoBorder);
 				scrollView = scrollWidget;
