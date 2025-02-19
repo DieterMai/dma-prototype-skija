@@ -90,7 +90,23 @@ public class ToolBarRenderer implements IToolBarRenderer {
 	@Override
 	public Point computeSize(Point size) {
 		ToolBarLayout layout = computeLayout(size);
-		return layout.size();
+
+		Point computedSize = layout.size();
+		if (bar.isBorder()) {
+			computedSize.x += 4;
+			computedSize.y += 4;
+		}
+
+		Point finalSize = new Point(computedSize.x, computedSize.y);
+		if (size.x > 0) {
+			finalSize.x = size.x;
+		}
+
+		if (size.y > 0) {
+			finalSize.y = size.y;
+		}
+
+		return finalSize;
 	}
 
 

@@ -46,15 +46,18 @@ public class ToolBarLayoutGenerator {
 			offset.y++;
 		}
 
+		ToolBarLayout layout;
 		if (horizontal) {
 			if (wrap) {
-				return computeMultipleHorizontalRows(offset);
+				layout = computeMultipleHorizontalRows(offset);
 			} else {
-				return computeSingleHorizontalRow(offset);
+				layout = computeSingleHorizontalRow(offset);
 			}
 		} else {
-			return computeSingleVerticalRow(offset);
+			layout = computeSingleVerticalRow(offset);
 		}
+
+		return layout;
 	}
 
 	private ToolBarLayout computeSingleHorizontalRow(Point offset) {
