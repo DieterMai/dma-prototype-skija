@@ -40,7 +40,7 @@ import org.eclipse.swt.internal.win32.*;
  * @since 3.1
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class TreeColumn extends Item {
+public class TreeColumn extends Item implements ITreeColumn {
 	Tree parent;
 	boolean resizable, moveable;
 	String toolTipText;

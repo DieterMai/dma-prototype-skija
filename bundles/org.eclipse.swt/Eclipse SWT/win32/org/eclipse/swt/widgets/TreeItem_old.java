@@ -39,7 +39,7 @@ import org.eclipse.swt.internal.win32.*;
  *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class TreeItem_old extends Item {
+public class TreeItem_old extends Item implements ITreeItem {
 	/**
 	 * the handle to the OS resource
 	 * (Warning: This field is platform dependent)

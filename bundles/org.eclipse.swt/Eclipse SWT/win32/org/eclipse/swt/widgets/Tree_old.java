@@ -89,7 +89,7 @@ import org.eclipse.swt.internal.win32.*;
  *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class Tree_old extends Composite {
+public class Tree_old extends Composite implements ITree {
 	TreeItem_old[] items;
 	TreeColumn_old[] columns;
 	int columnCount;
@@ -386,6 +386,7 @@ public void addSelectionListener(SelectionListener listener) {
  * @see TreeListener
  * @see #removeTreeListener
  */
+@Override
 public void addTreeListener(TreeListener listener) {
 	addTypedListener(listener, SWT.Expand, SWT.Collapse);
 }
@@ -3124,6 +3125,7 @@ long getBottomItem () {
  *
  * @since 3.1
  */
+@Override
 public TreeColumn_old getColumn(int index) {
 	checkWidget ();
 	if (!(0 <= index && index < columnCount)) error (SWT.ERROR_INVALID_RANGE);
@@ -3149,6 +3151,7 @@ public TreeColumn_old getColumn(int index) {
  *
  * @since 3.1
  */
+@Override
 public int getColumnCount () {
 	checkWidget ();
 	return columnCount;
@@ -4172,6 +4175,7 @@ public void removeSelectionListener (SelectionListener listener) {
  * @see TreeListener
  * @see #addTreeListener
  */
+@Override
 public void removeTreeListener(TreeListener listener) {
 	checkWidget ();
 	if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -8358,5 +8362,10 @@ private static void handleDPIChange(Widget widget, int newZoom, float scalingFac
 	tree.setScrollWidth();
 	// Reset of CheckBox Size required (if SWT.Check is not set, this is a no-op)
 	tree.setCheckboxImageList();
+}
+
+@Override
+public Composite _composite() {
+	return this;
 }
 }
