@@ -1,5 +1,6 @@
 package org.eclipse.swt.examples.controlexample;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Font;
@@ -109,30 +110,61 @@ public class WrapperTee {
 	}
 
 	public List<Item> getExampleWidgetItems() {
-		return old.getExampleWidgetItems();
+		List<Item> allItems = new ArrayList<>();
+		allItems.addAll(old.getExampleWidgetItems());
+		allItems.addAll(neo.getExampleWidgetItems());
+		return allItems;
 	}
 
 	public List<Tree> getExampleWidgets() {
-		return old.getExampleWidgets();
+		List<Tree> allItems = new ArrayList<>();
+		allItems.addAll(old.getExampleWidgets());
+		allItems.addAll(neo.getExampleWidgets());
+		return allItems;
 	}
 
 	public int getStyle() {
-		return old.getStyle();
+		int oldValue = old.getStyle();
+		int newValue = neo.getStyle();
+		if(oldValue != newValue) {
+			System.err.println("WrapperTee.getStyle() old: "+oldValue+", new: "+newValue);
+		}
+		return oldValue;
 	}
 
 	public boolean columnResizable() {
-		return old.columnResizable();
+		boolean oldValue = old.columnResizable();
+		boolean newValue = neo.columnResizable();
+		if(oldValue != newValue) {
+			System.err.println("WrapperTee.columnResizable() old: "+oldValue+", new: "+newValue);
+		}
+		return oldValue;
 	}
 
 	public boolean columnMovable() {
-		return old.columnMovable();
+		boolean oldValue = old.columnMovable();
+		boolean newValue = neo.columnMovable();
+		if(oldValue != newValue) {
+			System.err.println("WrapperTee.columnMovable() old: "+oldValue+", new: "+newValue);
+		}
+		return oldValue;
 	}
 
 	public boolean headerVisible() {
-		return old.headerVisible();
+		boolean oldValue = old.headerVisible();
+		boolean newValue = neo.headerVisible();
+		if(oldValue != newValue) {
+			System.err.println("WrapperTee.headerVisible() old: "+oldValue+", new: "+newValue);
+		}
+		return oldValue;
 	}
 
 	public boolean linesVisible() {
-		return old.linesVisible();
+		boolean oldValue = old.linesVisible();
+		boolean newValue = neo.linesVisible();
+		if(oldValue != newValue) {
+			System.err.println("WrapperTee.linesVisible() old: "+oldValue+", new: "+newValue);
+		}
+		return oldValue;
 	}
 }
