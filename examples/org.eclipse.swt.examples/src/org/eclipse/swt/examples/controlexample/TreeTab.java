@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.ITree;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -232,8 +233,8 @@ class TreeTab extends ScrollableTab {
 	 */
 	@Override
 	Widget [] getExampleWidgets () {
-		List<Tree> allTrees = new ArrayList<>(exampleWrapper_old.getExampleWidgets());
-		return allTrees.toArray(Widget[]::new);
+		List<ITree> allTrees = new ArrayList<>(exampleWrapper_old.getExampleWidgets());
+		return allTrees.stream().map(tree -> (Widget)tree).toArray(Widget[]::new);
 	}
 
 	/**

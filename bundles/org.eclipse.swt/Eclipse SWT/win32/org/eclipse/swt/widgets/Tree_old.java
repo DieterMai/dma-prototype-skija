@@ -89,7 +89,7 @@ import org.eclipse.swt.internal.win32.*;
  *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class Tree_old extends Composite implements ITree {
+public class Tree_old extends Composite implements ITree<TreeColumn_old, TreeItem_old> {
 	TreeItem_old[] items;
 	TreeColumn_old[] columns;
 	int columnCount;
@@ -2993,6 +2993,7 @@ int getGridLineWidthInPixels () {
  * </ul>
  * @since 3.106
  */
+@Override
 public Color getHeaderBackground () {
 	checkWidget ();
 	return Color.win32_new (display, getHeaderBackgroundPixel());
@@ -3013,6 +3014,7 @@ private int getHeaderBackgroundPixel() {
  * </ul>
  * @since 3.106
  */
+@Override
 public Color getHeaderForeground () {
 	checkWidget ();
 	return Color.win32_new (display, getHeaderForegroundPixel());
@@ -3065,6 +3067,7 @@ int getHeaderHeightInPixels () {
  *
  * @since 3.1
  */
+@Override
 public boolean getHeaderVisible () {
 	checkWidget ();
 	if (hwndHeader == 0) return false;
@@ -3234,6 +3237,7 @@ private int[] getColumnOrderFromOS() {
  *
  * @since 3.1
  */
+@Override
 public TreeColumn_old[] getColumns() {
 	checkWidget ();
 	TreeColumn_old[] result = new TreeColumn_old[columnCount];
@@ -3313,6 +3317,7 @@ TreeItem_old getItem(NMTVCUSTOMDRAW nmcd) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
+@Override
 public TreeItem_old getItem(Point point) {
 	checkWidget ();
 	if (point == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -3414,6 +3419,7 @@ int getItemHeightInPixels () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
+@Override
 public TreeItem_old[] getItems() {
 	checkWidget ();
 	long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
@@ -3475,6 +3481,7 @@ TreeItem_old[] getItems(long hTreeItem_old) {
  *
  * @since 3.1
  */
+@Override
 public boolean getLinesVisible () {
 	checkWidget ();
 	return linesVisible;
@@ -3702,6 +3709,7 @@ public int getSelectionCount () {
  *
  * @since 3.2
  */
+@Override
 public TreeColumn_old getSortColumn() {
 	checkWidget ();
 	return sortColumn;
@@ -3728,6 +3736,7 @@ int getSortColumnPixel () {
  *
  * @since 3.2
  */
+@Override
 public int getSortDirection () {
 	checkWidget ();
 	return sortDirection;
@@ -4417,6 +4426,7 @@ void setItemCount (int count, long hParent) {
  *
  * @since 3.1
  */
+@Override
 public void setLinesVisible (boolean show) {
 	checkWidget ();
 	if (linesVisible == show) return;
@@ -4914,6 +4924,7 @@ void setForegroundPixel (int pixel) {
  * </ul>
  * @since 3.106
  */
+@Override
 public void setHeaderBackground (Color color) {
 	checkWidget ();
 	int pixel = -1;
@@ -4947,6 +4958,7 @@ public void setHeaderBackground (Color color) {
  * </ul>
  * @since 3.106
  */
+@Override
 public void setHeaderForeground (Color color) {
 	checkWidget ();
 	int pixel = -1;
@@ -4979,6 +4991,7 @@ public void setHeaderForeground (Color color) {
  *
  * @since 3.1
  */
+@Override
 public void setHeaderVisible (boolean show) {
 	checkWidget ();
 	if (hwndHeader == 0) {
@@ -5346,6 +5359,7 @@ public void setSortColumn(TreeColumn_old column) {
  *
  * @since 3.2
  */
+@Override
 public void setSortDirection (int direction) {
 	checkWidget ();
 	if ((direction & (SWT.UP | SWT.DOWN)) == 0 && direction != SWT.NONE) return;

@@ -5,17 +5,52 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ITree;
+import org.eclipse.swt.widgets.ITreeColumn;
+import org.eclipse.swt.widgets.ITreeItem;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn_old;
+import org.eclipse.swt.widgets.TreeItem_old;
+import org.eclipse.swt.widgets.Tree_old;
 
 public class WrapperTee {
+	interface IFactory{
+		ITree createTree(Composite tree, int style);
+		ITreeColumn createColumn(ITree parent, int style);
+		ITreeItem createItem(ITree parent, int style);
+		ITreeItem createItem(ITreeItem iTreeItem, int none);
+	}
+
+	class OldFactory implements IFactory{
+		@Override
+		public ITree createTree(Composite tree, int style) {
+			return new Tree_old(tree, style);
+		}
+
+		@Override
+		public ITreeColumn createColumn(ITree parent, int style) {
+			return new TreeColumn_old((Tree_old)parent, style);
+		}
+
+		@Override
+		public ITreeItem createItem(ITree parent, int style) {
+			return new TreeItem_old((Tree_old)parent, style);
+		}
+
+		@Override
+		public ITreeItem createItem(ITreeItem item, int style) {
+			return new TreeItem_old((TreeItem_old)item, style);
+		}
+
+	}
+
 	TreeTabExampleWrapper old;
 	TreeTabExampleWrapper neo;
 
 	public WrapperTee(int style, TreeTab host, Composite treeGroup, Composite imageTreeGroup) {
-		old = new TreeTabExampleWrapper(style, host, treeGroup, imageTreeGroup);
-		neo = new TreeTabExampleWrapper(style, host, treeGroup, imageTreeGroup);
+		old = new TreeTabExampleWrapper(style, host, treeGroup, imageTreeGroup, new OldFactory());
+		neo = new TreeTabExampleWrapper(style, host, treeGroup, imageTreeGroup, new OldFactory());
 	}
 
 
@@ -116,8 +151,8 @@ public class WrapperTee {
 		return allItems;
 	}
 
-	public List<Tree> getExampleWidgets() {
-		List<Tree> allItems = new ArrayList<>();
+	public List<ITree> getExampleWidgets() {
+		List<ITree> allItems = new ArrayList<>();
 		allItems.addAll(old.getExampleWidgets());
 		allItems.addAll(neo.getExampleWidgets());
 		return allItems;

@@ -7,6 +7,7 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.examples.controlexample.WrapperTee.IFactory;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -15,13 +16,14 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.ITree;
+import org.eclipse.swt.widgets.ITreeColumn;
+import org.eclipse.swt.widgets.ITreeItem;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.swt.widgets.TreeItem;
 
 public class TreeTabExampleWrapper {
 	static final int ITEM_FOREGROUND_COLOR = 3;
@@ -33,8 +35,10 @@ public class TreeTabExampleWrapper {
 	static final int HEADER_FOREGROUND_COLOR = 9;
 	static final int HEADER_BACKGROUND_COLOR = 10;
 
-	Tree tree1, tree2;
-	TreeItem textNode1, imageNode1;
+	private final IFactory factory;
+
+	ITree tree1, tree2;
+	ITreeItem textNode1, imageNode1;
 
 	TreeTab host;
 
@@ -57,46 +61,47 @@ public class TreeTabExampleWrapper {
 					ControlExample.getResourceString("TableLine2_2"),
 					ControlExample.getResourceString("TableLine2_3") } };
 
-	public TreeTabExampleWrapper(int style, TreeTab host, Composite treeGroup, Composite imageTreeGroup) {
+	public TreeTabExampleWrapper(int style, TreeTab host, Composite treeGroup, Composite imageTreeGroup, IFactory factory) {
+		this.factory = factory;
 		this.host = host;
 		/* Create the text tree */
-		tree1 = new Tree(treeGroup, style);
+		tree1 = factory.createTree(treeGroup, style);
 
 		if (host.multipleColumns.getSelection()) {
 			for (String columnTitle : columnTitles) {
-				TreeColumn treeColumn = new TreeColumn(tree1, SWT.NONE);
+				ITreeColumn treeColumn = factory.createColumn(tree1, SWT.NONE);
 				treeColumn.setText(columnTitle);
 				treeColumn.setToolTipText(ControlExample.getResourceString("Tooltip", columnTitle));
 			}
 			tree1.setSortColumn(tree1.getColumn(0));
 		}
 		for (int i = 0; i < 4; i++) {
-			TreeItem item = new TreeItem(tree1, SWT.NONE);
+			ITreeItem item = factory.createItem(tree1, SWT.NONE);
 			setItemText(item, i, ControlExample.getResourceString("Node_" + (i + 1)));
 			if (i < 3) {
-				TreeItem subitem = new TreeItem(item, SWT.NONE);
+				ITreeItem subitem = factory.createItem(item, SWT.NONE);
 				setItemText(subitem, i, ControlExample.getResourceString("Node_" + (i + 1) + "_1"));
 			}
 		}
-		TreeItem treeRoots[] = tree1.getItems();
-		TreeItem item = new TreeItem(treeRoots[1], SWT.NONE);
+		ITreeItem treeRoots[] = tree1.getItems();
+		ITreeItem item = factory.createItem(treeRoots[1], SWT.NONE);
 		setItemText(item, 1, ControlExample.getResourceString("Node_2_2"));
-		item = new TreeItem(item, SWT.NONE);
+		item = factory.createItem(item, SWT.NONE);
 		setItemText(item, 1, ControlExample.getResourceString("Node_2_2_1"));
 		textNode1 = treeRoots[0];
 		packColumns(tree1);
 		try {
-			TreeColumn column = tree1.getColumn(0);
+			ITreeColumn column = tree1.getColumn(0);
 			host.resizableColumns.setSelection(column.getResizable());
 		} catch (IllegalArgumentException ex) {
 		}
 
 		/* Create the image tree */
-		tree2 = new Tree(imageTreeGroup, style);
+		tree2 = factory.createTree(imageTreeGroup, style);
 		Image image = host.instance.images[ControlExample.ciClosedFolder];
 		if (host.multipleColumns.getSelection()) {
 			for (int i = 0; i < columnTitles.length; i++) {
-				TreeColumn treeColumn = new TreeColumn(tree2, SWT.NONE);
+				ITreeColumn treeColumn = factory.createColumn(tree2, SWT.NONE);
 				treeColumn.setText(columnTitles[i]);
 				treeColumn.setToolTipText(ControlExample.getResourceString("Tooltip", columnTitles[i]));
 				if (host.headerImagesButton.getSelection())
@@ -104,7 +109,7 @@ public class TreeTabExampleWrapper {
 			}
 		}
 		for (int i = 0; i < 4; i++) {
-			item = new TreeItem(tree2, SWT.NONE);
+			item = factory.createItem(tree2, SWT.NONE);
 			setItemText(item, i, ControlExample.getResourceString("Node_" + (i + 1)));
 			if (host.multipleColumns.getSelection() && host.subImagesButton.getSelection()) {
 				for (int j = 0; j < columnTitles.length; j++) {
@@ -114,7 +119,7 @@ public class TreeTabExampleWrapper {
 				item.setImage(image);
 			}
 			if (i < 3) {
-				TreeItem subitem = new TreeItem(item, SWT.NONE);
+				ITreeItem subitem = factory.createItem(item, SWT.NONE);
 				setItemText(subitem, i, ControlExample.getResourceString("Node_" + (i + 1) + "_1"));
 				if (host.multipleColumns.getSelection() && host.subImagesButton.getSelection()) {
 					for (int j = 0; j < columnTitles.length; j++) {
@@ -126,7 +131,7 @@ public class TreeTabExampleWrapper {
 			}
 		}
 		treeRoots = tree2.getItems();
-		item = new TreeItem(treeRoots[1], SWT.NONE);
+		item = factory.createItem(treeRoots[1], SWT.NONE);
 		setItemText(item, 1, ControlExample.getResourceString("Node_2_2"));
 		if (host.multipleColumns.getSelection() && host.subImagesButton.getSelection()) {
 			for (int j = 0; j < columnTitles.length; j++) {
@@ -135,7 +140,7 @@ public class TreeTabExampleWrapper {
 		} else {
 			item.setImage(image);
 		}
-		item = new TreeItem(item, SWT.NONE);
+		item = factory.createItem(item, SWT.NONE);
 		setItemText(item, 1, ControlExample.getResourceString("Node_2_2_1"));
 		if (host.multipleColumns.getSelection() && host.subImagesButton.getSelection()) {
 			for (int j = 0; j < columnTitles.length; j++) {
@@ -148,7 +153,7 @@ public class TreeTabExampleWrapper {
 		packColumns(tree2);
 	}
 
-	void setItemText(TreeItem item, int i, String node) {
+	void setItemText(ITreeItem item, int i, String node) {
 		int index = i % 3;
 		if (host.multipleColumns.getSelection()) {
 			tableData[index][0] = node;
@@ -158,11 +163,11 @@ public class TreeTabExampleWrapper {
 		}
 	}
 
-	void packColumns(Tree tree) {
+	void packColumns(ITree tree) {
 		if (host.multipleColumns.getSelection()) {
 			int columnCount = tree.getColumnCount();
 			for (int i = 0; i < columnCount; i++) {
-				TreeColumn treeColumn = tree.getColumn(i);
+				ITreeColumn treeColumn = tree.getColumn(i);
 				treeColumn.pack();
 			}
 		}
@@ -173,7 +178,7 @@ public class TreeTabExampleWrapper {
 		makeTreeEditable(tree2);
 	}
 
-	private void makeTreeEditable(Tree tree) {
+	private void makeTreeEditable(ITree tree) {
 		final TreeEditor editor = new TreeEditor(tree);
 		editor.horizontalAlignment = SWT.LEFT;
 		editor.grabHorizontal = true;
@@ -183,12 +188,12 @@ public class TreeTabExampleWrapper {
 		});
 	}
 
-	private void treeDoubleClickListener(Tree tree, final TreeEditor editor, Event event) {
+	private void treeDoubleClickListener(ITree tree, final TreeEditor editor, Event event) {
 		if (!host.editableButton.getSelection()) {
 			return;
 		}
 		Point point = new Point(event.x, event.y);
-		TreeItem item = tree.getItem(point);
+		ITreeItem item = tree.getItem(point);
 		if (item == null) {
 			return;
 		}
@@ -196,7 +201,7 @@ public class TreeTabExampleWrapper {
 		final String oldText = item.getText();
 
 		// Create a text field to edit the item text
-		final Text text = new Text(tree, SWT.NONE);
+		final Text text = new Text((Composite)tree, SWT.NONE);
 		text.setText(oldText);
 		text.selectAll();
 		text.setFocus();
@@ -224,13 +229,13 @@ public class TreeTabExampleWrapper {
 		packColumns(tree2);
 	}
 
-	public List<Tree> getExampleWidgets() {
+	public List<ITree> getExampleWidgets() {
 		return List.of(tree1, tree2);
 	}
 
 	public List<Item> getExampleWidgetItems() {
-		Item[] columns1 = tree1.getColumns();
-		Item[] columns2 = tree2.getColumns();
+		Item[] columns1 = (Item[])tree1.getColumns();
+		Item[] columns2 = (Item[])tree2.getColumns();
 		Item[] allItems = new Item[columns1.length + columns2.length];
 		System.arraycopy(columns1, 0, allItems, 0, columns1.length);
 		System.arraycopy(columns2, 0, allItems, columns1.length, columns2.length);
@@ -278,24 +283,24 @@ public class TreeTabExampleWrapper {
 
 	public void setColumnsMoveable() {
 		boolean selection = host.moveableColumns.getSelection();
-		TreeColumn[] columns1 = tree1.getColumns();
-		for (TreeColumn column : columns1) {
+		ITreeColumn[] columns1 = tree1.getColumns();
+		for (ITreeColumn column : columns1) {
 			column.setMoveable(selection);
 		}
-		TreeColumn[] columns2 = tree2.getColumns();
-		for (TreeColumn column : columns2) {
+		ITreeColumn[] columns2 = tree2.getColumns();
+		for (ITreeColumn column : columns2) {
 			column.setMoveable(selection);
 		}
 	}
 
 	public void setColumnsResizable() {
 		boolean selection = host.resizableColumns.getSelection();
-		TreeColumn[] columns1 = tree1.getColumns();
-		for (TreeColumn column : columns1) {
+		ITreeColumn[] columns1 = tree1.getColumns();
+		for (ITreeColumn column : columns1) {
 			column.setResizable(selection);
 		}
-		TreeColumn[] columns2 = tree2.getColumns();
-		for (TreeColumn column : columns2) {
+		ITreeColumn[] columns2 = tree2.getColumns();
+		for (ITreeColumn column : columns2) {
 			column.setResizable(selection);
 		}
 	}
@@ -432,12 +437,12 @@ public class TreeTabExampleWrapper {
 	 * Sets the initial sort indicator state and adds a listener
 	 * to cycle through sort states and columns.
 	 */
-	void initializeSortState (final Tree tree) {
+	void initializeSortState (final ITree tree) {
 		/* Reset to known state: 'down' on column 0. */
 		tree.setSortDirection (SWT.DOWN);
-		TreeColumn [] columns = tree.getColumns();
+		ITreeColumn [] columns = tree.getColumns();
 		for (int i = 0; i < columns.length; i++) {
-			TreeColumn column = columns[i];
+			ITreeColumn column = columns[i];
 			if (i == 0) tree.setSortColumn(column);
 			SelectionListener listener = widgetSelectedAdapter(e -> {
 				int sortDirection = SWT.DOWN;
@@ -457,10 +462,10 @@ public class TreeTabExampleWrapper {
 		}
 	}
 
-	void resetSortState (final Tree tree) {
+	void resetSortState (final ITree tree) {
 		tree.setSortDirection (SWT.NONE);
-		TreeColumn [] columns = tree.getColumns();
-		for (TreeColumn column : columns) {
+		ITreeColumn [] columns = tree.getColumns();
+		for (ITreeColumn column : columns) {
 			SelectionListener listener = (SelectionListener)column.getData("SortListener");	//$NON-NLS-1$
 			if (listener != null) column.removeSelectionListener(listener);
 		}
