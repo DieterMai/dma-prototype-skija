@@ -75,8 +75,8 @@ import org.eclipse.swt.widgets.*;
 * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
 */
 public class TreeEditor extends ControlEditor {
-	Tree tree;
-	TreeItem item;
+	ITree tree;
+	ITreeItem item;
 	int column = 0;
 	ControlListener columnListener;
 	TreeListener treeListener;
@@ -88,8 +88,8 @@ public class TreeEditor extends ControlEditor {
 *
 * @param tree the Tree Control above which this editor will be displayed
 */
-public TreeEditor (Tree tree) {
-	super(tree);
+public TreeEditor(ITree tree) {
+	super(tree._composite());
 	this.tree = tree;
 
 	columnListener = new ControlListener() {
@@ -185,7 +185,7 @@ Rectangle computeBounds () {
 public void dispose () {
 	if (tree != null && !tree.isDisposed()) {
 		if (this.column > -1 && this.column < tree.getColumnCount()){
-			TreeColumn treeColumn = tree.getColumn(this.column);
+			ITreeColumn treeColumn = tree.getColumn(this.column);
 			treeColumn.removeControlListener(columnListener);
 		}
 		if (treeListener != null) tree.removeTreeListener(treeListener);
@@ -215,7 +215,7 @@ public int getColumn () {
 *
 * @return the TreeItem for the row of the cell being tracked by this editor
 */
-public TreeItem getItem () {
+public ITreeItem getItem() {
 	return item;
 }
 
@@ -251,7 +251,7 @@ public void setColumn(int column) {
 		return;
 	}
 	if (this.column > -1 && this.column < columnCount){
-		TreeColumn treeColumn = tree.getColumn(this.column);
+		ITreeColumn treeColumn = tree.getColumn(this.column);
 		treeColumn.removeControlListener(columnListener);
 		this.column = -1;
 	}
@@ -259,7 +259,7 @@ public void setColumn(int column) {
 	if (column < 0  || column >= tree.getColumnCount()) return;
 
 	this.column = column;
-	TreeColumn treeColumn = tree.getColumn(this.column);
+	ITreeColumn treeColumn = tree.getColumn(this.column);
 	treeColumn.addControlListener(columnListener);
 	resize();
 }
@@ -269,7 +269,7 @@ public void setColumn(int column) {
 *
 * @param item the item to be edited
 */
-public void setItem (TreeItem item) {
+public void setItem(ITreeItem item) {
 	this.item = item;
 	resize();
 }
@@ -306,7 +306,7 @@ public void setEditor (Control editor) {
 * @param editor the Control that is displayed above the cell being edited
 * @param item the TreeItem for the row of the cell being tracked by this editor
 */
-public void setEditor (Control editor, TreeItem item) {
+public void setEditor(Control editor, ITreeItem item) {
 	setItem(item);
 	setEditor(editor);
 }

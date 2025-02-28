@@ -21,33 +21,36 @@ import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.win32.*;
 
 /**
- * Instances of this class represent a column in a tree widget.
+ * Instances of this class represent a column in a Tree_old widget.
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>LEFT, RIGHT, CENTER</dd>
  * <dt><b>Events:</b></dt>
- * <dd> Move, Resize, Selection</dd>
+ * <dd>Move, Resize, Selection</dd>
  * </dl>
  * <p>
  * Note: Only one of the styles LEFT, RIGHT and CENTER may be specified.
- * </p><p>
+ * </p>
+ * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#tree">Tree, TreeItem, TreeColumn snippets</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
+ * @see <a href="http://www.eclipse.org/swt/snippets/#tree">Tree, TreeItem,
+ *      TreeColumn snippets</a>
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further
+ *      information</a>
  *
  * @since 3.1
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class TreeColumn extends Item {
-	Tree parent;
+public class TreeColumn_old extends Item implements ITreeColumn {
+	Tree_old parent;
 	boolean resizable, moveable;
 	String toolTipText;
 	int id;
 
 	static {
-		DPIZoomChangeRegistry.registerHandler(TreeColumn::handleDPIChange, TreeColumn.class);
+		DPIZoomChangeRegistry.registerHandler(TreeColumn_old::handleDPIChange, TreeColumn_old.class);
 	}
 
 /**
@@ -82,7 +85,7 @@ public class TreeColumn extends Item {
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public TreeColumn (Tree parent, int style) {
+public TreeColumn_old(Tree_old parent, int style) {
 	super (parent, checkStyle (style));
 	resizable = true;
 	this.parent = parent;
@@ -126,7 +129,7 @@ public TreeColumn (Tree parent, int style) {
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public TreeColumn (Tree parent, int style, int index) {
+public TreeColumn_old(Tree_old parent, int style, int index) {
 	super (parent, checkStyle (style));
 	resizable = true;
 	this.parent = parent;
@@ -152,6 +155,7 @@ public TreeColumn (Tree parent, int style, int index) {
  * @see ControlListener
  * @see #removeControlListener
  */
+@Override
 public void addControlListener(ControlListener listener) {
 	addTypedListener(listener, SWT.Resize, SWT.Move);
 }
@@ -180,6 +184,7 @@ public void addControlListener(ControlListener listener) {
  * @see #removeSelectionListener
  * @see SelectionEvent
  */
+@Override
 public void addSelectionListener (SelectionListener listener) {
 	addTypedListener(listener, SWT.Selection, SWT.DefaultSelection);
 }
@@ -234,11 +239,12 @@ public int getAlignment () {
  *
  * @see Tree#getColumnOrder()
  * @see Tree#setColumnOrder(int[])
- * @see TreeColumn#setMoveable(boolean)
+ * @see TreeColumn_old#setMoveable(boolean)
  * @see SWT#Move
  *
  * @since 3.2
  */
+@Override
 public boolean getMoveable () {
 	checkWidget ();
 	return moveable;
@@ -259,7 +265,7 @@ String getNameText () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public Tree getParent () {
+public Tree_old getParent() {
 	checkWidget ();
 	return parent;
 }
@@ -276,6 +282,7 @@ public Tree getParent () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
+@Override
 public boolean getResizable () {
 	checkWidget ();
 	return resizable;
@@ -335,6 +342,7 @@ int getWidthInPixels () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
+@Override
 public void pack () {
 	checkWidget ();
 	int index = parent.indexOf (this);
@@ -351,7 +359,7 @@ public void pack () {
 	tvItem.hItem = OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
 	while (tvItem.hItem != 0) {
 		OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, tvItem);
-		TreeItem item = tvItem.lParam != -1 ? parent.items [(int)tvItem.lParam] : null;
+		TreeItem_old item = tvItem.lParam != -1 ? parent.items[(int) tvItem.lParam] : null;
 		if (item != null) {
 			int itemRight = 0;
 			if (parent.hooks (SWT.MeasureItem)) {
@@ -375,12 +383,13 @@ public void pack () {
 	int flags = OS.DT_CALCRECT | OS.DT_NOPREFIX;
 	char [] buffer = text.toCharArray ();
 	OS.DrawText (hDC, buffer, buffer.length, rect, flags);
-	int headerWidth = rect.right - rect.left + Tree.HEADER_MARGIN;
-	if (OS.IsAppThemed ()) headerWidth += Tree.HEADER_EXTRA;
+	int headerWidth = rect.right - rect.left + Tree_old.HEADER_MARGIN;
+	if (OS.IsAppThemed())
+		headerWidth += Tree_old.HEADER_EXTRA;
 	if (image != null || parent.sortColumn == this) {
 		Image headerImage = null;
 		if (parent.sortColumn == this && parent.sortDirection != SWT.NONE) {
-			headerWidth += Tree.SORT_WIDTH;
+			headerWidth += Tree_old.SORT_WIDTH;
 		} else {
 			headerImage = image;
 		}
@@ -398,7 +407,7 @@ public void pack () {
 	}
 	if (newFont != 0) OS.SelectObject (hDC, oldFont);
 	OS.ReleaseDC (hwnd, hDC);
-	int gridWidth = parent.linesVisible ? Tree.GRID_WIDTH : 0;
+	int gridWidth = parent.linesVisible ? Tree_old.GRID_WIDTH : 0;
 	setWidthInPixels (Math.max (headerWidth, columnWidth + gridWidth));
 }
 
@@ -433,6 +442,7 @@ void releaseParent () {
  * @see ControlListener
  * @see #addControlListener
  */
+@Override
 public void removeControlListener (ControlListener listener) {
 	checkWidget ();
 	if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -458,6 +468,7 @@ public void removeControlListener (ControlListener listener) {
  * @see SelectionListener
  * @see #addSelectionListener
  */
+@Override
 public void removeSelectionListener(SelectionListener listener) {
 	checkWidget ();
 	if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -567,11 +578,12 @@ void setImage (Image image, boolean sort, boolean right) {
  *
  * @see Tree#setColumnOrder(int[])
  * @see Tree#getColumnOrder()
- * @see TreeColumn#getMoveable()
+ * @see TreeColumn_old#getMoveable()
  * @see SWT#Move
  *
  * @since 3.2
  */
+@Override
 public void setMoveable (boolean moveable) {
 	checkWidget ();
 	this.moveable = moveable;
@@ -589,6 +601,7 @@ public void setMoveable (boolean moveable) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
+@Override
 public void setResizable (boolean resizable) {
 	checkWidget ();
 	this.resizable = resizable;
@@ -669,32 +682,35 @@ public void setText (String string) {
 }
 
 /**
- * Sets the receiver's tool tip text to the argument, which
- * may be null indicating that the default tool tip for the
- * control will be shown. For a control that has a default
- * tool tip, such as the Tree control on Windows, setting
- * the tool tip text to an empty string replaces the default,
- * causing no tool tip text to be shown.
+ * Sets the receiver's tool tip text to the argument, which may be null
+ * indicating that the default tool tip for the control will be shown. For a
+ * control that has a default tool tip, such as the Tree_old control on Windows,
+ * setting the tool tip text to an empty string replaces the default, causing no
+ * tool tip text to be shown.
  * <p>
- * The mnemonic indicator (character '&amp;') is not displayed in a tool tip.
- * To display a single '&amp;' in the tool tip, the character '&amp;' can be
+ * The mnemonic indicator (character '&amp;') is not displayed in a tool tip. To
+ * display a single '&amp;' in the tool tip, the character '&amp;' can be
  * escaped by doubling it in the string.
  * </p>
  * <p>
  * NOTE: This operation is a hint and behavior is platform specific, on Windows
- * for CJK-style mnemonics of the form " (&amp;C)" at the end of the tooltip text
- * are not shown in tooltip.
+ * for CJK-style mnemonics of the form " (&amp;C)" at the end of the tooltip
+ * text are not shown in tooltip.
  * </p>
  *
  * @param string the new tool tip text (or null)
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  *
  * @since 3.2
  */
+@Override
 public void setToolTipText (String string) {
 	checkWidget();
 	toolTipText = string;
@@ -761,10 +777,10 @@ void updateToolTip (int index) {
 }
 
 private static void handleDPIChange(Widget widget, int newZoom, float scalingFactor) {
-	if (!(widget instanceof TreeColumn treeColumn)) {
+	if (!(widget instanceof TreeColumn_old treeColumn)) {
 		return;
 	}
-	Tree tree = treeColumn.getParent();
+	Tree_old tree = treeColumn.getParent();
 	boolean ignoreColumnResize = tree.ignoreColumnResize;
 	tree.ignoreColumnResize = true;
 	final int newColumnWidth = Math.round(treeColumn.getWidthInPixels() * scalingFactor);

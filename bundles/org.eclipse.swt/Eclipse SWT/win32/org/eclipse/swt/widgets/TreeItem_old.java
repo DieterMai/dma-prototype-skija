@@ -20,8 +20,8 @@ import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.win32.*;
 
 /**
- * Instances of this class represent a selectable user interface object
- * that represents a hierarchy of tree items in a tree widget.
+ * Instances of this class represent a selectable user interface object that
+ * represents a hierarchy of Tree_old items in a Tree_old widget.
  *
  * <dl>
  * <dt><b>Styles:</b></dt>
@@ -33,11 +33,13 @@ import org.eclipse.swt.internal.win32.*;
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#tree">Tree, TreeItem, TreeColumn snippets</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
+ * @see <a href="http://www.eclipse.org/swt/snippets/#tree">Tree, TreeItem,
+ *      TreeColumn snippets</a>
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further
+ *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class TreeItem extends Item {
+public class TreeItem_old extends Item implements ITreeItem {
 	/**
 	 * the handle to the OS resource
 	 * (Warning: This field is platform dependent)
@@ -51,7 +53,7 @@ public class TreeItem extends Item {
 	 * @noreference This field is not intended to be referenced by clients.
 	 */
 	public long handle;
-	Tree parent;
+	Tree_old parent;
 	String [] strings;
 	Image [] images;
 	Font font;
@@ -61,135 +63,175 @@ public class TreeItem extends Item {
 	int [] cellBackground, cellForeground;
 
 	static {
-		DPIZoomChangeRegistry.registerHandler(TreeItem::handleDPIChange, TreeItem.class);
+		DPIZoomChangeRegistry.registerHandler(TreeItem_old::handleDPIChange, TreeItem_old.class);
 	}
 
 /**
- * Constructs <code>TreeItem</code> and <em>inserts</em> it into <code>Tree</code>.
- * Item is inserted as last direct child of the tree.
+ * Constructs <code>TreeItem</code> and <em>inserts</em> it into
+ * <code>Tree</code>. Item is inserted as last direct child of the tree.
  * <p>
- * The fastest way to insert many items is documented in {@link TreeItem#TreeItem(Tree,int,int)}
- * and {@link TreeItem#setItemCount}
+ * The fastest way to insert many items is documented in
+ * {@link TreeItem_old#TreeItem_old(Tree_old,int,int)} and
+ * {@link TreeItem_old#setItemCount}
  *
- * @param parent a tree control which will be the parent of the new instance (cannot be null)
- * @param style no styles are currently supported, pass SWT.NONE
+ * @param parent a Tree_old control which will be the parent of the new instance
+ *               (cannot be null)
+ * @param style  no styles are currently supported, pass SWT.NONE
  *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
- *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
- * </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_NULL_ARGUMENT - if the parent
+ *                                     is null</li>
+ *                                     </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     parent</li>
+ *                                     <li>ERROR_INVALID_SUBCLASS - if this
+ *                                     class is not an allowed subclass</li>
+ *                                     </ul>
  *
  * @see SWT
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public TreeItem (Tree parent, int style) {
+public TreeItem_old(Tree_old parent, int style) {
 	this (parent, style, OS.TVI_ROOT, OS.TVI_LAST, 0);
 }
 
 /**
- * Constructs <code>TreeItem</code> and <em>inserts</em> it into <code>Tree</code>.
- * Item is inserted as <code>index</code> direct child of the tree.
+ * Constructs <code>TreeItem</code> and <em>inserts</em> it into
+ * <code>Tree</code>. Item is inserted as <code>index</code> direct child of the
+ * tree.
  * <p>
  * The fastest way to insert many items is:
  * <ol>
  * <li>Use {@link Tree#setRedraw} to disable drawing during bulk insert</li>
- * <li>Insert every item at index 0 (insert them in reverse to get the same result)</li>
- * <li>Collapse the parent item before inserting (gives massive improvement on Windows)</li>
+ * <li>Insert every item at index 0 (insert them in reverse to get the same
+ * result)</li>
+ * <li>Collapse the parent item before inserting (gives massive improvement on
+ * Windows)</li>
  * </ol>
  *
- * @param parent a tree control which will be the parent of the new instance (cannot be null)
- * @param style no styles are currently supported, pass SWT.NONE
- * @param index the zero-relative index to store the receiver in its parent
+ * @param parent a Tree_old control which will be the parent of the new instance
+ *               (cannot be null)
+ * @param style  no styles are currently supported, pass SWT.NONE
+ * @param index  the zero-relative index to store the receiver in its parent
  *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
- *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the parent (inclusive)</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
- *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
- * </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_NULL_ARGUMENT - if the parent
+ *                                     is null</li>
+ *                                     <li>ERROR_INVALID_RANGE - if the index is
+ *                                     not between 0 and the number of elements
+ *                                     in the parent (inclusive)</li>
+ *                                     </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     parent</li>
+ *                                     <li>ERROR_INVALID_SUBCLASS - if this
+ *                                     class is not an allowed subclass</li>
+ *                                     </ul>
  *
  * @see SWT
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  * @see Tree#setRedraw
  */
-public TreeItem (Tree parent, int style, int index) {
+public TreeItem_old(Tree_old parent, int style, int index) {
 	this (parent, style, OS.TVI_ROOT, findPrevious (parent, index), 0);
 }
 
 /**
- * Constructs <code>TreeItem</code> and <em>inserts</em> it into <code>Tree</code>.
- * Item is inserted as last direct child of the specified <code>TreeItem</code>.
+ * Constructs <code>TreeItem</code> and <em>inserts</em> it into
+ * <code>Tree</code>. Item is inserted as last direct child of the specified
+ * <code>TreeItem</code>.
  * <p>
- * The fastest way to insert many items is documented in {@link TreeItem#TreeItem(Tree,int,int)}
- * and {@link TreeItem#setItemCount}
+ * The fastest way to insert many items is documented in
+ * {@link TreeItem_old#TreeItem_old(Tree_old,int,int)} and
+ * {@link TreeItem_old#setItemCount}
  *
- * @param parentItem a tree control which will be the parent of the new instance (cannot be null)
- * @param style no styles are currently supported, pass SWT.NONE
+ * @param parentItem a Tree_old control which will be the parent of the new
+ *                   instance (cannot be null)
+ * @param style      no styles are currently supported, pass SWT.NONE
  *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
- *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
- * </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_NULL_ARGUMENT - if the parent
+ *                                     is null</li>
+ *                                     </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     parent</li>
+ *                                     <li>ERROR_INVALID_SUBCLASS - if this
+ *                                     class is not an allowed subclass</li>
+ *                                     </ul>
  *
  * @see SWT
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public TreeItem (TreeItem parentItem, int style) {
+public TreeItem_old (TreeItem_old parentItem, int style) {
 	this (checkNull (parentItem).parent, style, parentItem.handle, OS.TVI_LAST, 0);
 }
 
 /**
- * Constructs <code>TreeItem</code> and <em>inserts</em> it into <code>Tree</code>.
- * Item is inserted as <code>index</code> direct child of the specified <code>TreeItem</code>.
+ * Constructs <code>TreeItem</code> and <em>inserts</em> it into
+ * <code>Tree</code>. Item is inserted as <code>index</code> direct child of the
+ * specified <code>TreeItem</code>.
  * <p>
- * The fastest way to insert many items is documented in {@link TreeItem#TreeItem(Tree,int,int)}
- * and {@link TreeItem#setItemCount}
+ * The fastest way to insert many items is documented in
+ * {@link TreeItem_old#TreeItem_old(Tree_old,int,int)} and
+ * {@link TreeItem_old#setItemCount}
  *
- * @param parentItem a tree control which will be the parent of the new instance (cannot be null)
- * @param style no styles are currently supported, pass SWT.NONE
- * @param index the zero-relative index to store the receiver in its parent
+ * @param parentItem a Tree_old control which will be the parent of the new
+ *                   instance (cannot be null)
+ * @param style      no styles are currently supported, pass SWT.NONE
+ * @param index      the zero-relative index to store the receiver in its parent
  *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
- *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the parent (inclusive)</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
- *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
- * </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_NULL_ARGUMENT - if the parent
+ *                                     is null</li>
+ *                                     <li>ERROR_INVALID_RANGE - if the index is
+ *                                     not between 0 and the number of elements
+ *                                     in the parent (inclusive)</li>
+ *                                     </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     parent</li>
+ *                                     <li>ERROR_INVALID_SUBCLASS - if this
+ *                                     class is not an allowed subclass</li>
+ *                                     </ul>
  *
  * @see SWT
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  * @see Tree#setRedraw
  */
-public TreeItem (TreeItem parentItem, int style, int index) {
+public TreeItem_old (TreeItem_old parentItem, int style, int index) {
 	this (checkNull (parentItem).parent, style, parentItem.handle, findPrevious (parentItem, index), 0);
 }
 
-TreeItem (Tree parent, int style, long hParent, long hInsertAfter, long hItem) {
+TreeItem_old(Tree_old parent, int style, long hParent, long hInsertAfter, long hItem) {
 	super (parent, style);
 	this.parent = parent;
 	parent.createItem (this, hParent, hInsertAfter, hItem);
 }
 
-static TreeItem checkNull (TreeItem item) {
+static TreeItem_old checkNull (TreeItem_old item) {
 	if (item == null) SWT.error (SWT.ERROR_NULL_ARGUMENT);
 	return item;
 }
 
-static long findPrevious (Tree parent, int index) {
+static long findPrevious(Tree_old parent, int index) {
 	if (parent == null) return 0;
 	if (index < 0) SWT.error (SWT.ERROR_INVALID_RANGE);
 	if (index == 0) return OS.TVI_FIRST;
@@ -200,11 +242,11 @@ static long findPrevious (Tree parent, int index) {
 	return hItem;
 }
 
-static long findPrevious (TreeItem parentItem, int index) {
+static long findPrevious (TreeItem_old parentItem, int index) {
 	if (parentItem == null) return 0;
 	if (index < 0) SWT.error (SWT.ERROR_INVALID_RANGE);
 	if (index == 0) return OS.TVI_FIRST;
-	Tree parent = parentItem.parent;
+	Tree_old parent = parentItem.parent;
 	long hwnd = parent.handle, hParent = parentItem.handle;
 	long hFirstItem = OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_CHILD, hParent);
 	long hItem = parent.findItem (hFirstItem, index - 1);
@@ -239,22 +281,29 @@ void clear () {
 }
 
 /**
- * Clears the item at the given zero-relative index in the receiver.
- * The text, icon and other attributes of the item are set to the default
- * value.  If the tree was created with the <code>SWT.VIRTUAL</code> style,
- * these attributes are requested again as needed.
+ * Clears the item at the given zero-relative index in the receiver. The text,
+ * icon and other attributes of the item are set to the default value. If the
+ * Tree_old was created with the <code>SWT.VIRTUAL</code> style, these
+ * attributes are requested again as needed.
  *
  * @param index the index of the item to clear
- * @param all <code>true</code> if all child items of the indexed item should be
- * cleared recursively, and <code>false</code> otherwise
+ * @param all   <code>true</code> if all child items of the indexed item should
+ *              be cleared recursively, and <code>false</code> otherwise
  *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_INVALID_RANGE - if the index is
+ *                                     not between 0 and the number of elements
+ *                                     in the list minus 1 (inclusive)</li>
+ *                                     </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_WIDGET_DISPOSED - if the
+ *                                     receiver has been disposed</li>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     receiver</li>
+ *                                     </ul>
  *
  * @see SWT#VIRTUAL
  * @see SWT#SetData
@@ -278,18 +327,21 @@ public void clear (int index, boolean all) {
 }
 
 /**
- * Clears all the items in the receiver. The text, icon and other
- * attributes of the items are set to their default values. If the
- * tree was created with the <code>SWT.VIRTUAL</code> style, these
- * attributes are requested again as needed.
+ * Clears all the items in the receiver. The text, icon and other attributes of
+ * the items are set to their default values. If the Tree_old was created with
+ * the <code>SWT.VIRTUAL</code> style, these attributes are requested again as
+ * needed.
  *
  * @param all <code>true</code> if all child items should be cleared
- * recursively, and <code>false</code> otherwise
+ *            recursively, and <code>false</code> otherwise
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  *
  * @see SWT#VIRTUAL
  * @see SWT#SetData
@@ -333,6 +385,7 @@ long fontHandle (int index) {
  *
  * @since 2.0
  */
+@Override
 public Color getBackground () {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -353,6 +406,7 @@ public Color getBackground () {
  *
  * @since 3.1
  */
+@Override
 public Color getBackground (int index) {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -399,6 +453,7 @@ Rectangle getBoundsInPixels () {
  *
  * @since 3.1
  */
+@Override
 public Rectangle getBounds (int index) {
 	checkWidget();
 	return DPIUtil.scaleDown(getBoundsInPixels(index), getZoom());
@@ -444,7 +499,7 @@ RECT getBounds (int index, boolean getText, boolean getImage, boolean fullText, 
 		if (getImage && !fullImage) {
 			if (OS.SendMessage (hwnd, OS.TVM_GETIMAGELIST, OS.TVSIL_NORMAL, 0) != 0) {
 				Point size = parent.getImageSize ();
-				rect.left -= size.x + Tree.INSET;
+				rect.left -= size.x + Tree_old.INSET;
 				if (!getText) rect.right = rect.left + size.x;
 			} else {
 				if (!getText) rect.right = rect.left;
@@ -496,7 +551,7 @@ RECT getBounds (int index, boolean getText, boolean getImage, boolean fullText, 
 			}
 			if (getText) {
 				if (fullText && clip) {
-					rect.left = rect.right + Tree.INSET;
+					rect.left = rect.right + Tree_old.INSET;
 					rect.right = headerRect.right;
 				} else {
 					String string = index == 0 ? text : strings != null ? strings [index] : null;
@@ -517,10 +572,10 @@ RECT getBounds (int index, boolean getText, boolean getImage, boolean fullText, 
 							OS.ReleaseDC (hwnd, hNewDC);
 						}
 						if (getImage) {
-							rect.right += textRect.right - textRect.left + Tree.INSET * 3;
+							rect.right += textRect.right - textRect.left + Tree_old.INSET * 3;
 						} else {
-							rect.left = rect.right + Tree.INSET;
-							rect.right = rect.left + (textRect.right - textRect.left) + Tree.INSET;
+							rect.left = rect.right + Tree_old.INSET;
+							rect.right = rect.left + (textRect.right - textRect.left) + Tree_old.INSET;
 						}
 					}
 				}
@@ -530,7 +585,7 @@ RECT getBounds (int index, boolean getText, boolean getImage, boolean fullText, 
 			}
 		}
 	}
-	int gridWidth = parent.linesVisible && columnCount != 0 ? Tree.GRID_WIDTH : 0;
+	int gridWidth = parent.linesVisible && columnCount != 0 ? Tree_old.GRID_WIDTH : 0;
 	if (getText || !getImage) {
 		rect.right = Math.max (rect.left, rect.right - gridWidth);
 	}
@@ -599,6 +654,7 @@ public boolean getExpanded () {
  *
  * @since 3.0
  */
+@Override
 public Font getFont () {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -619,6 +675,7 @@ public Font getFont () {
  *
  * @since 3.1
  */
+@Override
 public Font getFont (int index) {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -640,6 +697,7 @@ public Font getFont (int index) {
  *
  * @since 2.0
  */
+@Override
 public Color getForeground () {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -661,6 +719,7 @@ public Color getForeground () {
  *
  * @since 3.1
  */
+@Override
 public Color getForeground (int index) {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -712,7 +771,7 @@ public boolean getGrayed () {
  *
  * @since 3.1
  */
-public TreeItem getItem (int index) {
+public TreeItem_old getItem (int index) {
 	checkWidget ();
 	if (index < 0) error (SWT.ERROR_INVALID_RANGE);
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -760,12 +819,12 @@ public int getItemCount () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public TreeItem [] getItems () {
+public TreeItem_old [] getItems () {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
 	long hwnd = parent.handle;
 	long hItem = OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_CHILD, handle);
-	if (hItem == 0) return new TreeItem [0];
+	if (hItem == 0) return new TreeItem_old [0];
 	return parent.getItems (hItem);
 }
 
@@ -815,6 +874,7 @@ public Image getImage (int index) {
  *
  * @since 3.1
  */
+@Override
 public Rectangle getImageBounds (int index) {
 	checkWidget();
 	return DPIUtil.scaleDown(getImageBoundsInPixels(index), getZoom());
@@ -837,7 +897,7 @@ Rectangle getImageBoundsInPixels (int index) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public Tree getParent () {
+public Tree_old getParent() {
 	checkWidget ();
 	return parent;
 }
@@ -854,7 +914,7 @@ public Tree getParent () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public TreeItem getParentItem () {
+public TreeItem_old getParentItem () {
 	checkWidget ();
 	long hwnd = parent.handle;
 	long hItem = OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_PARENT, handle);
@@ -918,9 +978,11 @@ public Rectangle getTextBounds (int index) {
 Rectangle getTextBoundsInPixels (int index) {
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
 	RECT rect = getBounds (index, true, false, true);
-	if (index == 0) rect.left += Tree.INSET - 1;
+	if (index == 0)
+		rect.left += Tree_old.INSET - 1;
 	rect.left = Math.min (rect.left, rect.right);
-	rect.right = rect.right - Tree.INSET + 1; // Add 1 px margin to avoid truncation of text seen with "Segoe UI" font
+	rect.right = rect.right - Tree_old.INSET + 1; // Add 1 px margin to avoid truncation of text seen with "Segoe UI"
+													// font
 	int width = Math.max (0, rect.right - rect.left);
 	int height = Math.max (0, rect.bottom - rect.top);
 	return new Rectangle (rect.left, rect.top, width, height);
@@ -946,7 +1008,7 @@ Rectangle getTextBoundsInPixels (int index) {
  *
  * @since 3.1
  */
-public int indexOf (TreeItem item) {
+public int indexOf (TreeItem_old item) {
 	checkWidget ();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (item.isDisposed()) error(SWT.ERROR_INVALID_ARGUMENT);
@@ -960,10 +1022,9 @@ void redraw () {
 	long hwnd = parent.handle;
 	if (!OS.IsWindowVisible (hwnd)) return;
 	/*
-	* When there are no columns and the tree is not
-	* full selection, redraw only the text.  This is
-	* an optimization to reduce flashing.
-	*/
+	 * When there are no columns and the Tree_old is not full selection, redraw only
+	 * the text. This is an optimization to reduce flashing.
+	 */
 	boolean full = (parent.style & (SWT.FULL_SELECTION | SWT.VIRTUAL)) != 0;
 	if (!full) {
 		full = parent.columnCount != 0;
@@ -1040,7 +1101,7 @@ public void removeAll () {
 	try {
 		while (tvItem.hItem != 0) {
 			OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, tvItem);
-			TreeItem item = tvItem.lParam != -1 ? parent.items [(int)tvItem.lParam] : null;
+			TreeItem_old item = tvItem.lParam != -1 ? parent.items [(int)tvItem.lParam] : null;
 			if (item != null && !item.isDisposed ()) {
 				item.dispose ();
 			} else {
@@ -1073,6 +1134,7 @@ public void removeAll () {
  *
  * @since 2.0
  */
+@Override
 public void setBackground (Color color) {
 	checkWidget ();
 	if (color != null && color.isDisposed ()) {
@@ -1107,6 +1169,7 @@ public void setBackground (Color color) {
  *
  * @since 3.1
  */
+@Override
 public void setBackground (int index, Color color) {
 	checkWidget ();
 	if (color != null && color.isDisposed ()) {
@@ -1205,18 +1268,15 @@ public void setExpanded (boolean expanded) {
 	if (((state & OS.TVIS_EXPANDED) != 0) == expanded) return;
 
 	/*
-	* Feature in Windows.  When TVM_EXPAND is used to expand
-	* an item, the widget scrolls to show the item and the
-	* newly expanded items.  While not strictly incorrect,
-	* this means that application code that expands tree items
-	* in a background thread can scroll the widget while the
-	* user is interacting with it.  The fix is to remember
-	* the top item and the bounds of every tree item, turn
-	* redraw off, expand the item, scroll back to the top
-	* item.  If none of the rectangles have moved, then
-	* it is safe to turn redraw back on without redrawing
-	* the control.
-	*/
+	 * Feature in Windows. When TVM_EXPAND is used to expand an item, the widget
+	 * scrolls to show the item and the newly expanded items. While not strictly
+	 * incorrect, this means that application code that expands Tree_old items in a
+	 * background thread can scroll the widget while the user is interacting with
+	 * it. The fix is to remember the top item and the bounds of every Tree_old
+	 * item, turn redraw off, expand the item, scroll back to the top item. If none
+	 * of the rectangles have moved, then it is safe to turn redraw back on without
+	 * redrawing the control.
+	 */
 	RECT oldRect = null;
 	RECT [] rects = null;
 	SCROLLINFO oldInfo = null;
@@ -1262,17 +1322,14 @@ public void setExpanded (boolean expanded) {
 	}
 
 	/*
-	* Feature in Windows.  When the user collapses the root
-	* of a subtree that has the focus item, Windows moves
-	* the selection to the root of the subtree and issues
-	* a TVN_SELCHANGED to inform the programmer that the
-	* selection has changed.  When the programmer collapses
-	* the same subtree using TVM_EXPAND, Windows does not
-	* send the selection changed notification.  This is not
-	* strictly wrong but is inconsistent.  The fix is to
-	* check whether the selection has changed and issue
-	* the event.
-	*/
+	 * Feature in Windows. When the user collapses the root of a subTree_old that
+	 * has the focus item, Windows moves the selection to the root of the
+	 * subTree_old and issues a TVN_SELCHANGED to inform the programmer that the
+	 * selection has changed. When the programmer collapses the same subTree_old
+	 * using TVM_EXPAND, Windows does not send the selection changed notification.
+	 * This is not strictly wrong but is inconsistent. The fix is to check whether
+	 * the selection has changed and issue the event.
+	 */
 	long hOldItem = OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_CARET, 0);
 
 	/* Expand or collapse the item */
@@ -1382,6 +1439,7 @@ public void setExpanded (boolean expanded) {
  *
  * @since 3.0
  */
+@Override
 public void setFont (Font font){
 	checkWidget ();
 	if (font != null && font.isDisposed ()) {
@@ -1432,6 +1490,7 @@ public void setFont (Font font){
  *
  * @since 3.1
  */
+@Override
 public void setFont (int index, Font font) {
 	checkWidget ();
 	if (font != null && font.isDisposed ()) {
@@ -1488,6 +1547,7 @@ public void setFont (int index, Font font) {
  *
  * @since 2.0
  */
+@Override
 public void setForeground (Color color) {
 	checkWidget ();
 	if (color != null && color.isDisposed ()) {
@@ -1522,6 +1582,7 @@ public void setForeground (Color color) {
  *
  * @since 3.1
  */
+@Override
 public void setForeground (int index, Color color){
 	checkWidget ();
 	if (color != null && color.isDisposed ()) {
@@ -1547,15 +1608,18 @@ public void setForeground (int index, Color color){
 }
 
 /**
- * Sets the grayed state of the checkbox for this item.  This state change
- * only applies if the Tree was created with the SWT.CHECK style.
+ * Sets the grayed state of the checkbox for this item. This state change only
+ * applies if the Tree_old was created with the SWT.CHECK style.
  *
  * @param grayed the new grayed state of the checkbox
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  */
 public void setGrayed (boolean grayed) {
 	checkWidget ();
@@ -1633,6 +1697,7 @@ public void setImage (Image [] images) {
  *
  * @since 3.1
  */
+@Override
 public void setImage (int index, Image image) {
 	checkWidget();
 	if (image != null && image.isDisposed ()) {
@@ -1737,6 +1802,7 @@ public void setItemCount (int count) {
  *
  * @since 3.1
  */
+@Override
 public void setText (String [] strings) {
 	checkWidget();
 	if (strings == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -1819,7 +1885,7 @@ String getNameText () {
 }
 
 private static void handleDPIChange(Widget widget, int newZoom, float scalingFactor) {
-	if (!(widget instanceof TreeItem treeItem)) {
+	if (!(widget instanceof TreeItem_old treeItem)) {
 		return;
 	}
 	Font font = treeItem.font;
@@ -1834,7 +1900,7 @@ private static void handleDPIChange(Widget widget, int newZoom, float scalingFac
 			cellFonts[index] = cellFont == null ? null : Font.win32_new(cellFont, shell.nativeZoom);
 		}
 	}
-	for (TreeItem item : treeItem.getItems()) {
+	for (TreeItem_old item : treeItem.getItems()) {
 		DPIZoomChangeRegistry.applyChange(item, newZoom, scalingFactor);
 	}
 }
