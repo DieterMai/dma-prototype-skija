@@ -147,13 +147,13 @@ class TreeTab extends ScrollableTab {
 
 		/* Create a group for the text tree */
 		treeGroup = new Group (exampleGroup, SWT.NONE);
-		treeGroup.setLayout (new GridLayout ());
+		treeGroup.setLayout (new GridLayout (2, false));
 		treeGroup.setLayoutData (new GridData (SWT.FILL, SWT.FILL, true, true));
 		treeGroup.setText ("Tree");
 
 		/* Create a group for the image tree */
 		imageTreeGroup = new Group (exampleGroup, SWT.NONE);
-		imageTreeGroup.setLayout (new GridLayout ());
+		imageTreeGroup.setLayout (new GridLayout (2, false));
 		imageTreeGroup.setLayoutData (new GridData (SWT.FILL, SWT.FILL, true, true));
 		imageTreeGroup.setText (ControlExample.getResourceString("Tree_With_Images"));
 	}
@@ -174,8 +174,7 @@ class TreeTab extends ScrollableTab {
 		if (fullSelectionButton.getSelection ()) style |= SWT.FULL_SELECTION;
 		if (borderButton.getSelection()) style |= SWT.BORDER;
 
-		exampleWrapper_old = new WrapperTee(style, this);
-
+		exampleWrapper_old = new WrapperTee(style, this, treeGroup, imageTreeGroup);
 	}
 
 
@@ -224,7 +223,7 @@ class TreeTab extends ScrollableTab {
 		 * because tree items don't have any events. If events
 		 * are ever added to TreeItem, then this needs to change.
 		 */
-		List<Item> allItems = new ArrayList<Item>(exampleWrapper_old.getExampleWidgetItems());
+		List<Item> allItems = new ArrayList<>(exampleWrapper_old.getExampleWidgetItems());
 		return allItems.toArray(Item[]::new);
 	}
 

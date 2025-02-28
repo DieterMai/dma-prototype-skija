@@ -13,6 +13,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
@@ -56,10 +57,10 @@ public class TreeTabExampleWrapper {
 					ControlExample.getResourceString("TableLine2_2"),
 					ControlExample.getResourceString("TableLine2_3") } };
 
-	public TreeTabExampleWrapper(int style, TreeTab host) {
+	public TreeTabExampleWrapper(int style, TreeTab host, Composite treeGroup, Composite imageTreeGroup) {
 		this.host = host;
 		/* Create the text tree */
-		tree1 = new Tree(host.treeGroup, style);
+		tree1 = new Tree(treeGroup, style);
 
 		if (host.multipleColumns.getSelection()) {
 			for (String columnTitle : columnTitles) {
@@ -91,7 +92,7 @@ public class TreeTabExampleWrapper {
 		}
 
 		/* Create the image tree */
-		tree2 = new Tree(host.imageTreeGroup, style);
+		tree2 = new Tree(imageTreeGroup, style);
 		Image image = host.instance.images[ControlExample.ciClosedFolder];
 		if (host.multipleColumns.getSelection()) {
 			for (int i = 0; i < columnTitles.length; i++) {
