@@ -21,27 +21,34 @@ import org.eclipse.swt.internal.*;
 import org.eclipse.swt.internal.win32.*;
 
 /**
- * Instances of this class provide a selectable user interface object
- * that displays a hierarchy of items and issues notification when an
- * item in the hierarchy is selected.
+ * Instances of this class provide a selectable user interface object that
+ * displays a hierarchy of items and issues notification when an item in the
+ * hierarchy is selected.
  * <p>
- * The item children that may be added to instances of this class
- * must be of type <code>TreeItem</code>.
- * </p><p>
+ * The item children that may be added to instances of this class must be of
+ * type <code>TreeItem_old</code>.
+ * </p>
+ * <p>
  * Style <code>VIRTUAL</code> is used to create a <code>Tree</code> whose
- * <code>TreeItem</code>s are to be populated by the client on an on-demand basis
- * instead of up-front.  This can provide significant performance improvements for
- * trees that are very large or for which <code>TreeItem</code> population is
- * expensive (for example, retrieving values from an external source).
- * </p><p>
- * Here is an example of using a <code>Tree</code> with style <code>VIRTUAL</code>:</p>
- * <pre><code>
+ * <code>TreeItem_old</code>s are to be populated by the client on an on-demand
+ * basis instead of up-front. This can provide significant performance
+ * improvements for trees that are very large or for which
+ * <code>TreeItem_old</code> population is expensive (for example, retrieving
+ * values from an external source).
+ * </p>
+ * <p>
+ * Here is an example of using a <code>Tree</code> with style
+ * <code>VIRTUAL</code>:
+ * </p>
+ *
+ * <pre>
+ * <code>
  *  final Tree tree = new Tree(parent, SWT.VIRTUAL | SWT.BORDER);
  *  tree.setItemCount(20);
  *  tree.addListener(SWT.SetData, new Listener() {
  *      public void handleEvent(Event event) {
- *          TreeItem item = (TreeItem)event.item;
- *          TreeItem parentItem = item.getParentItem();
+ *          TreeItem_old item = (TreeItem_old)event.item;
+ *          TreeItem_old parentItem = item.getParentItem();
  *          String text = null;
  *          if (parentItem == null) {
  *              text = "node " + tree.indexOf(item);
@@ -53,37 +60,42 @@ import org.eclipse.swt.internal.win32.*;
  *          item.setItemCount(10);
  *      }
  *  });
- * </code></pre>
+ * </code>
+ * </pre>
  * <p>
- * Note that although this class is a subclass of <code>Composite</code>,
- * it does not normally make sense to add <code>Control</code> children to
- * it, or set a layout on it, unless implementing something like a cell
- * editor.
+ * Note that although this class is a subclass of <code>Composite</code>, it
+ * does not normally make sense to add <code>Control</code> children to it, or
+ * set a layout on it, unless implementing something like a cell editor.
  * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>SINGLE, MULTI, CHECK, FULL_SELECTION, VIRTUAL, NO_SCROLL</dd>
  * <dt><b>Events:</b></dt>
- * <dd>Selection, DefaultSelection, Collapse, Expand, SetData, MeasureItem, EraseItem, PaintItem, EmptinessChanged</dd>
+ * <dd>Selection, DefaultSelection, Collapse, Expand, SetData, MeasureItem,
+ * EraseItem, PaintItem, EmptinessChanged</dd>
  * </dl>
  * <p>
  * Note: Only one of the styles SINGLE and MULTI may be specified.
- * </p><p>
+ * </p>
+ * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  *
- * @see <a href="http://www.eclipse.org/swt/snippets/#tree">Tree, TreeItem, TreeColumn snippets</a>
- * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example: ControlExample</a>
- * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
+ * @see <a href="http://www.eclipse.org/swt/snippets/#tree">Tree, TreeItem_old,
+ *      TreeColumn_old snippets</a>
+ * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Example:
+ *      ControlExample</a>
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further
+ *      information</a>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class Tree extends Composite {
-	TreeItem [] items;
-	TreeColumn [] columns;
+public class Tree_old extends Composite implements ITree<TreeColumn_old, TreeItem_old> {
+	TreeItem_old[] items;
+	TreeColumn_old[] columns;
 	int columnCount;
 	ImageList imageList, headerImageList;
-	TreeItem currentItem;
-	TreeColumn sortColumn;
+	TreeItem_old currentItem;
+	TreeColumn_old sortColumn;
 	RECT focusRect;
 	long hwndParent, hwndHeader, hAnchor, hInsert, hSelect;
 	int lastID;
@@ -107,8 +119,8 @@ public class Tree extends Composite {
 	int[] cachedItemOrder;
 	long cachedFirstItem;   // Used to figure when other cache variables need updating
 	long cachedIndexItem;   // Item for which #cachedIndex is saved
-	int cachedIndex;        // cached Tree#indexOf() or TreeItem#indexOf() of #cachedIndexItem
-	int cachedItemCount;    // cached Tree#getItemCount() or TreeItem#getItemCount()
+	int cachedIndex; // cached Tree#indexOf() or TreeItem_old#indexOf() of #cachedIndexItem
+	int cachedItemCount; // cached Tree#getItemCount() or TreeItem_old#getItemCount()
 
 	static final boolean ENABLE_TVS_EX_FADEINOUTEXPANDOS = System.getProperty("org.eclipse.swt.internal.win32.enableFadeInOutExpandos") != null;
 	static final int TIMER_MAX_COUNT = 8;
@@ -132,7 +144,7 @@ public class Tree extends Composite {
 		TreeProc = lpWndClass.lpfnWndProc;
 		OS.GetClassInfo (0, HeaderClass, lpWndClass);
 		HeaderProc = lpWndClass.lpfnWndProc;
-		DPIZoomChangeRegistry.registerHandler(Tree::handleDPIChange, Tree.class);
+		DPIZoomChangeRegistry.registerHandler(Tree_old::handleDPIChange, Tree_old.class);
 	}
 
 /**
@@ -168,7 +180,7 @@ public class Tree extends Composite {
  * @see Widget#checkSubclass
  * @see Widget#getStyle
  */
-public Tree (Composite parent, int style) {
+public Tree_old (Composite parent, int style) {
 	super (parent, checkStyle (style));
 }
 
@@ -248,7 +260,7 @@ void _addListener (int eventType, Listener listener) {
 	}
 }
 
-TreeItem _getItem (long hItem) {
+TreeItem_old _getItem(long hItem) {
 	TVITEM tvItem = new TVITEM ();
 	tvItem.mask = OS.TVIF_HANDLE | OS.TVIF_PARAM;
 	tvItem.hItem = hItem;
@@ -258,9 +270,9 @@ TreeItem _getItem (long hItem) {
 	return null;
 }
 
-TreeItem _getItem (long hItem, int id) {
+TreeItem_old _getItem(long hItem, int id) {
 	if ((style & SWT.VIRTUAL) == 0) return items [id];
-	return id != -1 ? items [id] : new TreeItem (this, SWT.NONE, -1, -1, hItem);
+	return id != -1 ? items[id] : new TreeItem_old(this, SWT.NONE, -1, -1, hItem);
 }
 
 @Override
@@ -374,6 +386,7 @@ public void addSelectionListener(SelectionListener listener) {
  * @see TreeListener
  * @see #removeTreeListener
  */
+@Override
 public void addTreeListener(TreeListener listener) {
 	addTypedListener(listener, SWT.Expand, SWT.Collapse);
 }
@@ -388,7 +401,7 @@ LRESULT CDDS_ITEMPOSTPAINT (NMTVCUSTOMDRAW nmcd, long wParam, long lParam) {
 	if (nmcd.left == nmcd.right) return new LRESULT (OS.CDRF_DODEFAULT);
 	long hDC = nmcd.hdc;
 	OS.RestoreDC (hDC, -1);
-	TreeItem item = getItem (nmcd);
+	TreeItem_old item = getItem(nmcd);
 
 	/*
 	* Feature in Windows.  When a new tree item is inserted
@@ -500,7 +513,7 @@ LRESULT CDDS_ITEMPOSTPAINT (NMTVCUSTOMDRAW nmcd, long wParam, long lParam) {
 						long hTheme = OS.OpenThemeData (handle, Display.TREEVIEW, getZoom());
 						int iStateId = selected ? OS.TREIS_SELECTED : OS.TREIS_HOT;
 						if (OS.GetFocus () != handle && selected && !hot) iStateId = OS.TREIS_SELECTEDNOTFOCUS;
-						OS.DrawThemeBackground (hTheme, hDC, OS.TVP_TREEITEM, iStateId, pRect, pClipRect);
+						OS.DrawThemeBackground(hTheme, hDC, OS.TVP_TREEITEM, iStateId, pRect, pClipRect);
 						OS.CloseThemeData (hTheme);
 					}
 					if (draw) fillBackground (hDC, OS.GetBkColor (hDC), pClipRect);
@@ -713,7 +726,8 @@ LRESULT CDDS_ITEMPOSTPAINT (NMTVCUSTOMDRAW nmcd, long wParam, long lParam) {
 										long hTheme = OS.OpenThemeData(handle, Display.TREEVIEW, getZoom());
 										int iStateId = selected ? OS.TREIS_SELECTED : OS.TREIS_HOT;
 										if (OS.GetFocus () != handle && selected && !hot) iStateId = OS.TREIS_SELECTEDNOTFOCUS;
-										OS.DrawThemeBackground (hTheme, hDC, OS.TVP_TREEITEM, iStateId, pRect, backgroundRect);
+										OS.DrawThemeBackground(hTheme, hDC, OS.TVP_TREEITEM, iStateId, pRect,
+												backgroundRect);
 										OS.CloseThemeData (hTheme);
 									}
 								}
@@ -808,7 +822,7 @@ LRESULT CDDS_ITEMPOSTPAINT (NMTVCUSTOMDRAW nmcd, long wParam, long lParam) {
 							if (clrTextBk != -1) clrTextBk = OS.SetBkColor (hDC, clrTextBk);
 							int flags = OS.DT_NOPREFIX | OS.DT_SINGLELINE | OS.DT_VCENTER;
 							if (i != 0) flags |= OS.DT_ENDELLIPSIS;
-							TreeColumn column = columns != null ? columns [index] : null;
+							TreeColumn_old column = columns != null ? columns[index] : null;
 							if (column != null) {
 								if ((column.style & SWT.CENTER) != 0) flags |= OS.DT_CENTER;
 								if ((column.style & SWT.RIGHT) != 0) flags |= OS.DT_RIGHT;
@@ -971,7 +985,7 @@ LRESULT CDDS_ITEMPREPAINT (NMTVCUSTOMDRAW nmcd, long wParam, long lParam) {
 	* to be selected into the HDC so that the item bounds are
 	* measured correctly.
 	*/
-	TreeItem item = getItem (nmcd);
+	TreeItem_old item = getItem(nmcd);
 	/*
 	* Feature in Windows.  When a new tree item is inserted
 	* using TVM_INSERTITEM and the tree is using custom draw,
@@ -1143,7 +1157,7 @@ LRESULT CDDS_ITEMPREPAINT (NMTVCUSTOMDRAW nmcd, long wParam, long lParam) {
 						long hTheme = OS.OpenThemeData (handle, Display.TREEVIEW, getZoom());
 						int iStateId = selected ? OS.TREIS_SELECTED : OS.TREIS_HOT;
 						if (OS.GetFocus () != handle && selected && !hot) iStateId = OS.TREIS_SELECTEDNOTFOCUS;
-						OS.DrawThemeBackground (hTheme, hDC, OS.TVP_TREEITEM, iStateId, pRect, pClipRect);
+						OS.DrawThemeBackground(hTheme, hDC, OS.TVP_TREEITEM, iStateId, pRect, pClipRect);
 						OS.CloseThemeData (hTheme);
 					}
 				} else {
@@ -1651,23 +1665,23 @@ void checkBuffered () {
 	}
 }
 
-boolean checkData (TreeItem item, boolean redraw) {
+boolean checkData(TreeItem_old item, boolean redraw) {
 	if ((style & SWT.VIRTUAL) == 0) return true;
 	if (!item.cached) {
-		TreeItem parentItem = item.getParentItem ();
+		TreeItem_old parentItem = item.getParentItem();
 		return checkData (item, parentItem == null ? indexOf (item) : parentItem.indexOf (item), redraw);
 	}
 	return true;
 }
 
-boolean checkData (TreeItem item, int index, boolean redraw) {
+boolean checkData(TreeItem_old item, int index, boolean redraw) {
 	if ((style & SWT.VIRTUAL) == 0) return true;
 	if (!item.cached) {
 		item.cached = true;
 		Event event = new Event ();
 		event.item = item;
 		event.index = index;
-		TreeItem oldItem = currentItem;
+		TreeItem_old oldItem = currentItem;
 		currentItem = item;
 		/*
 		* Bug in Windows.  If the tree scrolls during WM_NOTIFY
@@ -1754,7 +1768,7 @@ public void clear (int index, boolean all) {
 
 void clear (long hItem, TVITEM tvItem) {
 	tvItem.hItem = hItem;
-	TreeItem item = null;
+	TreeItem_old item = null;
 	if (OS.SendMessage (handle, OS.TVM_GETITEM, 0, tvItem) != 0) {
 		item = tvItem.lParam != -1 ? items [(int)tvItem.lParam] : null;
 	}
@@ -1790,7 +1804,7 @@ public void clearAll (boolean all) {
 	if (hItem == 0) return;
 	if (all) {
 		boolean redraw = false;
-		for (TreeItem item : items) {
+		for (TreeItem_old item : items) {
 			if (item != null && item != currentItem) {
 				item.clear ();
 				redraw = true;
@@ -1816,7 +1830,7 @@ void clearAll (long hItem, TVITEM tvItem, boolean all) {
 }
 
 long CompareFunc (long lParam1, long lParam2, long lParamSort) {
-	TreeItem item1 = items [(int)lParam1], item2 = items [(int)lParam2];
+	TreeItem_old item1 = items[(int) lParam1], item2 = items[(int) lParam2];
 	String text1 = item1.getText ((int)lParamSort), text2 = item2.getText ((int)lParamSort);
 	return sortDirection == SWT.UP ? text1.compareTo (text2) : text2.compareTo (text1);
 }
@@ -1944,15 +1958,15 @@ void createHeaderToolTips () {
 	OS.SendMessage (headerToolTipHandle, OS.TTM_SETMAXTIPWIDTH, 0, 0x7FFF);
 }
 
-void createItem (TreeColumn column, int index) {
+void createItem(TreeColumn_old column, int index) {
 	if (hwndHeader == 0) createParent ();
 	if (!(0 <= index && index <= columnCount)) error (SWT.ERROR_INVALID_RANGE);
 	if (columnCount == columns.length) {
-		TreeColumn [] newColumns = new TreeColumn [columns.length + 4];
+		TreeColumn_old[] newColumns = new TreeColumn_old[columns.length + 4];
 		System.arraycopy (columns, 0, newColumns, 0, columns.length);
 		columns = newColumns;
 	}
-	for (TreeItem item : items) {
+	for (TreeItem_old item : items) {
 		if (item != null) {
 			String [] strings = item.strings;
 			if (strings != null) {
@@ -2080,10 +2094,11 @@ void createItem (TreeColumn column, int index) {
 }
 
 /**
- * The fastest way to insert many items is documented in {@link TreeItem#TreeItem(Tree,int,int)}
- * and {@link TreeItem#setItemCount}
+ * The fastest way to insert many items is documented in
+ * {@link TreeItem_old#TreeItem_old(Tree_old,int,int)} and
+ * {@link TreeItem_old#setItemCount}
  */
-void createItem (TreeItem item, long hParent, long hInsertAfter, long hItem) {
+void createItem(TreeItem_old item, long hParent, long hInsertAfter, long hItem) {
 	int id = -1;
 	if (item != null) {
 		id = lastID < items.length ? lastID : 0;
@@ -2372,8 +2387,8 @@ void createParent () {
 @Override
 void createWidget () {
 	super.createWidget ();
-	items = new TreeItem [4];
-	columns = new TreeColumn [4];
+	items = new TreeItem_old[4];
+	columns = new TreeColumn_old[4];
 	cachedItemCount = -1;
 }
 
@@ -2422,7 +2437,7 @@ void deselect (long hItem, TVITEM tvItem, long hIgnoreItem) {
  *
  * @since 3.4
  */
-public void deselect (TreeItem item) {
+public void deselect(TreeItem_old item) {
 	checkWidget ();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (item.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
@@ -2459,7 +2474,7 @@ public void deselectAll () {
 			long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
 			deselect (hItem, tvItem, 0);
 		} else {
-			for (TreeItem item : items) {
+			for (TreeItem_old item : items) {
 				if (item != null) {
 					tvItem.hItem = item.handle;
 					OS.SendMessage (handle, OS.TVM_SETITEM, 0, tvItem);
@@ -2470,7 +2485,7 @@ public void deselectAll () {
 	}
 }
 
-void destroyItem (TreeColumn column) {
+void destroyItem(TreeColumn_old column) {
 	if (hwndHeader == 0) error (SWT.ERROR_ITEM_NOT_REMOVED);
 	int index = 0;
 	while (index < columnCount) {
@@ -2491,7 +2506,7 @@ void destroyItem (TreeColumn column) {
 	System.arraycopy (columns, index + 1, columns, index, --columnCount - index);
 	cachedItemOrder = null; // conservative
 	columns [columnCount] = null;
-	for (TreeItem item : items) {
+	for (TreeItem_old item : items) {
 		if (item != null) {
 			if (columnCount == 0) {
 				item.strings = null;
@@ -2584,12 +2599,12 @@ void destroyItem (TreeColumn column) {
 	updateScrollBar ();
 	if (columnCount != 0) {
 		int [] newOrder = getColumnOrderFromOS();
-		TreeColumn [] newColumns = new TreeColumn [columnCount - orderIndex];
+		TreeColumn_old[] newColumns = new TreeColumn_old[columnCount - orderIndex];
 		for (int i=orderIndex; i<newOrder.length; i++) {
 			newColumns [i - orderIndex] = columns [newOrder [i]];
 			newColumns [i - orderIndex].updateToolTip (newOrder [i]);
 		}
-		for (TreeColumn newColumn : newColumns) {
+		for (TreeColumn_old newColumn : newColumns) {
 			if (!newColumn.isDisposed ()) {
 				newColumn.sendEvent (SWT.Move);
 			}
@@ -2606,7 +2621,7 @@ void destroyItem (TreeColumn column) {
 	}
 }
 
-void destroyItem (TreeItem item, long hItem) {
+void destroyItem(TreeItem_old item, long hItem) {
 	cachedFirstItem = cachedIndexItem = 0;
 	cachedItemCount = -1;
 	/*
@@ -2686,7 +2701,7 @@ void destroyItem (TreeItem item, long hItem) {
 				customDraw = false;
 			}
 		}
-		items = new TreeItem [4];
+		items = new TreeItem_old[4];
 		scrollWidth = 0;
 		setScrollWidth ();
 	}
@@ -2762,7 +2777,7 @@ void enableWidget (boolean enabled) {
 	updateFullSelection ();
 }
 
-boolean findCell (int x, int y, TreeItem [] item, int [] index, RECT [] cellRect, RECT [] itemRect) {
+boolean findCell(int x, int y, TreeItem_old[] item, int[] index, RECT[] cellRect, RECT[] itemRect) {
 	boolean found = false;
 	TVHITTESTINFO lpht = new TVHITTESTINFO ();
 	lpht.x = x;
@@ -2940,7 +2955,7 @@ long findItem (long hFirstItem, int index) {
 	return 0;
 }
 
-TreeItem getFocusItem () {
+TreeItem_old getFocusItem() {
 //	checkWidget ();
 	long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_CARET, 0);
 	return hItem != 0 ? _getItem (hItem) : null;
@@ -2978,6 +2993,7 @@ int getGridLineWidthInPixels () {
  * </ul>
  * @since 3.106
  */
+@Override
 public Color getHeaderBackground () {
 	checkWidget ();
 	return Color.win32_new (display, getHeaderBackgroundPixel());
@@ -2998,6 +3014,7 @@ private int getHeaderBackgroundPixel() {
  * </ul>
  * @since 3.106
  */
+@Override
 public Color getHeaderForeground () {
 	checkWidget ();
 	return Color.win32_new (display, getHeaderForegroundPixel());
@@ -3050,6 +3067,7 @@ int getHeaderHeightInPixels () {
  *
  * @since 3.1
  */
+@Override
 public boolean getHeaderVisible () {
 	checkWidget ();
 	if (hwndHeader == 0) return false;
@@ -3076,85 +3094,98 @@ long getBottomItem () {
 }
 
 /**
- * Returns the column at the given, zero-relative index in the
- * receiver. Throws an exception if the index is out of range.
- * Columns are returned in the order that they were created.
- * If no <code>TreeColumn</code>s were created by the programmer,
- * this method will throw <code>ERROR_INVALID_RANGE</code> despite
- * the fact that a single column of data may be visible in the tree.
- * This occurs when the programmer uses the tree like a list, adding
- * items but never creating a column.
+ * Returns the column at the given, zero-relative index in the receiver. Throws
+ * an exception if the index is out of range. Columns are returned in the order
+ * that they were created. If no <code>TreeColumn_old</code>s were created by
+ * the programmer, this method will throw <code>ERROR_INVALID_RANGE</code>
+ * despite the fact that a single column of data may be visible in the tree.
+ * This occurs when the programmer uses the tree like a list, adding items but
+ * never creating a column.
  *
  * @param index the index of the column to return
  * @return the column at the given index
  *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_INVALID_RANGE - if the index is
+ *                                     not between 0 and the number of elements
+ *                                     in the list minus 1 (inclusive)</li>
+ *                                     </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_WIDGET_DISPOSED - if the
+ *                                     receiver has been disposed</li>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     receiver</li>
+ *                                     </ul>
  *
- * @see Tree#getColumnOrder()
- * @see Tree#setColumnOrder(int[])
- * @see TreeColumn#getMoveable()
- * @see TreeColumn#setMoveable(boolean)
+ * @see Tree_old#getColumnOrder()
+ * @see Tree_old#setColumnOrder(int[])
+ * @see TreeColumn_old#getMoveable()
+ * @see TreeColumn_old#setMoveable(boolean)
  * @see SWT#Move
  *
  * @since 3.1
  */
-public TreeColumn getColumn (int index) {
+@Override
+public TreeColumn_old getColumn(int index) {
 	checkWidget ();
 	if (!(0 <= index && index < columnCount)) error (SWT.ERROR_INVALID_RANGE);
 	return columns [index];
 }
 
 /**
- * Returns the number of columns contained in the receiver.
- * If no <code>TreeColumn</code>s were created by the programmer,
- * this value is zero, despite the fact that visually, one column
- * of items may be visible. This occurs when the programmer uses
- * the tree like a list, adding items but never creating a column.
+ * Returns the number of columns contained in the receiver. If no
+ * <code>TreeColumn_old</code>s were created by the programmer, this value is
+ * zero, despite the fact that visually, one column of items may be visible.
+ * This occurs when the programmer uses the tree like a list, adding items but
+ * never creating a column.
  *
  * @return the number of columns
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  *
  * @since 3.1
  */
+@Override
 public int getColumnCount () {
 	checkWidget ();
 	return columnCount;
 }
 
 /**
- * Returns an array of zero-relative integers that map
- * the creation order of the receiver's items to the
- * order in which they are currently being displayed.
+ * Returns an array of zero-relative integers that map the creation order of the
+ * receiver's items to the order in which they are currently being displayed.
  * <p>
- * Specifically, the indices of the returned array represent
- * the current visual order of the items, and the contents
- * of the array represent the creation order of the items.
- * </p><p>
- * Note: This is not the actual structure used by the receiver
- * to maintain its list of items, so modifying the array will
- * not affect the receiver.
+ * Specifically, the indices of the returned array represent the current visual
+ * order of the items, and the contents of the array represent the creation
+ * order of the items.
+ * </p>
+ * <p>
+ * Note: This is not the actual structure used by the receiver to maintain its
+ * list of items, so modifying the array will not affect the receiver.
  * </p>
  *
  * @return the current visual order of the receiver's items
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  *
- * @see Tree#setColumnOrder(int[])
- * @see TreeColumn#getMoveable()
- * @see TreeColumn#setMoveable(boolean)
+ * @see Tree_old#setColumnOrder(int[])
+ * @see TreeColumn_old#getMoveable()
+ * @see TreeColumn_old#setMoveable(boolean)
  * @see SWT#Move
  *
  * @since 3.2
@@ -3177,37 +3208,39 @@ private int[] getColumnOrderFromOS() {
 }
 
 /**
- * Returns an array of <code>TreeColumn</code>s which are the
- * columns in the receiver. Columns are returned in the order
- * that they were created.  If no <code>TreeColumn</code>s were
- * created by the programmer, the array is empty, despite the fact
- * that visually, one column of items may be visible. This occurs
- * when the programmer uses the tree like a list, adding items but
+ * Returns an array of <code>TreeColumn_old</code>s which are the columns in the
+ * receiver. Columns are returned in the order that they were created. If no
+ * <code>TreeColumn_old</code>s were created by the programmer, the array is
+ * empty, despite the fact that visually, one column of items may be visible.
+ * This occurs when the programmer uses the tree like a list, adding items but
  * never creating a column.
  * <p>
- * Note: This is not the actual structure used by the receiver
- * to maintain its list of items, so modifying the array will
- * not affect the receiver.
+ * Note: This is not the actual structure used by the receiver to maintain its
+ * list of items, so modifying the array will not affect the receiver.
  * </p>
  *
  * @return the items in the receiver
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  *
- * @see Tree#getColumnOrder()
- * @see Tree#setColumnOrder(int[])
- * @see TreeColumn#getMoveable()
- * @see TreeColumn#setMoveable(boolean)
+ * @see Tree_old#getColumnOrder()
+ * @see Tree_old#setColumnOrder(int[])
+ * @see TreeColumn_old#getMoveable()
+ * @see TreeColumn_old#setMoveable(boolean)
  * @see SWT#Move
  *
  * @since 3.1
  */
-public TreeColumn [] getColumns () {
+@Override
+public TreeColumn_old[] getColumns() {
 	checkWidget ();
-	TreeColumn [] result = new TreeColumn [columnCount];
+	TreeColumn_old[] result = new TreeColumn_old[columnCount];
 	System.arraycopy (columns, 0, result, 0, columnCount);
 	return result;
 }
@@ -3229,7 +3262,7 @@ public TreeColumn [] getColumns () {
  *
  * @since 3.1
  */
-public TreeItem getItem (int index) {
+public TreeItem_old getItem(int index) {
 	checkWidget ();
 	if (index < 0) error (SWT.ERROR_INVALID_RANGE);
 	long hFirstItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
@@ -3239,7 +3272,7 @@ public TreeItem getItem (int index) {
 	return _getItem (hItem);
 }
 
-TreeItem getItem (NMTVCUSTOMDRAW nmcd) {
+TreeItem_old getItem(NMTVCUSTOMDRAW nmcd) {
 	/*
 	* Bug in Windows.  If the lParam field of TVITEM
 	* is changed during custom draw using TVM_SETITEM,
@@ -3284,13 +3317,14 @@ TreeItem getItem (NMTVCUSTOMDRAW nmcd) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public TreeItem getItem (Point point) {
+@Override
+public TreeItem_old getItem(Point point) {
 	checkWidget ();
 	if (point == null) error (SWT.ERROR_NULL_ARGUMENT);
 	return getItemInPixels(DPIUtil.scaleUp(point, getZoom()));
 }
 
-TreeItem getItemInPixels (Point point) {
+TreeItem_old getItemInPixels(Point point) {
 	TVHITTESTINFO lpht = new TVHITTESTINFO ();
 	lpht.x = point.x;
 	lpht.y = point.y;
@@ -3385,25 +3419,27 @@ int getItemHeightInPixels () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public TreeItem [] getItems () {
+@Override
+public TreeItem_old[] getItems() {
 	checkWidget ();
 	long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
-	if (hItem == 0) return new TreeItem [0];
+	if (hItem == 0)
+		return new TreeItem_old[0];
 	return getItems (hItem);
 }
 
-TreeItem [] getItems (long hTreeItem) {
+TreeItem_old[] getItems(long hTreeItem_old) {
 	int count = 0;
-	long hItem = hTreeItem;
+	long hItem = hTreeItem_old;
 	while (hItem != 0) {
 		hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_NEXT, hItem);
 		count++;
 	}
 	int index = 0;
-	TreeItem [] result = new TreeItem [count];
+	TreeItem_old[] result = new TreeItem_old[count];
 	TVITEM tvItem = new TVITEM ();
 	tvItem.mask = OS.TVIF_HANDLE | OS.TVIF_PARAM;
-	tvItem.hItem = hTreeItem;
+	tvItem.hItem = hTreeItem_old;
 	/*
 	* Feature in Windows.  In some cases an expand or collapse message
 	* can occur from within TVM_DELETEITEM.  When this happens, the item
@@ -3413,12 +3449,12 @@ TreeItem [] getItems (long hTreeItem) {
 	*/
 	while (tvItem.hItem != 0) {
 		OS.SendMessage (handle, OS.TVM_GETITEM, 0, tvItem);
-		TreeItem item = _getItem (tvItem.hItem, (int)tvItem.lParam);
+		TreeItem_old item = _getItem(tvItem.hItem, (int) tvItem.lParam);
 		if (item != null) result [index++] = item;
 		tvItem.hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_NEXT, tvItem.hItem);
 	}
 	if (index != count) {
-		TreeItem [] newResult = new TreeItem [index];
+		TreeItem_old[] newResult = new TreeItem_old[index];
 		System.arraycopy (result, 0, newResult, 0, index);
 		result = newResult;
 	}
@@ -3445,6 +3481,7 @@ TreeItem [] getItems (long hTreeItem) {
  *
  * @since 3.1
  */
+@Override
 public boolean getLinesVisible () {
 	checkWidget ();
 	return linesVisible;
@@ -3463,23 +3500,26 @@ long getNextSelection (long hItem) {
 }
 
 /**
- * Returns the receiver's parent item, which must be a
- * <code>TreeItem</code> or null when the receiver is a
- * root.
+ * Returns the receiver's parent item, which must be a <code>TreeItem_old</code>
+ * or null when the receiver is a root.
  *
  * @return the receiver's parent item
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  */
-public TreeItem getParentItem () {
+public TreeItem_old getParentItem() {
 	checkWidget ();
 	return null;
 }
 
-int getSelection (long hItem, TVITEM tvItem, TreeItem [] selection, int index, int count, boolean bigSelection, boolean all) {
+int getSelection(long hItem, TVITEM tvItem, TreeItem_old[] selection, int index, int count, boolean bigSelection,
+		boolean all) {
 	while (hItem != 0) {
 		boolean expanded = true;
 		if (bigSelection) {
@@ -3487,7 +3527,7 @@ int getSelection (long hItem, TVITEM tvItem, TreeItem [] selection, int index, i
 			OS.SendMessage (handle, OS.TVM_GETITEM, 0, tvItem);
 			if ((tvItem.state & OS.TVIS_SELECTED) != 0) {
 				if (selection != null && index < selection.length) {
-					TreeItem item = _getItem (hItem, (int)tvItem.lParam);
+					TreeItem_old item = _getItem(hItem, (int) tvItem.lParam);
 					if (item != null) {
 						selection [index] = item;
 					} else {
@@ -3503,7 +3543,7 @@ int getSelection (long hItem, TVITEM tvItem, TreeItem [] selection, int index, i
 				if (tvItem != null && selection != null && index < selection.length) {
 					tvItem.hItem = hItem;
 					OS.SendMessage (handle, OS.TVM_GETITEM, 0, tvItem);
-					TreeItem item = _getItem (hItem, (int)tvItem.lParam);
+					TreeItem_old item = _getItem(hItem, (int) tvItem.lParam);
 					if (item != null) {
 						selection [index] = item;
 					} else {
@@ -3531,37 +3571,43 @@ int getSelection (long hItem, TVITEM tvItem, TreeItem [] selection, int index, i
 }
 
 /**
- * Returns an array of <code>TreeItem</code>s that are currently
- * selected in the receiver. The order of the items is unspecified.
- * An empty array indicates that no items are selected.
+ * Returns an array of <code>TreeItem_old</code>s that are currently selected in
+ * the receiver. The order of the items is unspecified. An empty array indicates
+ * that no items are selected.
  * <p>
- * Note: This is not the actual structure used by the receiver
- * to maintain its selection, so modifying the array will
- * not affect the receiver.
+ * Note: This is not the actual structure used by the receiver to maintain its
+ * selection, so modifying the array will not affect the receiver.
  * </p>
+ *
  * @return an array representing the selection
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  */
-public TreeItem [] getSelection () {
+public TreeItem_old[] getSelection() {
 	checkWidget ();
 	if ((style & SWT.SINGLE) != 0) {
 		long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_CARET, 0);
-		if (hItem == 0) return new TreeItem [0];
+		if (hItem == 0)
+			return new TreeItem_old[0];
 		TVITEM tvItem = new TVITEM ();
 		tvItem.mask = OS.TVIF_HANDLE | OS.TVIF_PARAM | OS.TVIF_STATE;
 		tvItem.hItem = hItem;
 		OS.SendMessage (handle, OS.TVM_GETITEM, 0, tvItem);
-		if ((tvItem.state & OS.TVIS_SELECTED) == 0) return new TreeItem [0];
-		TreeItem item = _getItem (tvItem.hItem, (int)tvItem.lParam);
-		if (item == null) return new TreeItem [0];
-		return new TreeItem [] {item};
+		if ((tvItem.state & OS.TVIS_SELECTED) == 0)
+			return new TreeItem_old[0];
+		TreeItem_old item = _getItem(tvItem.hItem, (int) tvItem.lParam);
+		if (item == null)
+			return new TreeItem_old[0];
+		return new TreeItem_old[] { item };
 	}
 	int count = 0;
-	TreeItem [] guess = new TreeItem [(style & SWT.VIRTUAL) != 0 ? 8 : 1];
+	TreeItem_old[] guess = new TreeItem_old[(style & SWT.VIRTUAL) != 0 ? 8 : 1];
 	long oldProc = OS.GetWindowLongPtr (handle, OS.GWLP_WNDPROC);
 	OS.SetWindowLongPtr (handle, OS.GWLP_WNDPROC, TreeProc);
 	if ((style & SWT.VIRTUAL) != 0) {
@@ -3570,7 +3616,7 @@ public TreeItem [] getSelection () {
 		long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
 		count = getSelection (hItem, tvItem, guess, 0, -1, false, true);
 	} else {
-		for (TreeItem item : items) {
+		for (TreeItem_old item : items) {
 			if (item != null) {
 				long hItem = item.handle;
 				int state = (int)OS.SendMessage (handle, OS.TVM_GETITEMSTATE, hItem, OS.TVIS_SELECTED);
@@ -3582,9 +3628,10 @@ public TreeItem [] getSelection () {
 		}
 	}
 	OS.SetWindowLongPtr (handle, OS.GWLP_WNDPROC, oldProc);
-	if (count == 0) return new TreeItem [0];
+	if (count == 0)
+		return new TreeItem_old[0];
 	if (count == guess.length) return guess;
-	TreeItem [] result = new TreeItem [count];
+	TreeItem_old[] result = new TreeItem_old[count];
 	if (count < guess.length) {
 		System.arraycopy (guess, 0, result, 0, count);
 		return result;
@@ -3599,7 +3646,7 @@ public TreeItem [] getSelection () {
 		count = getSelection (hItem, tvItem, result, 0, count, bigSelection, true);
 	}
 	if (count != result.length) {
-		TreeItem[] newResult = new TreeItem[count];
+		TreeItem_old[] newResult = new TreeItem_old[count];
 		System.arraycopy (result, 0, newResult, 0, count);
 		result = newResult;
 	}
@@ -3632,7 +3679,7 @@ public int getSelectionCount () {
 		long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
 		count = getSelection (hItem, null, null, 0, -1, false, true);
 	} else {
-		for (TreeItem item : items) {
+		for (TreeItem_old item : items) {
 			if (item != null) {
 				long hItem = item.handle;
 				int state = (int)OS.SendMessage (handle, OS.TVM_GETITEMSTATE, hItem, OS.TVIS_SELECTED);
@@ -3645,22 +3692,25 @@ public int getSelectionCount () {
 }
 
 /**
- * Returns the column which shows the sort indicator for
- * the receiver. The value may be null if no column shows
- * the sort indicator.
+ * Returns the column which shows the sort indicator for the receiver. The value
+ * may be null if no column shows the sort indicator.
  *
  * @return the sort indicator
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  *
- * @see #setSortColumn(TreeColumn)
+ * @see #setSortColumn(TreeColumn_old)
  *
  * @since 3.2
  */
-public TreeColumn getSortColumn () {
+@Override
+public TreeColumn_old getSortColumn() {
 	checkWidget ();
 	return sortColumn;
 }
@@ -3686,6 +3736,7 @@ int getSortColumnPixel () {
  *
  * @since 3.2
  */
+@Override
 public int getSortDirection () {
 	checkWidget ();
 	return sortDirection;
@@ -3705,7 +3756,7 @@ public int getSortDirection () {
  *
  * @since 2.1
  */
-public TreeItem getTopItem () {
+public TreeItem_old getTopItem() {
 	checkWidget ();
 	long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_FIRSTVISIBLE, 0);
 	return hItem != 0 ? _getItem (hItem) : null;
@@ -3713,7 +3764,7 @@ public TreeItem getTopItem () {
 
 boolean hitTestSelection (long hItem, int x, int y) {
 	if (hItem == 0) return false;
-	TreeItem item = _getItem (hItem);
+	TreeItem_old item = _getItem(hItem);
 	if (item == null) return false;
 	if (!hooks (SWT.MeasureItem)) return false;
 	boolean result = false;
@@ -3799,7 +3850,7 @@ int imageIndexHeader (Image image) {
  *
  * @since 3.1
  */
-public int indexOf (TreeColumn column) {
+public int indexOf(TreeColumn_old column) {
 	checkWidget ();
 	if (column == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (column.isDisposed()) error(SWT.ERROR_INVALID_ARGUMENT);
@@ -3829,7 +3880,7 @@ public int indexOf (TreeColumn column) {
  *
  * @since 3.1
  */
-public int indexOf (TreeItem item) {
+public int indexOf(TreeItem_old item) {
 	checkWidget ();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (item.isDisposed()) error(SWT.ERROR_INVALID_ARGUMENT);
@@ -3912,7 +3963,7 @@ boolean isUseWsBorder () {
 
 int itemsGetFreeCapacity() {
 	int count = 0;
-	for (TreeItem item : items) {
+	for (TreeItem_old item : items) {
 		if (item == null)
 			count++;
 	}
@@ -3921,7 +3972,7 @@ int itemsGetFreeCapacity() {
 }
 
 void itemsGrowArray (int newCapacity) {
-	TreeItem [] newItems = new TreeItem [newCapacity];
+	TreeItem_old[] newItems = new TreeItem_old[newCapacity];
 	System.arraycopy (items, 0, newItems, 0, items.length);
 	items = newItems;
 }
@@ -3969,7 +4020,7 @@ void releaseItem (long hItem, TVITEM tvItem, boolean release) {
 		if (tvItem.lParam != -1) {
 			if (tvItem.lParam < lastID) lastID = (int)tvItem.lParam;
 			if (release) {
-				TreeItem item = items [(int)tvItem.lParam];
+				TreeItem_old item = items[(int) tvItem.lParam];
 				if (item != null) item.release (false);
 			}
 			items [(int)tvItem.lParam] = null;
@@ -3995,7 +4046,7 @@ void releaseHandle () {
 @Override
 void releaseChildren (boolean destroy) {
 	if (items != null) {
-		for (TreeItem item : items) {
+		for (TreeItem_old item : items) {
 			if (item != null && !item.isDisposed ()) {
 				item.release (false);
 			}
@@ -4003,7 +4054,7 @@ void releaseChildren (boolean destroy) {
 		items = null;
 	}
 	if (columns != null) {
-		for (TreeColumn column : columns) {
+		for (TreeColumn_old column : columns) {
 			if (column != null && !column.isDisposed ()) {
 				column.release (false);
 			}
@@ -4057,7 +4108,7 @@ public void removeAll () {
 	checkWidget ();
 	cachedFirstItem = cachedIndexItem = 0;
 	cachedItemCount = -1;
-	for (TreeItem item : items) {
+	for (TreeItem_old item : items) {
 		if (item != null && !item.isDisposed ()) {
 			item.release (false);
 		}
@@ -4086,7 +4137,7 @@ public void removeAll () {
 	}
 	hAnchor = hInsert = cachedFirstItem = cachedIndexItem = 0;
 	cachedItemCount = -1;
-	items = new TreeItem [4];
+	items = new TreeItem_old[4];
 	scrollWidth = 0;
 	setScrollWidth ();
 	updateScrollBar ();
@@ -4133,6 +4184,7 @@ public void removeSelectionListener (SelectionListener listener) {
  * @see TreeListener
  * @see #addTreeListener
  */
+@Override
 public void removeTreeListener(TreeListener listener) {
 	checkWidget ();
 	if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -4144,12 +4196,12 @@ public void removeTreeListener(TreeListener listener) {
 @Override
 void reskinChildren (int flags) {
 	if (items != null) {
-		for (TreeItem item : items) {
+		for (TreeItem_old item : items) {
 			if (item != null) item.reskinChildren (flags);
 		}
 	}
 	if (columns != null) {
-		for (TreeColumn column : columns) {
+		for (TreeColumn_old column : columns) {
 			if (column != null) column.reskinChildren (flags);
 		}
 	}
@@ -4174,7 +4226,7 @@ void reskinChildren (int flags) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public void setInsertMark (TreeItem item, boolean before) {
+public void setInsertMark(TreeItem_old item, boolean before) {
 	checkWidget ();
 	long hItem = 0;
 	if (item != null) {
@@ -4189,15 +4241,19 @@ public void setInsertMark (TreeItem item, boolean before) {
 /**
  * Sets the number of root-level items contained in the receiver.
  * <p>
- * The fastest way to insert many items is documented in {@link TreeItem#TreeItem(Tree,int,int)}
- * and {@link TreeItem#setItemCount}
+ * The fastest way to insert many items is documented in
+ * {@link TreeItem_old#TreeItem_old(Tree_old,int,int)} and
+ * {@link TreeItem_old#setItemCount}
  *
  * @param count the number of items
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  *
  * @since 3.2
  */
@@ -4271,7 +4327,7 @@ void setItemCount (int count, long hParent) {
 			tvItem.hItem = itemDeleteFrom;
 			OS.SendMessage (handle, OS.TVM_GETITEM, 0, tvItem);
 			itemDeleteFrom = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_NEXT, itemDeleteFrom);
-			TreeItem item = tvItem.lParam != -1 ? items [(int)tvItem.lParam] : null;
+			TreeItem_old item = tvItem.lParam != -1 ? items[(int) tvItem.lParam] : null;
 			if (item != null && !item.isDisposed ()) {
 				item.dispose ();
 			} else {
@@ -4322,7 +4378,7 @@ void setItemCount (int count, long hParent) {
 			}
 		} else {
 			for (int i = 0; i < numInserted; i++) {
-				new TreeItem (this, SWT.NONE, hParent, itemInsertAfter, 0);
+				new TreeItem_old(this, SWT.NONE, hParent, itemInsertAfter, 0);
 			}
 		}
 	}
@@ -4370,6 +4426,7 @@ void setItemCount (int count, long hParent) {
  *
  * @since 3.1
  */
+@Override
 public void setLinesVisible (boolean show) {
 	checkWidget ();
 	if (linesVisible == show) return;
@@ -4416,7 +4473,7 @@ void select (long hItem, TVITEM tvItem) {
  *
  * @since 3.4
  */
-public void select (TreeItem item) {
+public void select(TreeItem_old item) {
 	checkWidget ();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (item.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
@@ -4514,7 +4571,7 @@ public void selectAll () {
 	OS.SetWindowLongPtr (handle, OS.GWLP_WNDPROC, oldProc);
 }
 
-Event sendEraseItemEvent (TreeItem item, NMTTCUSTOMDRAW nmcd, int column, RECT cellRect) {
+Event sendEraseItemEvent(TreeItem_old item, NMTTCUSTOMDRAW nmcd, int column, RECT cellRect) {
 	int nSavedDC = OS.SaveDC (nmcd.hdc);
 	RECT insetRect = toolTipInset (cellRect);
 	OS.SetWindowOrgEx (nmcd.hdc, insetRect.left, insetRect.top, null);
@@ -4540,7 +4597,7 @@ Event sendEraseItemEvent (TreeItem item, NMTTCUSTOMDRAW nmcd, int column, RECT c
 	return event;
 }
 
-Event sendMeasureItemEvent (TreeItem item, int index, long hDC, int detail) {
+Event sendMeasureItemEvent(TreeItem_old item, int index, long hDC, int detail) {
 	RECT itemRect = item.getBounds (index, true, true, false, false, false, hDC);
 	int nSavedDC = OS.SaveDC (hDC);
 	GCData data = new GCData ();
@@ -4570,7 +4627,7 @@ Event sendMeasureItemEvent (TreeItem item, int index, long hDC, int detail) {
 	return event;
 }
 
-Event sendPaintItemEvent (TreeItem item, NMTTCUSTOMDRAW nmcd, int column, RECT itemRect) {
+Event sendPaintItemEvent(TreeItem_old item, NMTTCUSTOMDRAW nmcd, int column, RECT itemRect) {
 	int nSavedDC = OS.SaveDC (nmcd.hdc);
 	RECT insetRect = toolTipInset (itemRect);
 	OS.SetWindowOrgEx (nmcd.hdc, insetRect.left, insetRect.top, null);
@@ -4668,25 +4725,32 @@ void setCursor () {
 }
 
 /**
- * Sets the order that the items in the receiver should
- * be displayed in to the given argument which is described
- * in terms of the zero-relative ordering of when the items
- * were added.
+ * Sets the order that the items in the receiver should be displayed in to the
+ * given argument which is described in terms of the zero-relative ordering of
+ * when the items were added.
  *
  * @param order the new order to display the items
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_NULL_ARGUMENT - if the item order is null</li>
- *    <li>ERROR_INVALID_ARGUMENT - if the item order is not the same length as the number of items</li>
- * </ul>
+ * @exception SWTException
+ *                                     <ul>
+ *                                     <li>ERROR_WIDGET_DISPOSED - if the
+ *                                     receiver has been disposed</li>
+ *                                     <li>ERROR_THREAD_INVALID_ACCESS - if not
+ *                                     called from the thread that created the
+ *                                     receiver</li>
+ *                                     </ul>
+ * @exception IllegalArgumentException
+ *                                     <ul>
+ *                                     <li>ERROR_NULL_ARGUMENT - if the item
+ *                                     order is null</li>
+ *                                     <li>ERROR_INVALID_ARGUMENT - if the item
+ *                                     order is not the same length as the
+ *                                     number of items</li>
+ *                                     </ul>
  *
- * @see Tree#getColumnOrder()
- * @see TreeColumn#getMoveable()
- * @see TreeColumn#setMoveable(boolean)
+ * @see Tree_old#getColumnOrder()
+ * @see TreeColumn_old#getMoveable()
+ * @see TreeColumn_old#setMoveable(boolean)
  * @see SWT#Move
  *
  * @since 3.2
@@ -4719,11 +4783,11 @@ public void setColumnOrder (int [] order) {
 		cachedItemOrder = order.clone();
 		OS.InvalidateRect (handle, null, true);
 		updateImageList ();
-		TreeColumn [] newColumns = new TreeColumn [columnCount];
+		TreeColumn_old[] newColumns = new TreeColumn_old[columnCount];
 		System.arraycopy (columns, 0, newColumns, 0, columnCount);
 		RECT newRect = new RECT ();
 		for (int i=0; i<columnCount; i++) {
-			TreeColumn column = newColumns [i];
+			TreeColumn_old column = newColumns[i];
 			if (!column.isDisposed ()) {
 				OS.SendMessage (hwndHeader, OS.HDM_GETITEMRECT, i, newRect);
 				if (newRect.left != oldRects [i].left) {
@@ -4860,6 +4924,7 @@ void setForegroundPixel (int pixel) {
  * </ul>
  * @since 3.106
  */
+@Override
 public void setHeaderBackground (Color color) {
 	checkWidget ();
 	int pixel = -1;
@@ -4893,6 +4958,7 @@ public void setHeaderBackground (Color color) {
  * </ul>
  * @since 3.106
  */
+@Override
 public void setHeaderForeground (Color color) {
 	checkWidget ();
 	int pixel = -1;
@@ -4925,6 +4991,7 @@ public void setHeaderForeground (Color color) {
  *
  * @since 3.1
  */
+@Override
 public void setHeaderVisible (boolean show) {
 	checkWidget ();
 	if (hwndHeader == 0) {
@@ -5058,11 +5125,11 @@ void setScrollWidth (int width) {
 	ignoreResize = oldIgnore;
 }
 
-void setSelection (long hItem, TVITEM tvItem, TreeItem [] selection) {
+void setSelection(long hItem, TVITEM tvItem, TreeItem_old[] selection) {
 	while (hItem != 0) {
 		int index = 0;
 		while (index < selection.length) {
-			TreeItem item = selection [index];
+			TreeItem_old item = selection[index];
 			if (item != null && item.handle == hItem) break;
 			index++;
 		}
@@ -5107,10 +5174,10 @@ void setSelection (long hItem, TVITEM tvItem, TreeItem [] selection) {
  *
  * @since 3.2
  */
-public void setSelection (TreeItem item) {
+public void setSelection(TreeItem_old item) {
 	checkWidget ();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
-	setSelection (new TreeItem [] {item});
+	setSelection(new TreeItem_old[] { item });
 }
 
 /**
@@ -5134,9 +5201,9 @@ public void setSelection (TreeItem item) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  *
- * @see Tree#deselectAll()
+ * @see Tree_old#deselectAll()
  */
-public void setSelection (TreeItem [] items) {
+public void setSelection(TreeItem_old[] items) {
 	checkWidget ();
 	if (items == null) error (SWT.ERROR_NULL_ARGUMENT);
 	int length = items.length;
@@ -5146,7 +5213,7 @@ public void setSelection (TreeItem [] items) {
 	}
 
 	/* Select/deselect the first item */
-	TreeItem item = items [0];
+	TreeItem_old item = items[0];
 	if (item != null) {
 		if (item.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
 		long hOldItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_CARET, 0);
@@ -5211,7 +5278,7 @@ public void setSelection (TreeItem [] items) {
 		long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
 		setSelection (hItem, tvItem, items);
 	} else {
-		for (TreeItem item2 : this.items) {
+		for (TreeItem_old item2 : this.items) {
 			item = item2;
 			if (item != null) {
 				int index = 0;
@@ -5239,8 +5306,8 @@ public void setSelection (TreeItem [] items) {
 	OS.SetWindowLongPtr (handle, OS.GWLP_WNDPROC, oldProc);
 }
 
-void expandToItem(TreeItem item) {
-	TreeItem parentItem = item.getParentItem();
+void expandToItem(TreeItem_old item) {
+	TreeItem_old parentItem = item.getParentItem();
 	if (parentItem != null && !parentItem.getExpanded()) {
 		expandToItem(parentItem);
 		parentItem.setExpanded(true);
@@ -5267,7 +5334,8 @@ void expandToItem(TreeItem item) {
  *
  * @since 3.2
  */
-public void setSortColumn (TreeColumn column) {
+@Override
+public void setSortColumn(TreeColumn_old column) {
 	checkWidget ();
 	if (column != null && column.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
 	if (sortColumn != null && !sortColumn.isDisposed ()) {
@@ -5292,6 +5360,7 @@ public void setSortColumn (TreeColumn column) {
  *
  * @since 3.2
  */
+@Override
 public void setSortDirection (int direction) {
 	checkWidget ();
 	if ((direction & (SWT.UP | SWT.DOWN)) == 0 && direction != SWT.NONE) return;
@@ -5317,11 +5386,11 @@ public void setSortDirection (int direction) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  *
- * @see Tree#getTopItem()
+ * @see Tree_old#getTopItem()
  *
  * @since 2.1
  */
-public void setTopItem (TreeItem item) {
+public void setTopItem(TreeItem_old item) {
 	checkWidget ();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (item.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
@@ -5446,7 +5515,7 @@ void showItem (long hItem) {
  *
  * @since 3.1
  */
-public void showColumn (TreeColumn column) {
+public void showColumn(TreeColumn_old column) {
 	checkWidget ();
 	if (column == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (column.isDisposed ()) error(SWT.ERROR_INVALID_ARGUMENT);
@@ -5484,7 +5553,7 @@ public void showColumn (TreeColumn column) {
 			SCROLLINFO info = new SCROLLINFO();
 			info.cbSize = SCROLLINFO.sizeof;
 			info.fMask = OS.SIF_POS;
-			info.nPos = Math.max(0, headerRect.left - Tree.INSET / 2);
+			info.nPos = Math.max(0, headerRect.left - Tree_old.INSET / 2);
 			OS.SetScrollInfo(hwndParent, OS.SB_HORZ, info, true);
 			setScrollWidth();
 		} else if (scrollBecauseRight) {
@@ -5498,8 +5567,8 @@ public void showColumn (TreeColumn column) {
 			// info.nPos + wideRect = headerRect.left + wideHeader
 			// info.nPos = headerRect.left + wideHeader - wideRect
 			info.nPos = Math.max(0, wideHeader + headerRect.left - wideRect
-					- Tree.INSET / 2);
-			info.nPos = Math.min(rect.right - Tree.INSET / 2, info.nPos);
+					- Tree_old.INSET / 2);
+			info.nPos = Math.min(rect.right - Tree_old.INSET / 2, info.nPos);
 
 			OS.SetScrollInfo(hwndParent, OS.SB_HORZ, info, true);
 			setScrollWidth();
@@ -5523,9 +5592,9 @@ public void showColumn (TreeColumn column) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  *
- * @see Tree#showSelection()
+ * @see Tree_old#showSelection()
  */
-public void showItem (TreeItem item) {
+public void showItem(TreeItem_old item) {
 	checkWidget ();
 	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
 	if (item.isDisposed ()) error(SWT.ERROR_INVALID_ARGUMENT);
@@ -5533,16 +5602,19 @@ public void showItem (TreeItem item) {
 }
 
 /**
- * Shows the selection.  If the selection is already showing in the receiver,
- * this method simply returns.  Otherwise, the items are scrolled until
- * the selection is visible.
+ * Shows the selection. If the selection is already showing in the receiver,
+ * this method simply returns. Otherwise, the items are scrolled until the
+ * selection is visible.
  *
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
+ * @exception SWTException
+ *                         <ul>
+ *                         <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+ *                         disposed</li>
+ *                         <li>ERROR_THREAD_INVALID_ACCESS - if not called from
+ *                         the thread that created the receiver</li>
+ *                         </ul>
  *
- * @see Tree#showItem(TreeItem)
+ * @see Tree_old#showItem(TreeItem_old)
  */
 public void showSelection () {
 	checkWidget ();
@@ -5562,7 +5634,7 @@ public void showSelection () {
 			//FIXME - this code expands first selected item it finds
 			int index = 0;
 			while (index <items.length) {
-				TreeItem item = items [index];
+				TreeItem_old item = items[index];
 				if (item != null) {
 					int state = (int)OS.SendMessage (handle, OS.TVM_GETITEMSTATE, item.handle, OS.TVIS_SELECTED);
 					if ((state & OS.TVIS_SELECTED) != 0) {
@@ -5629,7 +5701,7 @@ String toolTipText (NMTTDISPINFO hdr) {
 	if (hwndToolTip == hdr.hwndFrom && toolTipText != null) return ""; //$NON-NLS-1$
 	if (headerToolTipHandle == hdr.hwndFrom) {
 		for (int i=0; i<columnCount; i++) {
-			TreeColumn column = columns [i];
+			TreeColumn_old column = columns[i];
 			if (column.id == hdr.idFrom) return column.toolTipText;
 		}
 		return super.toolTipText (hdr);
@@ -5641,7 +5713,7 @@ String toolTipText (NMTTDISPINFO hdr) {
 		OS.POINTSTOPOINT (pt, pos);
 		OS.ScreenToClient (handle, pt);
 		int [] index = new int [1];
-		TreeItem [] item = new TreeItem [1];
+		TreeItem_old[] item = new TreeItem_old[1];
 		RECT [] cellRect = new RECT [1], itemRect = new RECT [1];
 		if (findCell (pt.x, pt.y, item, index, cellRect, itemRect)) {
 			String text = null;
@@ -5694,7 +5766,7 @@ void updateHeaderToolTips () {
 	lpti.hwnd = hwndHeader;
 	lpti.lpszText = OS.LPSTR_TEXTCALLBACK;
 	for (int i=0; i<columnCount; i++) {
-		TreeColumn column = columns [i];
+		TreeColumn_old column = columns[i];
 		if (OS.SendMessage (hwndHeader, OS.HDM_GETITEMRECT, i, rect) != 0) {
 			lpti.uId = column.id = display.nextToolTipId++;
 			lpti.left = rect.left;
@@ -5711,7 +5783,7 @@ void updateImageList () {
 	if (hwndHeader == 0) return;
 	int i = 0, index = getFirstColumnIndex();
 	while (i < items.length) {
-		TreeItem item = items [i];
+		TreeItem_old item = items[i];
 		if (item != null) {
 			Image image = null;
 			if (index == 0) {
@@ -5740,7 +5812,7 @@ void updateImageList () {
 void updateMenuLocation (Event event) {
 	Rectangle clientArea = getClientAreaInPixels ();
 	int x = clientArea.x, y = clientArea.y;
-	TreeItem focusItem = getFocusItem ();
+	TreeItem_old focusItem = getFocusItem();
 	if (focusItem != null) {
 		Rectangle bounds = focusItem.getBoundsInPixels (0);
 		if (focusItem.text != null && focusItem.text.length () != 0) {
@@ -5794,7 +5866,7 @@ void updateOrientation () {
 		Point size = imageList.getImageSize ();
 		display.releaseImageList (imageList);
 		imageList = display.getImageList (style & SWT.RIGHT_TO_LEFT, size.x, size.y, getZoom());
-		for (TreeItem item : items) {
+		for (TreeItem_old item : items) {
 			if (item != null) {
 				Image image = item.image;
 				if (image != null) {
@@ -5813,7 +5885,7 @@ void updateOrientation () {
 			headerImageList = display.getImageList (style & SWT.RIGHT_TO_LEFT, size.x, size.y, getZoom());
 			if (columns != null) {
 				for (int i = 0; i < columns.length; i++) {
-					TreeColumn column = columns[i];
+					TreeColumn_old column = columns[i];
 					if (column != null) {
 						Image image = column.image;
 						if (image != null) {
@@ -6060,7 +6132,7 @@ long windowProc (long hwnd, int msg, long wParam, long lParam) {
 		*/
 		if ((style & SWT.MULTI) != 0 || hooks (SWT.EraseItem) || hooks (SWT.PaintItem)) {
 			long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_FIRSTVISIBLE, 0);
-			TreeItem [] items = new TreeItem [10];
+			TreeItem_old[] items = new TreeItem_old[10];
 			TVITEM tvItem = new TVITEM ();
 			tvItem.mask = OS.TVIF_HANDLE | OS.TVIF_PARAM | OS.TVIF_STATE;
 			int count = getSelection (hItem, tvItem, items, 0, 10, false, true);
@@ -6183,7 +6255,7 @@ LRESULT WM_CHAR (long wParam, long lParam) {
 					}
 					tvItem.state = state << 12;
 					OS.SendMessage (handle, OS.TVM_SETITEM, 0, tvItem);
-					long id = OS.SendMessage (handle, OS.TVM_MAPHTREEITEMTOACCID, hItem, 0);
+					long id = OS.SendMessage(handle, OS.TVM_MAPHTREEITEMTOACCID, hItem, 0);
 					OS.NotifyWinEvent (OS.EVENT_OBJECT_FOCUS, handle, OS.OBJID_CLIENT, (int)id);
 				}
 				tvItem.stateMask = OS.TVIS_SELECTED;
@@ -6198,7 +6270,7 @@ LRESULT WM_CHAR (long wParam, long lParam) {
 					tvItem.state |= OS.TVIS_SELECTED;
 				}
 				OS.SendMessage (handle, OS.TVM_SETITEM, 0, tvItem);
-				TreeItem item = _getItem (hItem, (int)tvItem.lParam);
+				TreeItem_old item = _getItem(hItem, (int) tvItem.lParam);
 				Event event = new Event ();
 				event.item = item;
 				sendSelectionEvent (SWT.Selection, event, false);
@@ -6308,10 +6380,10 @@ LRESULT WM_KEYDOWN (long wParam, long lParam) {
 		case OS.VK_ADD:
 			if (OS.GetKeyState (OS.VK_CONTROL) < 0) {
 				if (hwndHeader != 0) {
-					TreeColumn [] newColumns = new TreeColumn [columnCount];
+					TreeColumn_old[] newColumns = new TreeColumn_old[columnCount];
 					System.arraycopy (columns, 0, newColumns, 0, columnCount);
 					for (int i=0; i<columnCount; i++) {
-						TreeColumn column = newColumns [i];
+						TreeColumn_old column = newColumns[i];
 						if (!column.isDisposed () && column.getResizable ()) {
 							column.pack ();
 						}
@@ -6527,7 +6599,7 @@ LRESULT WM_LBUTTONDBLCLK (long wParam, long lParam) {
 				}
 				tvItem.state = state << 12;
 				OS.SendMessage (handle, OS.TVM_SETITEM, 0, tvItem);
-				long id = OS.SendMessage (handle, OS.TVM_MAPHTREEITEMTOACCID, tvItem.hItem, 0);
+				long id = OS.SendMessage(handle, OS.TVM_MAPHTREEITEMTOACCID, tvItem.hItem, 0);
 				OS.NotifyWinEvent (OS.EVENT_OBJECT_FOCUS, handle, OS.OBJID_CLIENT, (int)id);
 				Event event = new Event ();
 				event.item = _getItem (tvItem.hItem, (int)tvItem.lParam);
@@ -6689,7 +6761,7 @@ LRESULT WM_LBUTTONDOWN (long wParam, long lParam) {
 			}
 			tvItem.state = state << 12;
 			OS.SendMessage (handle, OS.TVM_SETITEM, 0, tvItem);
-			long id = OS.SendMessage (handle, OS.TVM_MAPHTREEITEMTOACCID, tvItem.hItem, 0);
+			long id = OS.SendMessage(handle, OS.TVM_MAPHTREEITEMTOACCID, tvItem.hItem, 0);
 			OS.NotifyWinEvent (OS.EVENT_OBJECT_FOCUS, handle, OS.OBJID_CLIENT, (int)id);
 			Event event = new Event ();
 			event.item = _getItem (tvItem.hItem, (int)tvItem.lParam);
@@ -6890,7 +6962,7 @@ LRESULT WM_LBUTTONDOWN (long wParam, long lParam) {
 					long hItem = OS.SendMessage (handle, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
 					deselect (hItem, tvItem, hNewItem);
 				} else {
-					for (TreeItem item : items) {
+					for (TreeItem_old item : items) {
 						if (item != null && item.handle != hNewItem) {
 							tvItem.hItem = item.handle;
 							OS.SendMessage (handle, OS.TVM_SETITEM, 0, tvItem);
@@ -6973,7 +7045,7 @@ LRESULT WM_MOUSEMOVE (long wParam, long lParam) {
 			int x = OS.GET_X_LPARAM (lParam);
 			int y = OS.GET_Y_LPARAM (lParam);
 			int [] index = new int [1];
-			TreeItem [] item = new TreeItem [1];
+			TreeItem_old[] item = new TreeItem_old[1];
 			RECT [] cellRect = new RECT [1], itemRect = new RECT [1];
 			if (findCell (x, y, item, index, cellRect, itemRect)) {
 				/*
@@ -7104,7 +7176,7 @@ LRESULT WM_PAINT (long wParam, long lParam) {
 		count++;
 		if (items.length > 4 && items.length - count > 3) {
 			int length = Math.max (4, (count + 3) / 4 * 4);
-			TreeItem [] newItems = new TreeItem [length];
+			TreeItem_old[] newItems = new TreeItem_old[length];
 			System.arraycopy (items, 0, newItems, 0, count);
 			items = newItems;
 		}
@@ -7476,7 +7548,7 @@ LRESULT wmNotifyChild (NMHDR hdr, long wParam, long lParam) {
 					id = (int)tvItem.lParam;
 				}
 			}
-			TreeItem item = _getItem (lptvdi.hItem, id);
+			TreeItem_old item = _getItem(lptvdi.hItem, id);
 			/*
 			* Feature in Windows.  When a new tree item is inserted
 			* using TVM_INSERTITEM, a TVN_GETDISPINFO is sent before
@@ -7700,7 +7772,7 @@ LRESULT wmNotifyChild (NMHDR hdr, long wParam, long lParam) {
 				* items.  The fix is to check for null.
 				*/
 				if (items == null) break;
-				TreeItem item = _getItem (tvItem.hItem, (int)tvItem.lParam);
+				TreeItem_old item = _getItem(tvItem.hItem, (int) tvItem.lParam);
 				if (item == null) break;
 				Event event = new Event ();
 				event.item = item;
@@ -7818,7 +7890,7 @@ LRESULT wmNotifyHeader (NMHDR hdr, long wParam, long lParam) {
 		case OS.HDN_DIVIDERDBLCLICK: {
 			NMHEADER phdn = new NMHEADER ();
 			OS.MoveMemory (phdn, lParam, NMHEADER.sizeof);
-			TreeColumn column = columns [phdn.iItem];
+			TreeColumn_old column = columns[phdn.iItem];
 			if (column != null && !column.getResizable ()) {
 				return LRESULT.ONE;
 			}
@@ -7979,7 +8051,7 @@ LRESULT wmNotifyHeader (NMHDR hdr, long wParam, long lParam) {
 		case OS.NM_RELEASEDCAPTURE: {
 			if (!ignoreColumnMove) {
 				for (int i=0; i<columnCount; i++) {
-					TreeColumn column = columns [i];
+					TreeColumn_old column = columns[i];
 					column.updateToolTip (i);
 				}
 				updateImageList ();
@@ -7992,7 +8064,7 @@ LRESULT wmNotifyHeader (NMHDR hdr, long wParam, long lParam) {
 			NMHEADER phdn = new NMHEADER ();
 			OS.MoveMemory (phdn, lParam, NMHEADER.sizeof);
 			if (phdn.iItem != -1) {
-				TreeColumn column = columns [phdn.iItem];
+				TreeColumn_old column = columns[phdn.iItem];
 				if (column != null && !column.getMoveable ()) {
 					ignoreColumnMove = true;
 					return LRESULT.ONE;
@@ -8030,7 +8102,7 @@ LRESULT wmNotifyHeader (NMHDR hdr, long wParam, long lParam) {
 					OS.InvalidateRect (handle, rect, true);
 					ignoreColumnMove = false;
 					for (int i=start; i<=end; i++) {
-						TreeColumn column = columns [oldOrder [i]];
+						TreeColumn_old column = columns[oldOrder[i]];
 						if (!column.isDisposed ()) {
 							column.postEvent (SWT.Move);
 						}
@@ -8092,17 +8164,17 @@ LRESULT wmNotifyHeader (NMHDR hdr, long wParam, long lParam) {
 						OS.RedrawWindow (handle, null, 0, flags);
 					}
 					if (!ignoreColumnResize) {
-						TreeColumn column = columns [phdn.iItem];
+						TreeColumn_old column = columns[phdn.iItem];
 						if (column != null) {
 							column.updateToolTip (phdn.iItem);
 							column.sendEvent (SWT.Resize);
 							if (isDisposed ()) return LRESULT.ZERO;
-							TreeColumn [] newColumns = new TreeColumn [columnCount];
+							TreeColumn_old[] newColumns = new TreeColumn_old[columnCount];
 							System.arraycopy (columns, 0, newColumns, 0, columnCount);
 							int [] order = getColumnOrder();
 							boolean moved = false;
 							for (int i=0; i<columnCount; i++) {
-								TreeColumn nextColumn = newColumns [order [i]];
+								TreeColumn_old nextColumn = newColumns[order[i]];
 								if (moved && !nextColumn.isDisposed ()) {
 									nextColumn.updateToolTip (order [i]);
 									nextColumn.sendEvent (SWT.Move);
@@ -8119,7 +8191,7 @@ LRESULT wmNotifyHeader (NMHDR hdr, long wParam, long lParam) {
 		case OS.HDN_ITEMCLICK: {
 			NMHEADER phdn = new NMHEADER ();
 			OS.MoveMemory (phdn, lParam, NMHEADER.sizeof);
-			TreeColumn column = columns [phdn.iItem];
+			TreeColumn_old column = columns[phdn.iItem];
 			if (column != null) {
 				column.sendSelectionEvent (SWT.Selection);
 			}
@@ -8128,7 +8200,7 @@ LRESULT wmNotifyHeader (NMHDR hdr, long wParam, long lParam) {
 		case OS.HDN_ITEMDBLCLICK: {
 			NMHEADER phdn = new NMHEADER ();
 			OS.MoveMemory (phdn, lParam, NMHEADER.sizeof);
-			TreeColumn column = columns [phdn.iItem];
+			TreeColumn_old column = columns[phdn.iItem];
 			if (column != null) {
 				column.sendSelectionEvent (SWT.DefaultSelection);
 			}
@@ -8153,7 +8225,7 @@ LRESULT wmNotifyToolTip (NMHDR hdr, long wParam, long lParam) {
 			OS.POINTSTOPOINT (pt, pos);
 			OS.ScreenToClient (handle, pt);
 			int [] index = new int [1];
-			TreeItem [] item = new TreeItem [1];
+			TreeItem_old[] item = new TreeItem_old[1];
 			RECT [] cellRect = new RECT [1], itemRect = new RECT [1];
 			if (findCell (pt.x, pt.y, item, index, cellRect, itemRect)) {
 				RECT toolRect = toolTipRect (itemRect [0]);
@@ -8188,7 +8260,7 @@ LRESULT wmNotifyToolTip (NMTTCUSTOMDRAW nmcd, long lParam) {
 				lpti.cbSize = TOOLINFO.sizeof;
 				if (OS.SendMessage (itemToolTipHandle, OS.TTM_GETCURRENTTOOL, 0, lpti) != 0) {
 					int [] index = new int [1];
-					TreeItem [] item = new TreeItem [1];
+					TreeItem_old[] item = new TreeItem_old[1];
 					RECT [] cellRect = new RECT [1], itemRect = new RECT [1];
 					int pos = OS.GetMessagePos ();
 					POINT pt = new POINT();
@@ -8241,7 +8313,7 @@ LRESULT wmNotifyToolTip (NMTTCUSTOMDRAW nmcd, long lParam) {
 							String string = item [0].getText (index [0]);
 							if (string != null) {
 								int flags = OS.DT_NOPREFIX | OS.DT_SINGLELINE | OS.DT_VCENTER;
-								TreeColumn column = columns != null ? columns [index [0]] : null;
+								TreeColumn_old column = columns != null ? columns[index[0]] : null;
 								if (column != null) {
 									if ((column.style & SWT.CENTER) != 0) flags |= OS.DT_CENTER;
 									if ((column.style & SWT.RIGHT) != 0) flags |= OS.DT_RIGHT;
@@ -8271,7 +8343,7 @@ LRESULT wmNotifyToolTip (NMTTCUSTOMDRAW nmcd, long lParam) {
 }
 
 private static void handleDPIChange(Widget widget, int newZoom, float scalingFactor) {
-	if (!(widget instanceof Tree tree)) {
+	if (!(widget instanceof Tree_old tree)) {
 		return;
 	}
 	Display display = tree.getDisplay();
@@ -8293,10 +8365,10 @@ private static void handleDPIChange(Widget widget, int newZoom, float scalingFac
 	// Resetting it will re-enable the default behavior again
 	tree.setItemHeight(-1);
 
-	for (TreeColumn treeColumn : tree.getColumns()) {
-		DPIZoomChangeRegistry.applyChange(treeColumn, newZoom, scalingFactor);
+	for (TreeColumn_old TreeColumn_old : tree.getColumns()) {
+		DPIZoomChangeRegistry.applyChange(TreeColumn_old, newZoom, scalingFactor);
 	}
-	for (TreeItem item : tree.getItems()) {
+	for (TreeItem_old item : tree.getItems()) {
 		DPIZoomChangeRegistry.applyChange(item, newZoom, scalingFactor);
 	}
 
@@ -8305,5 +8377,10 @@ private static void handleDPIChange(Widget widget, int newZoom, float scalingFac
 	tree.setScrollWidth();
 	// Reset of CheckBox Size required (if SWT.Check is not set, this is a no-op)
 	tree.setCheckboxImageList();
+}
+
+@Override
+public Composite _composite() {
+	return this;
 }
 }

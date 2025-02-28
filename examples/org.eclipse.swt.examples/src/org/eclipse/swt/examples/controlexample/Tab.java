@@ -102,7 +102,7 @@ abstract class Tab {
 	Group exampleGroup, controlGroup, listenersGroup, otherGroup, sizeGroup, styleGroup, colorGroup, backgroundModeGroup;
 
 	/* Controlling instance */
-	final ControlExample instance;
+	public final ControlExample instance;
 
 	/* Sizing constants for the "Size" group */
 	static final int TOO_SMALL_SIZE	= 10;
