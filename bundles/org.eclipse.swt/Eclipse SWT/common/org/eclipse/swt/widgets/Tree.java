@@ -92,12 +92,16 @@ import org.eclipse.swt.graphics.*;
 public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private static final Color DEFAULT_BACKGROUND_COLOR = new Color(255, 0, 0);
 	private static final Color DEFAULT_FOREGROUND_COLOR = new Color(0, 255, 0);
+//	private static final Color DEFAULT_HEADERBACKGROUND_COLOR = new Color(255, 0, 0);
+//	private static final Color DEFAULT_FOREGROUND_COLOR = new Color(0, 255, 0);
 
 	private final List<TreeItem> items = new ArrayList<>();
 	private final List<TreeColumn> columns = new ArrayList<>();
 
 	private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
 	private Color foregroundColor = DEFAULT_FOREGROUND_COLOR;
+
+//	private Color headerBackground
 
 	/**
 	 * Constructs a new instance of this class given its parent and a style value
