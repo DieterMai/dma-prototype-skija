@@ -385,6 +385,7 @@ long fontHandle (int index) {
  *
  * @since 2.0
  */
+@Override
 public Color getBackground () {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -405,6 +406,7 @@ public Color getBackground () {
  *
  * @since 3.1
  */
+@Override
 public Color getBackground (int index) {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -451,6 +453,7 @@ Rectangle getBoundsInPixels () {
  *
  * @since 3.1
  */
+@Override
 public Rectangle getBounds (int index) {
 	checkWidget();
 	return DPIUtil.scaleDown(getBoundsInPixels(index), getZoom());
@@ -496,7 +499,7 @@ RECT getBounds (int index, boolean getText, boolean getImage, boolean fullText, 
 		if (getImage && !fullImage) {
 			if (OS.SendMessage (hwnd, OS.TVM_GETIMAGELIST, OS.TVSIL_NORMAL, 0) != 0) {
 				Point size = parent.getImageSize ();
-				rect.left -= size.x + Tree.INSET;
+				rect.left -= size.x + Tree_old.INSET;
 				if (!getText) rect.right = rect.left + size.x;
 			} else {
 				if (!getText) rect.right = rect.left;
@@ -548,7 +551,7 @@ RECT getBounds (int index, boolean getText, boolean getImage, boolean fullText, 
 			}
 			if (getText) {
 				if (fullText && clip) {
-					rect.left = rect.right + Tree.INSET;
+					rect.left = rect.right + Tree_old.INSET;
 					rect.right = headerRect.right;
 				} else {
 					String string = index == 0 ? text : strings != null ? strings [index] : null;
@@ -569,10 +572,10 @@ RECT getBounds (int index, boolean getText, boolean getImage, boolean fullText, 
 							OS.ReleaseDC (hwnd, hNewDC);
 						}
 						if (getImage) {
-							rect.right += textRect.right - textRect.left + Tree.INSET * 3;
+							rect.right += textRect.right - textRect.left + Tree_old.INSET * 3;
 						} else {
-							rect.left = rect.right + Tree.INSET;
-							rect.right = rect.left + (textRect.right - textRect.left) + Tree.INSET;
+							rect.left = rect.right + Tree_old.INSET;
+							rect.right = rect.left + (textRect.right - textRect.left) + Tree_old.INSET;
 						}
 					}
 				}
@@ -582,7 +585,7 @@ RECT getBounds (int index, boolean getText, boolean getImage, boolean fullText, 
 			}
 		}
 	}
-	int gridWidth = parent.linesVisible && columnCount != 0 ? Tree.GRID_WIDTH : 0;
+	int gridWidth = parent.linesVisible && columnCount != 0 ? Tree_old.GRID_WIDTH : 0;
 	if (getText || !getImage) {
 		rect.right = Math.max (rect.left, rect.right - gridWidth);
 	}
@@ -651,6 +654,7 @@ public boolean getExpanded () {
  *
  * @since 3.0
  */
+@Override
 public Font getFont () {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -671,6 +675,7 @@ public Font getFont () {
  *
  * @since 3.1
  */
+@Override
 public Font getFont (int index) {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -692,6 +697,7 @@ public Font getFont (int index) {
  *
  * @since 2.0
  */
+@Override
 public Color getForeground () {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -713,6 +719,7 @@ public Color getForeground () {
  *
  * @since 3.1
  */
+@Override
 public Color getForeground (int index) {
 	checkWidget ();
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -867,6 +874,7 @@ public Image getImage (int index) {
  *
  * @since 3.1
  */
+@Override
 public Rectangle getImageBounds (int index) {
 	checkWidget();
 	return DPIUtil.scaleDown(getImageBoundsInPixels(index), getZoom());
@@ -970,9 +978,11 @@ public Rectangle getTextBounds (int index) {
 Rectangle getTextBoundsInPixels (int index) {
 	if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
 	RECT rect = getBounds (index, true, false, true);
-	if (index == 0) rect.left += Tree.INSET - 1;
+	if (index == 0)
+		rect.left += Tree_old.INSET - 1;
 	rect.left = Math.min (rect.left, rect.right);
-	rect.right = rect.right - Tree.INSET + 1; // Add 1 px margin to avoid truncation of text seen with "Segoe UI" font
+	rect.right = rect.right - Tree_old.INSET + 1; // Add 1 px margin to avoid truncation of text seen with "Segoe UI"
+													// font
 	int width = Math.max (0, rect.right - rect.left);
 	int height = Math.max (0, rect.bottom - rect.top);
 	return new Rectangle (rect.left, rect.top, width, height);
@@ -1124,6 +1134,7 @@ public void removeAll () {
  *
  * @since 2.0
  */
+@Override
 public void setBackground (Color color) {
 	checkWidget ();
 	if (color != null && color.isDisposed ()) {
@@ -1158,6 +1169,7 @@ public void setBackground (Color color) {
  *
  * @since 3.1
  */
+@Override
 public void setBackground (int index, Color color) {
 	checkWidget ();
 	if (color != null && color.isDisposed ()) {
@@ -1427,6 +1439,7 @@ public void setExpanded (boolean expanded) {
  *
  * @since 3.0
  */
+@Override
 public void setFont (Font font){
 	checkWidget ();
 	if (font != null && font.isDisposed ()) {
@@ -1477,6 +1490,7 @@ public void setFont (Font font){
  *
  * @since 3.1
  */
+@Override
 public void setFont (int index, Font font) {
 	checkWidget ();
 	if (font != null && font.isDisposed ()) {
@@ -1533,6 +1547,7 @@ public void setFont (int index, Font font) {
  *
  * @since 2.0
  */
+@Override
 public void setForeground (Color color) {
 	checkWidget ();
 	if (color != null && color.isDisposed ()) {
@@ -1567,6 +1582,7 @@ public void setForeground (Color color) {
  *
  * @since 3.1
  */
+@Override
 public void setForeground (int index, Color color){
 	checkWidget ();
 	if (color != null && color.isDisposed ()) {
@@ -1681,6 +1697,7 @@ public void setImage (Image [] images) {
  *
  * @since 3.1
  */
+@Override
 public void setImage (int index, Image image) {
 	checkWidget();
 	if (image != null && image.isDisposed ()) {
@@ -1785,6 +1802,7 @@ public void setItemCount (int count) {
  *
  * @since 3.1
  */
+@Override
 public void setText (String [] strings) {
 	checkWidget();
 	if (strings == null) error (SWT.ERROR_NULL_ARGUMENT);

@@ -155,6 +155,7 @@ public TreeColumn_old(Tree_old parent, int style, int index) {
  * @see ControlListener
  * @see #removeControlListener
  */
+@Override
 public void addControlListener(ControlListener listener) {
 	addTypedListener(listener, SWT.Resize, SWT.Move);
 }
@@ -183,6 +184,7 @@ public void addControlListener(ControlListener listener) {
  * @see #removeSelectionListener
  * @see SelectionEvent
  */
+@Override
 public void addSelectionListener (SelectionListener listener) {
 	addTypedListener(listener, SWT.Selection, SWT.DefaultSelection);
 }
@@ -242,6 +244,7 @@ public int getAlignment () {
  *
  * @since 3.2
  */
+@Override
 public boolean getMoveable () {
 	checkWidget ();
 	return moveable;
@@ -279,6 +282,7 @@ public Tree_old getParent() {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
+@Override
 public boolean getResizable () {
 	checkWidget ();
 	return resizable;
@@ -338,6 +342,7 @@ int getWidthInPixels () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
+@Override
 public void pack () {
 	checkWidget ();
 	int index = parent.indexOf (this);
@@ -378,12 +383,13 @@ public void pack () {
 	int flags = OS.DT_CALCRECT | OS.DT_NOPREFIX;
 	char [] buffer = text.toCharArray ();
 	OS.DrawText (hDC, buffer, buffer.length, rect, flags);
-	int headerWidth = rect.right - rect.left + Tree.HEADER_MARGIN;
-	if (OS.IsAppThemed ()) headerWidth += Tree.HEADER_EXTRA;
+	int headerWidth = rect.right - rect.left + Tree_old.HEADER_MARGIN;
+	if (OS.IsAppThemed())
+		headerWidth += Tree_old.HEADER_EXTRA;
 	if (image != null || parent.sortColumn == this) {
 		Image headerImage = null;
 		if (parent.sortColumn == this && parent.sortDirection != SWT.NONE) {
-			headerWidth += Tree.SORT_WIDTH;
+			headerWidth += Tree_old.SORT_WIDTH;
 		} else {
 			headerImage = image;
 		}
@@ -401,7 +407,7 @@ public void pack () {
 	}
 	if (newFont != 0) OS.SelectObject (hDC, oldFont);
 	OS.ReleaseDC (hwnd, hDC);
-	int gridWidth = parent.linesVisible ? Tree.GRID_WIDTH : 0;
+	int gridWidth = parent.linesVisible ? Tree_old.GRID_WIDTH : 0;
 	setWidthInPixels (Math.max (headerWidth, columnWidth + gridWidth));
 }
 
@@ -436,6 +442,7 @@ void releaseParent () {
  * @see ControlListener
  * @see #addControlListener
  */
+@Override
 public void removeControlListener (ControlListener listener) {
 	checkWidget ();
 	if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -461,6 +468,7 @@ public void removeControlListener (ControlListener listener) {
  * @see SelectionListener
  * @see #addSelectionListener
  */
+@Override
 public void removeSelectionListener(SelectionListener listener) {
 	checkWidget ();
 	if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -575,6 +583,7 @@ void setImage (Image image, boolean sort, boolean right) {
  *
  * @since 3.2
  */
+@Override
 public void setMoveable (boolean moveable) {
 	checkWidget ();
 	this.moveable = moveable;
@@ -592,6 +601,7 @@ public void setMoveable (boolean moveable) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
+@Override
 public void setResizable (boolean resizable) {
 	checkWidget ();
 	this.resizable = resizable;
@@ -700,6 +710,7 @@ public void setText (String string) {
  *
  * @since 3.2
  */
+@Override
 public void setToolTipText (String string) {
 	checkWidget();
 	toolTipText = string;
