@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.*;
+import java.util.List;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -87,6 +90,14 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
+	private static final Color DEFAULT_BACKGROUND_COLOR = new Color(255, 0, 0);
+	private static final Color DEFAULT_FOREGROUND_COLOR = new Color(0, 255, 0);
+
+	private final List<TreeItem> items = new ArrayList<>();
+	private final List<TreeColumn> columns = new ArrayList<>();
+
+	private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
+	private Color foregroundColor = DEFAULT_FOREGROUND_COLOR;
 
 	/**
 	 * Constructs a new instance of this class given its parent and a style value
@@ -491,8 +502,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public TreeColumn getColumn(int index) {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		if (index < 0 || index >= columns.size()) {
+			error (SWT.ERROR_INVALID_RANGE);
+		}
+		return columns.get(index);
 	}
 
 	/**
@@ -590,8 +603,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public TreeColumn[] getColumns() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return columns.toArray(TreeColumn[]::new);
 	}
 
 	/**
@@ -727,8 +739,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public TreeItem[] getItems() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return items.toArray(TreeItem[]::new);
 	}
 
 
@@ -1555,6 +1566,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	}
 
 	private void NOT_IMPLEMENTED() {
-		System.out.println(Thread.currentThread().getStackTrace()[1] + " not implemented yet!");
+		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
+	}
+
+	public void createItem(TreeItem item) {
+		items.add(item);
 	}
 }

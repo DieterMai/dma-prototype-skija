@@ -5334,6 +5334,7 @@ void expandToItem(TreeItem_old item) {
  *
  * @since 3.2
  */
+@Override
 public void setSortColumn(TreeColumn_old column) {
 	checkWidget ();
 	if (column != null && column.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);

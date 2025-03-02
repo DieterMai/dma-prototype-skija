@@ -10,7 +10,10 @@ import org.eclipse.swt.widgets.ITreeColumn;
 import org.eclipse.swt.widgets.ITreeItem;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeColumn_old;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.TreeItem_old;
 import org.eclipse.swt.widgets.Tree_old;
 
@@ -45,12 +48,35 @@ public class WrapperTee {
 
 	}
 
+	class NewFactory implements IFactory{
+		@Override
+		public ITree createTree(Composite tree, int style) {
+			return new Tree(tree, style);
+		}
+
+		@Override
+		public ITreeColumn createColumn(ITree parent, int style) {
+			return new TreeColumn((Tree)parent, style);
+		}
+
+		@Override
+		public ITreeItem createItem(ITree parent, int style) {
+			return new TreeItem((Tree)parent, style);
+		}
+
+		@Override
+		public ITreeItem createItem(ITreeItem item, int style) {
+			return new TreeItem((TreeItem)item, style);
+		}
+
+	}
+
 	TreeTabExampleWrapper old;
 	TreeTabExampleWrapper neo;
 
 	public WrapperTee(int style, TreeTab host, Composite treeGroup, Composite imageTreeGroup) {
 		old = new TreeTabExampleWrapper(style, host, treeGroup, imageTreeGroup, new OldFactory());
-		neo = new TreeTabExampleWrapper(style, host, treeGroup, imageTreeGroup, new OldFactory());
+		neo = new TreeTabExampleWrapper(style, host, treeGroup, imageTreeGroup, new NewFactory());
 	}
 
 

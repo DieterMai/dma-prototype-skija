@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.*;
+import java.util.List;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 
@@ -38,6 +41,22 @@ import org.eclipse.swt.graphics.*;
  */
 public class TreeItem extends Item implements ITreeItem {
 	private Tree tree;
+
+	private TreeItem parentItem;
+
+	private Color backgroundColor;
+	private Color foregroundColor;
+	private Font font;
+
+	private class Cell {
+		String text;
+
+		Color backgroundColor;
+		Color foregroundColor;
+		Font font;
+	}
+
+	private List<Cell> cells = new ArrayList<>();
 
 	/**
 	 * Constructs <code>TreeItem</code> and <em>inserts</em> it into
@@ -69,7 +88,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 * @see Widget#getStyle
 	 */
 	public TreeItem(Tree parent, int style) {
-		this(parent, style, 0);
+		this(parent, null, style, 0);
 	}
 
 	/**
@@ -86,10 +105,10 @@ public class TreeItem extends Item implements ITreeItem {
 	 * Windows)</li>
 	 * </ol>
 	 *
-	 * @param parent a tree control which will be the parent of the new instance
-	 *               (cannot be null)
-	 * @param style  no styles are currently supported, pass SWT.NONE
-	 * @param index  the zero-relative index to store the receiver in its parent
+	 * @param tree  a tree control which will be the parent of the new instance
+	 *              (cannot be null)
+	 * @param style no styles are currently supported, pass SWT.NONE
+	 * @param index the zero-relative index to store the receiver in its parent
 	 *
 	 * @exception IllegalArgumentException
 	 *                                     <ul>
@@ -113,9 +132,8 @@ public class TreeItem extends Item implements ITreeItem {
 	 * @see Widget#getStyle
 	 * @see Tree#setRedraw
 	 */
-	public TreeItem(Tree parent, int style, int index) {
-		super(parent, style, 0);
-		NOT_IMPLEMENTED();
+	public TreeItem(Tree tree, int style, int index) {
+		this(tree, null, style, 0);
 	}
 
 	/**
@@ -149,7 +167,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 * @see Widget#getStyle
 	 */
 	public TreeItem(TreeItem parentItem, int style) {
-		this(parentItem, style, 0);
+		this(null, parentItem, style, 0);
 	}
 
 	/**
@@ -188,8 +206,33 @@ public class TreeItem extends Item implements ITreeItem {
 	 * @see Tree#setRedraw
 	 */
 	public TreeItem(TreeItem parentItem, int style, int index) {
-		super(checkNull(parentItem).tree, style);
-		NOT_IMPLEMENTED();
+		this(null, parentItem, style, 0);
+
+	}
+
+	private TreeItem(Tree tree, TreeItem parentItem, int style, int index) {
+		super(determinParent(tree, parentItem), style);
+		this.tree = determinParent(tree, parentItem); // JEP 492 candidate
+		this.parentItem = parentItem;
+		cells.add(new Cell());
+
+		// TODO invalid subclass
+		// TODO backup style
+
+		this.tree.createItem(this);
+	}
+
+	private static Tree determinParent(Tree tree, TreeItem item) {
+		if (tree != null) {
+			return tree;
+		}
+		if (item == null) {
+			SWT.error(SWT.ERROR_NULL_ARGUMENT);
+		}
+		if (item.tree == null) {
+			SWT.error(SWT.ERROR_NULL_ARGUMENT);
+		}
+		return item.tree;
 	}
 
 	static TreeItem checkNull(TreeItem item) {
@@ -280,8 +323,11 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Color getBackground() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		if (backgroundColor != null) {
+			return backgroundColor;
+		} else {
+			return tree.getBackground();
+		}
 	}
 
 	/**
@@ -303,8 +349,11 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Color getBackground(int index) {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		if (index < cells.size() && cells.get(index).backgroundColor != null) {
+			return cells.get(index).backgroundColor;
+		} else {
+			return getBackground();
+		}
 	}
 
 	/**
@@ -411,8 +460,11 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Font getFont() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		if (font != null) {
+			return font;
+		} else {
+			return tree.getFont();
+		}
 	}
 
 	/**
@@ -435,7 +487,11 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Font getFont(int index) {
 		checkWidget();
-		return null;
+		if (index < cells.size() && cells.get(index).font != null) {
+			return cells.get(index).font;
+		} else {
+			return getFont();
+		}
 	}
 
 	/**
@@ -456,7 +512,11 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Color getForeground() {
 		checkWidget();
-		return null;
+		if (foregroundColor != null) {
+			return foregroundColor;
+		} else {
+			return tree.getForeground();
+		}
 	}
 
 	/**
@@ -479,8 +539,11 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Color getForeground(int index) {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		if (index < cells.size() && cells.get(index).foregroundColor != null) {
+			return cells.get(index).foregroundColor;
+		} else {
+			return getForeground();
+		}
 	}
 
 	/**
@@ -580,7 +643,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Image getImage() {
 		checkWidget();
-		return null;
+		return super.getImage();
 	}
 
 	/**
@@ -645,8 +708,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public Tree getParent() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return tree;
 	}
 
 	/**
@@ -665,15 +727,13 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public TreeItem getParentItem() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return parentItem;
 	}
 
 	@Override
 	public String getText() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return cells.get(0).text;
 	}
 
 	/**
@@ -695,8 +755,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public String getText(int index) {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return "";
+		return cells.get(index).text;
 	}
 
 	/**
@@ -798,7 +857,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setBackground(Color color) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.backgroundColor = color;
 	}
 
 	/**
@@ -828,7 +887,9 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setBackground(int index, Color color) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		System.out.println("TreeItem.setBackground() index: " + index);
+		growCells(index);
+		cells.get(index).backgroundColor = color;
 	}
 
 	/**
@@ -893,7 +954,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setFont(Font font) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.font = font;
 	}
 
 	/**
@@ -923,7 +984,8 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setFont(int index, Font font) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		growCells(index);
+		cells.get(index).font = font;
 	}
 
 	/**
@@ -951,7 +1013,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setForeground(Color color) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.foregroundColor = color;
 	}
 
 	/**
@@ -981,7 +1043,8 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setForeground(int index, Color color) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		growCells(index);
+		cells.get(index).backgroundColor = color;
 	}
 
 	/**
@@ -1062,7 +1125,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setImage(Image image) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		super.setImage(image);
 	}
 
 	/**
@@ -1099,7 +1162,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 * the behavior is platform dependent.
 	 * </p>
 	 *
-	 * @param strings the array of new strings
+	 * @param texts the array of new strings
 	 *
 	 * @exception IllegalArgumentException
 	 *                                     <ul>
@@ -1118,9 +1181,11 @@ public class TreeItem extends Item implements ITreeItem {
 	 * @since 3.1
 	 */
 	@Override
-	public void setText(String[] strings) {
+	public void setText(String[] texts) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		for (int i = 0; i < texts.length; i++) {
+			setText(i, texts[i]);
+		}
 	}
 
 	/**
@@ -1130,8 +1195,8 @@ public class TreeItem extends Item implements ITreeItem {
 	 * the behavior is platform dependent.
 	 * </p>
 	 *
-	 * @param index  the column index
-	 * @param string the new text
+	 * @param index the column index
+	 * @param text  the new text
 	 *
 	 * @exception IllegalArgumentException
 	 *                                     <ul>
@@ -1149,18 +1214,28 @@ public class TreeItem extends Item implements ITreeItem {
 	 *
 	 * @since 3.1
 	 */
-	public void setText(int index, String string) {
+	public void setText(int index, String text) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		if (index == 0) {
+			super.setText(text);
+		}
+		growCells(index);
+		cells.get(index).text = text;
+	}
+
+	private void growCells(int size) {
+		for (int i = cells.size(); i < size; i++) {
+			cells.add(new Cell());
+		}
 	}
 
 	@Override
-	public void setText(String string) {
+	public void setText(String text) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		setText(0, text);
 	}
 
 	private void NOT_IMPLEMENTED() {
-		System.out.println(Thread.currentThread().getStackTrace()[1] + " not implemented yet!");
+		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
 }

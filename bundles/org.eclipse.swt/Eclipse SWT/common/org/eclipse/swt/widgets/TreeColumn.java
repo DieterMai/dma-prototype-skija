@@ -560,6 +560,6 @@ public class TreeColumn extends Item implements ITreeColumn {
 	}
 
 	private void NOT_IMPLEMENTED() {
-		System.out.println(Thread.currentThread().getStackTrace()[1] + " not implemented yet!");
+		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
 }
