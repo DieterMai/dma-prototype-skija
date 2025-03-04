@@ -19,6 +19,8 @@ import java.util.List;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.ToolBar.*;
+import org.eclipse.swt.widgets.toolbar.ToolBarRenderer.*;
 
 /**
  * Instances of this class provide a selectable user interface object that
@@ -90,6 +92,28 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
+	/**
+	 * Renderer interface for the {@link Tree} widget. All renderers have to
+	 * implement this to work with the Tree.
+	 */
+	public static interface ITreeRenderer {
+
+		/**
+		 * Renders the handle.
+		 *
+		 * @param gc     GC to render with.
+		 * @param bounds Bounds of the rendering. x and y are always 0.
+		 */
+		void render(GC gc, Rectangle bounds);
+
+		/**
+		 * Computes the size of the rendered ToolBar.
+		 *
+		 * @return The size as {@link Point}
+		 */
+		Point computeSize(Point size);
+	}
+
 	private static final Color DEFAULT_HEADER_BACKGROUND_COLOR = new Color(255, 0, 0);
 	private static final Color DEFAULT_HEADER_FOREGROUND_COLOR = new Color(0, 255, 0);
 //	private static final Color DEFAULT_HEADERBACKGROUND_COLOR = new Color(255, 0, 0);
@@ -103,6 +127,11 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	private boolean headerVisible;
 	private boolean linesVisible;
+
+	/** The renderer used to render to {@link ToolBar}. */
+	private final ITreeRenderer renderer;
+
+	private Listener listener;
 
 
 	/**
@@ -146,10 +175,48 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	 */
 	public Tree(Composite parent, int style) {
 		super(parent, checkStyle(style));
+
+		renderer = new TreeRenderer(this);
+
+		listener = event -> {
+			if (isDisposed()) {
+				return;
+			}
+			switch (event.type) {
+//			case SWT.MouseDown -> onMouseDown(event);
+//			case SWT.MouseExit -> onMouseExit(event);
+//			case SWT.MouseMove -> onMouseMove(event);
+//			case SWT.MouseUp -> onMouseUp(event);
+			case SWT.Paint -> onPaint(event);
+			case SWT.Resize -> redraw();
+			}
+		};
+
+		addListener(SWT.MouseDown, listener);
+		addListener(SWT.MouseExit, listener);
+		addListener(SWT.MouseMove, listener);
+		addListener(SWT.MouseUp, listener);
+		addListener(SWT.Paint, listener);
+		addListener(SWT.Resize, listener);
 	}
 
 	static int checkStyle(int style) {
-		return checkBits(style, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0);
+		int checkedStyle = checkBits(style, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0);
+		checkedStyle |= SWT.DOUBLE_BUFFERED;
+		return checkedStyle;
+	}
+
+	private void onPaint(Event event) {
+		if (!isVisible()) {
+			return;
+		}
+
+		Rectangle bounds = getBounds();
+		if (bounds.width == 0 && bounds.height == 0) {
+			return;
+		}
+
+		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, bounds));
 	}
 
 	TreeItem _getItem(long hItem) {
@@ -302,7 +369,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
-		return new Point(100, 100);
+		return renderer.computeSize(new Point(wHint, hHint));
 	}
 
 
@@ -1566,11 +1633,13 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		return this;
 	}
 
-	private void NOT_IMPLEMENTED() {
-		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
-	}
+
 
 	public void createItem(TreeItem item) {
 		items.add(item);
+	}
+
+	private void NOT_IMPLEMENTED() {
+		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
 }
