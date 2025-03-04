@@ -90,18 +90,20 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
-	private static final Color DEFAULT_BACKGROUND_COLOR = new Color(255, 0, 0);
-	private static final Color DEFAULT_FOREGROUND_COLOR = new Color(0, 255, 0);
+	private static final Color DEFAULT_HEADER_BACKGROUND_COLOR = new Color(255, 0, 0);
+	private static final Color DEFAULT_HEADER_FOREGROUND_COLOR = new Color(0, 255, 0);
 //	private static final Color DEFAULT_HEADERBACKGROUND_COLOR = new Color(255, 0, 0);
 //	private static final Color DEFAULT_FOREGROUND_COLOR = new Color(0, 255, 0);
 
 	private final List<TreeItem> items = new ArrayList<>();
 	private final List<TreeColumn> columns = new ArrayList<>();
 
-	private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
-	private Color foregroundColor = DEFAULT_FOREGROUND_COLOR;
+	private Color headerBackgroundColor = DEFAULT_HEADER_BACKGROUND_COLOR;
+	private Color headerForegroundColor = DEFAULT_HEADER_FOREGROUND_COLOR;
 
-//	private Color headerBackground
+	private boolean headerVisible;
+	private boolean linesVisible;
+
 
 	/**
 	 * Constructs a new instance of this class given its parent and a style value
@@ -299,9 +301,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 
 	@Override
-	Point computeSizeInPixels(int wHint, int hHint, boolean changed) {
-		NOT_IMPLEMENTED();
-		return new Point(50, 50);
+	public Point computeSize(int wHint, int hHint, boolean changed) {
+		return new Point(100, 100);
 	}
 
 
@@ -392,8 +393,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public Color getHeaderBackground() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return headerBackgroundColor;
 	}
 
 
@@ -414,8 +414,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public Color getHeaderForeground() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return headerForegroundColor;
 	}
 
 
@@ -464,8 +463,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public boolean getHeaderVisible() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return false;
+		return headerVisible;
 	}
 
 	/**
@@ -772,8 +770,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public boolean getLinesVisible() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return false;
+		return linesVisible;
 	}
 
 	/**
@@ -1130,7 +1127,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public void setLinesVisible(boolean show) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.linesVisible = show;
 	}
 
 
@@ -1257,7 +1254,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public void setHeaderBackground(Color color) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.headerBackgroundColor = color != null ? color : DEFAULT_HEADER_BACKGROUND_COLOR;
 	}
 
 	/**
@@ -1290,7 +1287,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public void setHeaderForeground(Color color) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.headerForegroundColor = color != null ? color : DEFAULT_HEADER_FOREGROUND_COLOR;
 	}
 
 	/**
@@ -1317,7 +1314,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public void setHeaderVisible(boolean show) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.headerVisible = show;
 	}
 
 	@Override
