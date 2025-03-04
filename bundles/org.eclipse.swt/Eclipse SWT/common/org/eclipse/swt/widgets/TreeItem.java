@@ -40,6 +40,23 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class TreeItem extends Item implements ITreeItem {
+	public interface ITreeItemRenderer {
+		/**
+		 * Renders the {@link TreeItem}.
+		 *
+		 * @param gc     GC to render with.
+		 * @param bounds Bounds of the rendering. x and y are always 0.
+		 */
+		void render(GC gc, Rectangle bounds);
+
+		/**
+		 * Returns the size of the rendered {@link ToolItem}.
+		 *
+		 * @return The size as a {@link Point}.
+		 */
+		Point getSize();
+	}
+
 	private Tree tree;
 
 	private TreeItem parentItem;
@@ -47,6 +64,10 @@ public class TreeItem extends Item implements ITreeItem {
 	private Color backgroundColor;
 	private Color foregroundColor;
 	private Font font;
+
+	private ITreeItemRenderer renderer;
+
+	private Rectangle bounds = new Rectangle(0, 0, 0, 0);
 
 	private class Cell {
 		String text;
@@ -219,6 +240,8 @@ public class TreeItem extends Item implements ITreeItem {
 		// TODO invalid subclass
 		// TODO backup style
 
+		this.renderer = new TreeItemRenderer(tree, parentItem);
+
 		this.tree.createItem(this);
 	}
 
@@ -239,6 +262,11 @@ public class TreeItem extends Item implements ITreeItem {
 		if (item == null)
 			SWT.error(SWT.ERROR_NULL_ARGUMENT);
 		return item;
+	}
+
+	public void render(GC gc, Rectangle bounds) {
+		renderer.render(gc, bounds);
+		this.bounds = bounds;
 	}
 
 
@@ -372,8 +400,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public Rectangle getBounds() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return bounds;
 	}
 
 	/**
