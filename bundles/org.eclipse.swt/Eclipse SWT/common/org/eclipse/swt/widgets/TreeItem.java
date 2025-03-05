@@ -240,7 +240,7 @@ public class TreeItem extends Item implements ITreeItem {
 		// TODO invalid subclass
 		// TODO backup style
 
-		this.renderer = new TreeItemRenderer(tree, parentItem);
+		this.renderer = new TreeItemRenderer(this.tree, this);
 
 		this.tree.createItem(this);
 	}

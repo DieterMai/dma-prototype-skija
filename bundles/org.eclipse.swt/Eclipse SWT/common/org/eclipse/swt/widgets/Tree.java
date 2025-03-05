@@ -19,8 +19,6 @@ import java.util.List;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.ToolBar.*;
-import org.eclipse.swt.widgets.toolbar.ToolBarRenderer.*;
 
 /**
  * Instances of this class provide a selectable user interface object that
@@ -216,7 +214,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			return;
 		}
 
-		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, bounds));
+		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, new Rectangle(0, 0, bounds.width, bounds.height)));
 	}
 
 	TreeItem _getItem(long hItem) {
