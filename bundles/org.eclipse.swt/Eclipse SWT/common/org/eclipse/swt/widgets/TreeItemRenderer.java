@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Tree.*;
 import org.eclipse.swt.widgets.TreeItem.*;
@@ -21,6 +22,8 @@ import org.eclipse.swt.widgets.TreeItem.*;
  *
  */
 public class TreeItemRenderer implements ITreeItemRenderer {
+	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
+
 	private final Tree tree;
 	private final TreeItem item;
 
@@ -31,7 +34,34 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	@Override
 	public void render(GC gc, Rectangle bounds) {
-		NOT_IMPLEMENTED();
+		Point offset = new Point(0, 0);
+		if (hasImage()) {
+			gc.drawImage(item.image, bounds.x + offset.x, bounds.y + offset.y);
+			offset.x += item.image.getBounds().x;
+		}
+
+		if (hasText()) {
+			String text = item.getText();
+
+			gc.setForeground(getTextColor());
+			gc.drawText(text, bounds.x + offset.x, bounds.y + offset.y);
+		}
+	}
+
+	private boolean hasImage() {
+		return item.getImage() != null;
+	}
+
+	private boolean hasText() {
+		return item.getText() != null && !item.getText().isBlank();
+	}
+
+	private Color getTextColor() {
+		if (tree.isEnabled()) {
+			return tree.getForeground();
+		} else {
+			return tree.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
+		}
 	}
 
 	@Override
