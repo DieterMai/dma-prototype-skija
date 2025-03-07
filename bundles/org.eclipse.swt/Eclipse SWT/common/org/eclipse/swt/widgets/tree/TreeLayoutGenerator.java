@@ -27,16 +27,17 @@ public class TreeLayoutGenerator {
 		List<TreeItemRecord> itemRecords = createItemRecords(sizeArray, positionArray);
 
 		int lastIndex = sizeArray.length - 1;
-		int height = sizeArray[lastIndex].y + positionArray[lastIndex];
+		int preferedHeight = sizeArray[lastIndex].y + positionArray[lastIndex];
 
-		int width = 0;
+		int preferedWidth = 0;
 		for (Point size : sizeArray) {
-			width = Math.max(width, size.x);
+			preferedWidth = Math.max(preferedWidth, size.x);
 		}
 
-		// TODO add scrollbar sizes
+		int usedWidth = treeSize.x == -1 ? preferedHeight : treeSize.x;
+		int usedHeight = treeSize.y == -1 ? preferedHeight : treeSize.y;
 
-		return new TreeLayout(new Point(width, height), List.copyOf(itemRecords));
+		return new TreeLayout(new Point(usedWidth, usedHeight), List.copyOf(itemRecords));
 	}
 
 	private Point[] collectSizes(TreeItem[] items) {

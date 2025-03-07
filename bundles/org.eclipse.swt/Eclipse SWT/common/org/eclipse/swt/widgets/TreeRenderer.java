@@ -33,6 +33,9 @@ public class TreeRenderer implements ITreeRenderer {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
 		TreeLayout layout = layoutGenerator.computeLayout(new Point(bounds.width, bounds.height), items);
 
+
+		handleScrollBar(tree.horizontalBar, bounds.width, layout.size().x);
+		handleScrollBar(tree.verticalBar, bounds.height, layout.size().y);
 		layout.dump();
 
 		for (int i = 0; i < tree.getItemCount(); i++) {
@@ -40,12 +43,34 @@ public class TreeRenderer implements ITreeRenderer {
 		}
 	}
 
+	private void handleScrollBar(ScrollBar scrollbar, int available, int required) {
+		if (scrollbar == null) {
+			return;
+		}
+		if (available < required) {
+			scrollbar.setVisible(true);
+		}else {
+			scrollbar.setVisible(false);
+		}
+	}
+
+
 	@Override
 	public Point computeSize(Point size) {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
 		TreeLayout layout = layoutGenerator.computeLayout(size, tree.getItems());
 
-		return layout.size();
+		int height = layout.size().x;
+		int width = layout.size().y;
+		// add ScrollBar size
+		if (tree.horizontalBar != null) {
+			height += tree.horizontalBar.getSize().y;
+		}
+		if (tree.verticalBar != null) {
+			width += tree.verticalBar.getSize().x;
+		}
+
+		return new Point(height, width);
 	}
 
 	private void NOT_IMPLEMENTED() {
