@@ -22,6 +22,9 @@ import org.eclipse.swt.widgets.TreeItem.*;
  *
  */
 public class TreeItemRenderer implements ITreeItemRenderer {
+	private record TreeItemLayout(Point size, Image image, Rectangle imageBounds, String text, Rectangle textBounds) {
+	}
+
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
 
 	private final Tree tree;
@@ -34,18 +37,72 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	@Override
 	public void render(GC gc, Rectangle bounds) {
-		Point offset = new Point(0, 0);
+		Point size = new Point(bounds.width, bounds.height);
+		Point offset = new Point(bounds.x, bounds.y);
+
+		TreeItemLayout layout = computeLayout(size);
+		renderLayout(gc, offset, layout);
+	}
+
+	private void renderLayout(GC gc, Point offset, TreeItemLayout layout) {
+		if (layout.image != null) {
+			Rectangle imageBounds = layout.imageBounds();
+			gc.drawImage(item.image, offset.x + imageBounds.x, offset.y + imageBounds.y);
+		}
+
+		if (layout.text != null) {
+			Rectangle textBounds = layout.textBounds();
+			gc.setForeground(getTextColor()); // TODO move into render data
+			gc.drawText(layout.text, offset.x + textBounds.x, offset.y + textBounds.y);
+		}
+	}
+
+	private TreeItemLayout computeLayout(Point treeSize) {
+		final int PADDING_TOP = 1;
+		final int DEFAULT_HEIGHT = 18;
+
+		Image image = null;
+		String text = null;
+
+
+		// 1. Collect elements
 		if (hasImage()) {
-			gc.drawImage(item.image, bounds.x + offset.x, bounds.y + offset.y);
-			offset.x += item.image.getBounds().x;
+			image = item.image;
 		}
-
 		if (hasText()) {
-			String text = item.getText();
-
-			gc.setForeground(getTextColor());
-			gc.drawText(text, bounds.x + offset.x, bounds.y + offset.y);
+			text = item.getText();
 		}
+
+		// 2. Collect sizes
+		Point imageSize = null;
+		Point textSize = null;
+		if (image != null) {
+			imageSize = new Point(image.getBounds().width, image.getBounds().height);
+		}
+		if (text != null) {
+			textSize = getTextSize();
+		}
+
+		// 3. Position elements
+		Rectangle imageBounds = null;
+		Rectangle textBounds = null;
+
+		int xOffset = 0;
+		int yOffset = PADDING_TOP;
+		int height = DEFAULT_HEIGHT;
+		if (image != null) {
+			imageBounds = new Rectangle(xOffset, yOffset, imageSize.x, imageSize.y);
+			xOffset += imageSize.x;
+		}
+
+		if (text != null) {
+			textBounds = new Rectangle(xOffset, PADDING_TOP, textSize.x, textSize.y);
+			xOffset += textBounds.width;
+		}
+
+		Point size = new Point(xOffset, height);
+
+		return new TreeItemLayout(size, image, imageBounds, text, textBounds);
 	}
 
 	private boolean hasImage() {
@@ -66,7 +123,17 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	@Override
 	public Point getSize() {
-		return new Point(20, 20);
+		TreeItemLayout layout = computeLayout(new Point(0, 0));
+		return layout.size();
+	}
+
+	private Point getTextSize() {
+		return Drawing.executeOnGC(tree, this::doMesureText);
+	}
+
+	private Point doMesureText(GC gc) {
+		gc.setFont(item.getFont());
+		return gc.textExtent(item.getText(), DRAW_FLAGS);
 	}
 
 	private void NOT_IMPLEMENTED() {
