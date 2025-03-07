@@ -922,7 +922,6 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setBackground(int index, Color color) {
 		checkWidget();
-		System.out.println("TreeItem.setBackground() index: " + index);
 		growCells(index);
 		cells.get(index).backgroundColor = color;
 	}

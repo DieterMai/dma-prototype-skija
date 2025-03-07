@@ -42,7 +42,10 @@ public class TreeRenderer implements ITreeRenderer {
 
 	@Override
 	public Point computeSize(Point size) {
-		return new Point(150, 150);
+		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
+		TreeLayout layout = layoutGenerator.computeLayout(size, tree.getItems());
+
+		return layout.size();
 	}
 
 	private void NOT_IMPLEMENTED() {
