@@ -31,6 +31,9 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
 
+	private static final int[] CLOSED_POLILINE = { 8, 7, 12, 11, 8, 15 };
+	private static final int[] OPEN_POLILINE = { 7, 7, 11, 12, 15, 7 };
+
 	private final Tree tree;
 	private final TreeItem item;
 
@@ -65,12 +68,26 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 	private void drawChildIndicator(GC gc, Point offset, ChildIndicator childIndicator) {
-		if (childIndicator == ChildIndicator.NONE) {
+		int[] relativeLine = switch (childIndicator) {
+		case NONE -> null;
+		case OPEN -> OPEN_POLILINE;
+		case CLOSED -> CLOSED_POLILINE;
+		};
+
+		if (relativeLine == null) {
 			return;
 		}
-		int[] line = { 9, 7, 14, 11, 9, 14, 20, 20 };
-		gc.setForeground(new Color(255, 0, 0));
-		gc.drawPolyline(line);
+
+		int[] absoluteLine = new int[relativeLine.length];
+		for (int i = 0; i + 1 < absoluteLine.length; i += 2) {
+			absoluteLine[i] = offset.x + relativeLine[i];
+			absoluteLine[i + 1] = offset.y + relativeLine[i + 1];
+		}
+
+		gc.setForeground(new Color(139, 139, 139));
+		gc.setAntialias(SWT.ON);
+		gc.setLineWidth(2);
+		gc.drawPolyline(absoluteLine);
 	}
 
 	private TreeItemLayout computeLayout(Point treeSize) {
