@@ -15,18 +15,17 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.Tree.*;
 import org.eclipse.swt.widgets.TreeItem.*;
 
 /**
  *
  */
 public class TreeItemRenderer implements ITreeItemRenderer {
-	private enum ChildState {
+	private enum ChildIndicator {
 		NONE, OPEN, CLOSED
 	}
 
-	private record TreeItemLayout(Point size, ChildState childState, Image image, Rectangle imageBounds, String text,
+	private record TreeItemLayout(Point size, ChildIndicator childIndicator, Image image, Rectangle imageBounds, String text,
 			Rectangle textBounds) {
 	}
 
@@ -50,6 +49,8 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 	private void renderLayout(GC gc, Point offset, TreeItemLayout layout) {
+		drawChildIndicator(gc, offset, layout.childIndicator);
+
 
 		if (layout.image != null) {
 			Rectangle imageBounds = layout.imageBounds();
@@ -63,7 +64,17 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		}
 	}
 
+	private void drawChildIndicator(GC gc, Point offset, ChildIndicator childIndicator) {
+		if (childIndicator == ChildIndicator.NONE) {
+			return;
+		}
+		int[] line = { 9, 7, 14, 11, 9, 14, 20, 20 };
+		gc.setForeground(new Color(255, 0, 0));
+		gc.drawPolyline(line);
+	}
+
 	private TreeItemLayout computeLayout(Point treeSize) {
+		final int PADDING_HORIZONTAL = 21;
 		final int PADDING_TOP = 1;
 		final int DEFAULT_HEIGHT = 18;
 
@@ -93,7 +104,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		Rectangle imageBounds = null;
 		Rectangle textBounds = null;
 
-		int xOffset = 0;
+		int xOffset = PADDING_HORIZONTAL;
 		int yOffset = PADDING_TOP;
 		int height = DEFAULT_HEIGHT;
 		if (image != null) {
@@ -108,13 +119,13 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 		Point size = new Point(xOffset, height);
 
-		ChildState state;
+		ChildIndicator state;
 		if (item.getItemCount() <= 0) {
-			state = ChildState.NONE;
+			state = ChildIndicator.NONE;
 		} else if (item.getExpanded()) {
-			state = ChildState.OPEN;
+			state = ChildIndicator.OPEN;
 		} else {
-			state = ChildState.CLOSED;
+			state = ChildIndicator.CLOSED;
 		}
 
 		return new TreeItemLayout(size, state, image, imageBounds, text, textBounds);
