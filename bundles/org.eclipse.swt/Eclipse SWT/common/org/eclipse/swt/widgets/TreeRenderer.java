@@ -30,9 +30,10 @@ public class TreeRenderer implements ITreeRenderer {
 	@Override
 	public void render(GC gc, Rectangle bounds) {
 		TreeItem[] items = tree.getItems();
-		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		TreeLayout layout = layoutGenerator.computeLayout(new Point(bounds.width, bounds.height), items);
+		Point size = new Point(bounds.width, bounds.height);
 
+		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
+		TreeLayout layout = layoutGenerator.computeLayout(size, items, tree.horizontalBar, tree.verticalBar);
 
 		handleScrollBar(tree.horizontalBar, bounds.width, layout.size().x);
 		handleScrollBar(tree.verticalBar, bounds.height, layout.size().y);
@@ -56,21 +57,15 @@ public class TreeRenderer implements ITreeRenderer {
 
 
 	@Override
-	public Point computeSize(Point size) {
+	public Point computeSize(Point sizeHint) {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		TreeLayout layout = layoutGenerator.computeLayout(size, tree.getItems());
+		TreeLayout layout = layoutGenerator.computeLayout(sizeHint, tree.getItems(), tree.horizontalBar, tree.verticalBar);
 
-		int height = layout.size().x;
-		int width = layout.size().y;
-		// add ScrollBar size
-		if (tree.horizontalBar != null) {
-			height += tree.horizontalBar.getSize().y;
-		}
-		if (tree.verticalBar != null) {
-			width += tree.verticalBar.getSize().x;
-		}
+		Point preferedSize = layout.size();
+		int usedWidth = sizeHint.x == -1 ? preferedSize.x : sizeHint.x;
+		int usedHeight = sizeHint.y == -1 ? preferedSize.y : sizeHint.y;
 
-		return new Point(height, width);
+		return new Point(usedWidth, usedHeight);
 	}
 
 	private void NOT_IMPLEMENTED() {
