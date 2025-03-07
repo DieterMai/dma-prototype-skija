@@ -65,6 +65,8 @@ public class TreeItem extends Item implements ITreeItem {
 	private Color foregroundColor;
 	private Font font;
 
+	private boolean expanded;
+
 	private ITreeItemRenderer renderer;
 
 	private Rectangle bounds = new Rectangle(0, 0, 0, 0);
@@ -472,8 +474,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public boolean getExpanded() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return false;
+		return expanded;
 	}
 
 	/**
@@ -647,8 +648,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public int getItemCount() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return 0;
+		return tree.getItems(this);
 	}
 
 	/**

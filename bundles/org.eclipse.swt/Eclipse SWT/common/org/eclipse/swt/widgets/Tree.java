@@ -1641,6 +1641,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		}
 	}
 
+	public int getItems(TreeItem parentItem) {
+		return itemsMap.getOrDefault(parentItem, List.of()).size();
+	}
+
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}

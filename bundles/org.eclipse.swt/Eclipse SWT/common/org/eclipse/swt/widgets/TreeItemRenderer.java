@@ -22,7 +22,12 @@ import org.eclipse.swt.widgets.TreeItem.*;
  *
  */
 public class TreeItemRenderer implements ITreeItemRenderer {
-	private record TreeItemLayout(Point size, Image image, Rectangle imageBounds, String text, Rectangle textBounds) {
+	private enum ChildState {
+		NONE, OPEN, CLOSED
+	}
+
+	private record TreeItemLayout(Point size, ChildState childState, Image image, Rectangle imageBounds, String text,
+			Rectangle textBounds) {
 	}
 
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
@@ -45,6 +50,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 	private void renderLayout(GC gc, Point offset, TreeItemLayout layout) {
+
 		if (layout.image != null) {
 			Rectangle imageBounds = layout.imageBounds();
 			gc.drawImage(item.image, offset.x + imageBounds.x, offset.y + imageBounds.y);
@@ -102,7 +108,16 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 		Point size = new Point(xOffset, height);
 
-		return new TreeItemLayout(size, image, imageBounds, text, textBounds);
+		ChildState state;
+		if (item.getItemCount() <= 0) {
+			state = ChildState.NONE;
+		} else if (item.getExpanded()) {
+			state = ChildState.OPEN;
+		} else {
+			state = ChildState.CLOSED;
+		}
+
+		return new TreeItemLayout(size, state, image, imageBounds, text, textBounds);
 	}
 
 	private boolean hasImage() {
