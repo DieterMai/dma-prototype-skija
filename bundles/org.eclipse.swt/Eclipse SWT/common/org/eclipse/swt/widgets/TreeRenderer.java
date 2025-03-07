@@ -15,6 +15,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Tree.*;
+import org.eclipse.swt.widgets.tree.*;
 
 /**
  *
@@ -28,11 +29,15 @@ public class TreeRenderer implements ITreeRenderer {
 
 	@Override
 	public void render(GC gc, Rectangle bounds) {
-		for(TreeItem item : tree.getItems()) {
-			item.render(gc, bounds);
-		}
-		NOT_IMPLEMENTED();
+		TreeItem[] items = tree.getItems();
+		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
+		TreeLayout layout = layoutGenerator.computeLayout(new Point(bounds.width, bounds.height), items);
 
+		layout.dump();
+
+		for (int i = 0; i < tree.getItemCount(); i++) {
+			items[i].render(gc, layout.bounds(i));
+		}
 	}
 
 	@Override

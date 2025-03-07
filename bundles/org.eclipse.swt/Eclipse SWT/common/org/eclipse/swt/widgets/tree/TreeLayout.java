@@ -13,6 +13,22 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets.tree;
 
-public class TreeLayout {
+import java.util.*;
 
+import org.eclipse.swt.graphics.*;
+
+public record TreeLayout(Point size, List<TreeItemRecord> itemRecords) {
+	public static record TreeItemRecord(int index, Rectangle bounds) {
+	}
+
+	public Rectangle bounds(int i) {
+		return itemRecords.get(i).bounds();
+	}
+
+	public void dump() {
+		System.out.println("Size: " + size);
+		for (TreeItemRecord itemRecord : itemRecords) {
+			System.out.println(itemRecord);
+		}
+	}
 }

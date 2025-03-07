@@ -117,7 +117,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 //	private static final Color DEFAULT_HEADERBACKGROUND_COLOR = new Color(255, 0, 0);
 //	private static final Color DEFAULT_FOREGROUND_COLOR = new Color(0, 255, 0);
 
-	private final List<TreeItem> items = new ArrayList<>();
+	private final List<TreeItem> rootItems = new ArrayList<>();
+	private final Map<TreeItem, List<TreeItem>> itemsMap = new HashMap<>();
 	private final List<TreeColumn> columns = new ArrayList<>();
 
 	private Color headerBackgroundColor = DEFAULT_HEADER_BACKGROUND_COLOR;
@@ -756,8 +757,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	 */
 	public int getItemCount() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return 0;
+		return rootItems.size();
 	}
 
 	/**
@@ -806,7 +806,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public TreeItem[] getItems() {
 		checkWidget();
-		return items.toArray(TreeItem[]::new);
+		return rootItems.toArray(TreeItem[]::new);
 	}
 
 
@@ -1633,8 +1633,12 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 
 
-	public void createItem(TreeItem item) {
-		items.add(item);
+	protected void addItem(TreeItem item, TreeItem parentItem) {
+		if (parentItem == null) {
+			rootItems.add(item);
+		} else {
+			itemsMap.computeIfAbsent(parentItem, i -> new ArrayList<TreeItem>()).add(item);
+		}
 	}
 
 	private void NOT_IMPLEMENTED() {

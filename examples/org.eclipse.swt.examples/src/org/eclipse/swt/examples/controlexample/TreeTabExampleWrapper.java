@@ -83,6 +83,8 @@ public class TreeTabExampleWrapper {
 				setItemText(subitem, i, ControlExample.getResourceString("Node_" + (i + 1) + "_1"));
 			}
 		}
+		System.out.println("TreeTabExampleWrapper.TreeTabExampleWrapper() "+tree1+" item count: "+tree1.getItems().length);
+
 		ITreeItem treeRoots[] = tree1.getItems();
 		ITreeItem item = factory.createItem(treeRoots[1], SWT.NONE);
 		setItemText(item, 1, ControlExample.getResourceString("Node_2_2"));

@@ -242,7 +242,7 @@ public class TreeItem extends Item implements ITreeItem {
 
 		this.renderer = new TreeItemRenderer(this.tree, this);
 
-		this.tree.createItem(this);
+		this.tree.addItem(this, parentItem);
 	}
 
 	private static Tree determinParent(Tree tree, TreeItem item) {
@@ -269,6 +269,14 @@ public class TreeItem extends Item implements ITreeItem {
 		this.bounds = bounds;
 	}
 
+	/**
+	 * Returns the rendered size of the {@link ToolItem}.
+	 *
+	 * @return The size as {@link Point}.
+	 */
+	public Point getSize() {
+		return renderer.getSize();
+	}
 
 
 	/**
