@@ -647,13 +647,31 @@ public class SkijaGC extends GCHandle {
 
 	@Override
 	public void drawPolyline(int[] pointArray) {
-		performDrawLine(paint -> surface.getCanvas().drawLines(convertToFloat(pointArray), paint));
+		performDrawLine(paint -> surface.getCanvas().drawLines(convertToLines(pointArray), paint));
 	}
 
 	private static float[] convertToFloat(int[] array) {
 		float[] arrayAsFloat = new float[array.length];
 		for (int i = 0; i < array.length; i++) {
 			arrayAsFloat[i] = array[i];
+		}
+		return arrayAsFloat;
+	}
+
+	private static float[] convertToLines(int[] array) {
+		if (array.length <= 4) {
+			return convertToFloat(array);
+		}
+		int pointCount = array.length / 2;
+		int lines = (pointCount - 1);
+		int newSize = lines * 2 * 2; // 2 coordinates per point
+		float[] arrayAsFloat = new float[newSize];
+
+		for (int i = 0, j = 0; i + 3 < arrayAsFloat.length; i += 4, j += 2) {
+			arrayAsFloat[i] = array[j];
+			arrayAsFloat[i + 1] = array[j + 1];
+			arrayAsFloat[i + 2] = array[j + 2];
+			arrayAsFloat[i + 3] = array[j + 3];
 		}
 		return arrayAsFloat;
 	}
