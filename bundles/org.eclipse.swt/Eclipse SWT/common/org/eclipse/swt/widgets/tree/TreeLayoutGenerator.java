@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.tree.TreeLayout.*;
 
 public class TreeLayoutGenerator {
-	public TreeLayout computeLayout(Point treeSize, TreeItem[] items) {
+	public TreeLayout computeLayout(Point treeSize, TreeItem[] items, ScrollBar hScrollBar, ScrollBar vScrollBar) {
 		Point[] sizeArray = collectSizes(items);
 		int[] positionArray = computePositions(sizeArray);
 		List<TreeItemRecord> itemRecords = createItemRecords(sizeArray, positionArray);
@@ -34,10 +34,14 @@ public class TreeLayoutGenerator {
 			preferedWidth = Math.max(preferedWidth, size.x);
 		}
 
-		int usedWidth = treeSize.x == -1 ? preferedHeight : treeSize.x;
-		int usedHeight = treeSize.y == -1 ? preferedHeight : treeSize.y;
+		if (vScrollBar != null) {
+			preferedWidth += vScrollBar.getSize().x;
+		}
+		if (hScrollBar != null) {
+			preferedHeight += hScrollBar.getSize().y;
+		}
 
-		return new TreeLayout(new Point(usedWidth, usedHeight), List.copyOf(itemRecords));
+		return new TreeLayout(new Point(preferedWidth, preferedHeight), List.copyOf(itemRecords));
 	}
 
 	private Point[] collectSizes(TreeItem[] items) {
