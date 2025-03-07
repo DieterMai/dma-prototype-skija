@@ -1259,7 +1259,7 @@ public class TreeItem extends Item implements ITreeItem {
 	}
 
 	private void growCells(int size) {
-		for (int i = cells.size(); i < size; i++) {
+		for (int i = cells.size(); i <= size; i++) {
 			cells.add(new Cell());
 		}
 	}
