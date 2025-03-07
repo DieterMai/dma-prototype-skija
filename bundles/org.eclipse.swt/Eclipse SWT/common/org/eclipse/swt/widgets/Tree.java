@@ -372,10 +372,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	}
 
 
-
-
-
-
 	/**
 	 * Deselects an item in the receiver. If the item was already deselected, it
 	 * remains deselected.
