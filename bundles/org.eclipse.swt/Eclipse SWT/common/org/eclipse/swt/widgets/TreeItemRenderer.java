@@ -31,6 +31,10 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
 
+	private static final int PADDING_HORIZONTAL = 21;
+	private static final int PADDING_TOP = 1;
+	private static final int DEFAULT_HEIGHT = 18;
+
 	private static final int[] CLOSED_POLILINE = { 8, 7, 12, 11, 8, 15 };
 	private static final int[] OPEN_POLILINE = { 7, 7, 11, 12, 15, 7 };
 
@@ -53,7 +57,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	private void renderLayout(GC gc, Point offset, TreeItemLayout layout) {
 		drawChildIndicator(gc, offset, layout.childIndicator);
-
+		drawHighlight(gc, offset, layout);
 
 		if (layout.image != null) {
 			Rectangle imageBounds = layout.imageBounds();
@@ -90,10 +94,20 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		gc.drawPolyline(absoluteLine);
 	}
 
+	private void drawHighlight(GC gc, Point offset, TreeItemLayout layout) {
+		if (item.getMouseState() == MouseState.IDLE) {
+			return;
+		}
+		Point itemSize = layout.size();
+		Rectangle bounds = new Rectangle(offset.x + PADDING_HORIZONTAL, offset.y, itemSize.x - PADDING_HORIZONTAL,
+				itemSize.y);
+
+		gc.setBackground(new Color(255, 0, 0));
+		gc.fillRectangle(bounds);
+	}
+
 	private TreeItemLayout computeLayout(Point treeSize) {
-		final int PADDING_HORIZONTAL = 21;
-		final int PADDING_TOP = 1;
-		final int DEFAULT_HEIGHT = 18;
+
 
 		Image image = null;
 		String text = null;
@@ -179,8 +193,8 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		return gc.textExtent(item.getText(), DRAW_FLAGS);
 	}
 
+
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
-
 }

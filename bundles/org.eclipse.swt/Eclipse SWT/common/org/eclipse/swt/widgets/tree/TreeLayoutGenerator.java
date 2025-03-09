@@ -34,6 +34,8 @@ public class TreeLayoutGenerator {
 			preferedWidth = Math.max(preferedWidth, size.x);
 		}
 
+		Rectangle clientArea = new Rectangle(0, 0, preferedWidth, preferedHeight);
+
 		if (vScrollBar != null) {
 			preferedWidth += vScrollBar.getSize().x;
 		}
@@ -41,7 +43,9 @@ public class TreeLayoutGenerator {
 			preferedHeight += hScrollBar.getSize().y;
 		}
 
-		return new TreeLayout(new Point(preferedWidth, preferedHeight), List.copyOf(itemRecords));
+		Point size = new Point(preferedWidth, preferedHeight);
+
+		return new TreeLayout(size, clientArea, List.copyOf(itemRecords));
 	}
 
 	private Point[] collectSizes(TreeItem[] items) {
@@ -65,7 +69,7 @@ public class TreeLayoutGenerator {
 	private List<TreeItemRecord> createItemRecords(Point[] sizeArray, int[] positionArray) {
 		List<TreeItemRecord> records = new ArrayList<>();
 		for (int i = 0; i < sizeArray.length; i++) {
-			records.add(new TreeItemRecord(i, new Rectangle(0, positionArray[i], sizeArray[i].x, sizeArray[i].x)));
+			records.add(new TreeItemRecord(i, new Rectangle(0, positionArray[i], sizeArray[i].x, sizeArray[i].y)));
 		}
 
 		return records;
