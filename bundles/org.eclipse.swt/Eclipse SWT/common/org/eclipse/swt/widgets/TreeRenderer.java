@@ -23,6 +23,8 @@ import org.eclipse.swt.widgets.tree.*;
 public class TreeRenderer implements ITreeRenderer {
 	private final Tree tree;
 
+	private TreeLayout cashedLayout;
+
 	public TreeRenderer(Tree tree) {
 		this.tree = tree;
 	}
@@ -59,13 +61,22 @@ public class TreeRenderer implements ITreeRenderer {
 	@Override
 	public Point computeSize(Point sizeHint) {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		TreeLayout layout = layoutGenerator.computeLayout(sizeHint, tree.getItems(), tree.horizontalBar, tree.verticalBar);
+		cashedLayout = layoutGenerator.computeLayout(sizeHint, tree.getItems(), tree.horizontalBar, tree.verticalBar);
 
-		Point preferedSize = layout.size();
+		Point preferedSize = cashedLayout.size();
 		int usedWidth = sizeHint.x == -1 ? preferedSize.x : sizeHint.x;
 		int usedHeight = sizeHint.y == -1 ? preferedSize.y : sizeHint.y;
 
 		return new Point(usedWidth, usedHeight);
+	}
+
+	@Override
+	public Rectangle getClientArea() {
+		if (cashedLayout != null) {
+			return cashedLayout.clientArea();
+		} else {
+			return new Rectangle(0, 0, 0, 0);
+		}
 	}
 
 	private void NOT_IMPLEMENTED() {

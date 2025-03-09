@@ -110,6 +110,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		 * @return The size as {@link Point}
 		 */
 		Point computeSize(Point size);
+
+		Rectangle getClientArea();
 	}
 
 	private static final Color DEFAULT_HEADER_BACKGROUND_COLOR = new Color(255, 0, 0);
@@ -120,6 +122,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private final List<TreeItem> rootItems = new ArrayList<>();
 	private final Map<TreeItem, List<TreeItem>> itemsMap = new HashMap<>();
 	private final List<TreeColumn> columns = new ArrayList<>();
+
+	private TreeItem hoverItem;
 
 	private Color headerBackgroundColor = DEFAULT_HEADER_BACKGROUND_COLOR;
 	private Color headerForegroundColor = DEFAULT_HEADER_FOREGROUND_COLOR;
@@ -184,7 +188,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			switch (event.type) {
 //			case SWT.MouseDown -> onMouseDown(event);
 //			case SWT.MouseExit -> onMouseExit(event);
-//			case SWT.MouseMove -> onMouseMove(event);
+			case SWT.MouseMove -> onMouseMove(event);
 //			case SWT.MouseUp -> onMouseUp(event);
 			case SWT.Paint -> onPaint(event);
 			case SWT.Resize -> redraw();
@@ -218,16 +222,34 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, new Rectangle(0, 0, bounds.width, bounds.height)));
 	}
 
-	TreeItem _getItem(long hItem) {
-		NOT_IMPLEMENTED();
-		return null;
-	}
+	private void onMouseMove(Event e) {
+		if (!isVisible()) {
+			return;
+		}
 
-	TreeItem _getItem(long hItem, int id) {
-		NOT_IMPLEMENTED();
-		return null;
-	}
+		boolean redrawRequired = false;
 
+		Point location = e.getLocation();
+		if (hoverItem != null) {
+			if (hoverItem.getBounds().contains(location)) {
+				return;
+			} else {
+				hoverItem.removeHover();
+				hoverItem = null;
+				redrawRequired = true;
+			}
+		}
+		TreeItem item = getItem(location);
+		if (item != null) {
+			hoverItem = item;
+			hoverItem.addHover();
+			redrawRequired = true;
+		}
+
+		if (redrawRequired) {
+			redraw();
+		}
+	}
 
 	/**
 	 * Adds the listener to the collection of listeners who will be notified when
@@ -732,7 +754,35 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public TreeItem getItem(Point point) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		return getItem(rootItems, point);
+	}
+
+	private TreeItem getItem(List<TreeItem> items, Point location) {
+		if (items.isEmpty()) {
+			return null;
+		}
+
+		Rectangle clientArea = renderer.getClientArea();
+		if (!clientArea.contains(location)) {
+			return null;
+		}
+
+
+		TreeItem prevItem = items.get(0);
+		for (TreeItem item : items) {
+			Rectangle bounds = item.getBounds();
+			if (bounds.contains(location)) {
+				return item;
+			} else if (location.y < item.getBounds().y) {
+				if (prevItem.getExpanded() && itemsMap.containsKey(prevItem)) {
+					getItem(itemsMap.get(prevItem), location);
+				} else {
+					return null;
+				}
+			} else {
+				prevItem = item;
+			}
+		}
 		return null;
 	}
 

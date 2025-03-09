@@ -17,7 +17,7 @@ import java.util.*;
 
 import org.eclipse.swt.graphics.*;
 
-public record TreeLayout(Point size, List<TreeItemRecord> itemRecords) {
+public record TreeLayout(Point size, Rectangle clientArea, List<TreeItemRecord> itemRecords) {
 	public static record TreeItemRecord(int index, Rectangle bounds) {
 	}
 

@@ -71,6 +71,15 @@ public class TreeItem extends Item implements ITreeItem {
 
 	private Rectangle bounds = new Rectangle(0, 0, 0, 0);
 
+	/**
+	 * The mouse state of the {@link ToolItem}
+	 */
+	public static enum MouseState {
+		IDLE, HOVER, DOWN
+	}
+
+	private MouseState mouseState = MouseState.IDLE;
+
 	private class Cell {
 		String text;
 
@@ -1268,6 +1277,21 @@ public class TreeItem extends Item implements ITreeItem {
 		checkWidget();
 		setText(0, text);
 	}
+
+	public MouseState getMouseState() {
+		return mouseState;
+	}
+
+	public void removeHover() {
+		this.mouseState = MouseState.IDLE;
+	}
+
+	public void addHover() {
+		if (mouseState == MouseState.IDLE) {
+			this.mouseState = MouseState.HOVER;
+		}
+	}
+
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
