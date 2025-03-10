@@ -39,7 +39,7 @@ public class TreeRenderer implements ITreeRenderer {
 
 		handleScrollBar(tree.horizontalBar, bounds.width, layout.size().x);
 		handleScrollBar(tree.verticalBar, bounds.height, layout.size().y);
-		layout.dump();
+//		layout.dump();
 
 		for (int i = 0; i < tree.getItemCount(); i++) {
 			items[i].render(gc, layout.bounds(i));

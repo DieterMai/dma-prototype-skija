@@ -75,10 +75,10 @@ public class TreeItem extends Item implements ITreeItem {
 	 * The mouse state of the {@link ToolItem}
 	 */
 	public static enum MouseState {
-		IDLE, HOVER, DOWN
+		IDLE, HOVER
 	}
 
-	private MouseState mouseState = MouseState.IDLE;
+
 
 	private class Cell {
 		String text;
@@ -89,6 +89,9 @@ public class TreeItem extends Item implements ITreeItem {
 	}
 
 	private List<Cell> cells = new ArrayList<>();
+
+	private boolean selected;
+	private boolean mouseHover;
 
 	/**
 	 * Constructs <code>TreeItem</code> and <em>inserts</em> it into
@@ -1278,25 +1281,32 @@ public class TreeItem extends Item implements ITreeItem {
 		setText(0, text);
 	}
 
-	public MouseState getMouseState() {
-		return mouseState;
+	public boolean isHover() {
+		return mouseHover;
 	}
 
-	public void removeHover() {
-		this.mouseState = MouseState.IDLE;
+	void notifyMouseEnter() {
+		this.mouseHover = true;
 	}
 
-	public void addHover() {
-		if (mouseState == MouseState.IDLE) {
-			this.mouseState = MouseState.HOVER;
-		}
+	void notifyMouseExit() {
+		this.mouseHover = false;
 	}
 
-	public boolean isSelected() {
-		return false;
+	void unselect() {
+		this.selected = false;
+	}
+
+	void select() {
+		this.selected = true;
+	}
+
+	boolean isSelected() {
+		return selected;
 	}
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
+
 }

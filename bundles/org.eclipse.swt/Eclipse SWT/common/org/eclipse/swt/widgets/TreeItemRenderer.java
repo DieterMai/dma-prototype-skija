@@ -126,13 +126,9 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		if (item.isSelected()) {
 			drawHighlight(gc, bounds, getColor(ColorType.BORDER_DOWN), getColor(ColorType.FILL_DOWN));
 			return;
-		}
-
-		switch (item.getMouseState()) {
-		case IDLE -> {
-		}
-		case HOVER -> drawHighlight(gc, bounds, getColor(ColorType.BORDER_HOVER), getColor(ColorType.FILL_HOVER));
-		case DOWN -> drawHighlight(gc, bounds, getColor(ColorType.BORDER_DOWN), getColor(ColorType.FILL_DOWN));
+		} else if (item.isHover()) {
+			drawHighlight(gc, bounds, getColor(ColorType.BORDER_HOVER), getColor(ColorType.FILL_HOVER));
+			return;
 		}
 	}
 

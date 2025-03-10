@@ -124,6 +124,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private final List<TreeColumn> columns = new ArrayList<>();
 
 	private TreeItem hoverItem;
+	private TreeItem selectedItem;
 
 	private Color headerBackgroundColor = DEFAULT_HEADER_BACKGROUND_COLOR;
 	private Color headerForegroundColor = DEFAULT_HEADER_FOREGROUND_COLOR;
@@ -186,7 +187,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 				return;
 			}
 			switch (event.type) {
-//			case SWT.MouseDown -> onMouseDown(event);
+			case SWT.MouseDown -> onMouseDown(event);
 //			case SWT.MouseExit -> onMouseExit(event);
 			case SWT.MouseMove -> onMouseMove(event);
 //			case SWT.MouseUp -> onMouseUp(event);
@@ -234,7 +235,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			if (hoverItem.getBounds().contains(location)) {
 				return;
 			} else {
-				hoverItem.removeHover();
+				hoverItem.notifyMouseExit();
 				hoverItem = null;
 				redrawRequired = true;
 			}
@@ -242,7 +243,33 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		TreeItem item = getItem(location);
 		if (item != null) {
 			hoverItem = item;
-			hoverItem.addHover();
+			hoverItem.notifyMouseEnter();
+			redrawRequired = true;
+		}
+
+		if (redrawRequired) {
+			redraw();
+		}
+	}
+
+	private void onMouseDown(Event e) {
+		if (!isVisible()) {
+			return;
+		}
+
+		boolean redrawRequired = false;
+
+		Point location = e.getLocation();
+		if (selectedItem != null && selectedItem.getBounds().contains(location)) {
+			return;
+		}
+		TreeItem item = getItem(location);
+		if (item != selectedItem) {
+			if (selectedItem != null) {
+				selectedItem.unselect();
+			}
+			selectedItem = item;
+			selectedItem.select();
 			redrawRequired = true;
 		}
 
