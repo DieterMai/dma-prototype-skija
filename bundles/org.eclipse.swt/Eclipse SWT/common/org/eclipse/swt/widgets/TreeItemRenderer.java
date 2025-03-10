@@ -16,6 +16,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.TreeItem.*;
+import org.eclipse.swt.widgets.toolbar.ToolItemButtonRenderer.*;
 
 /**
  *
@@ -25,11 +26,32 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		NONE, OPEN, CLOSED
 	}
 
+	public enum ColorType {
+		BORDER_DOWN(0.4f), BORDER_HOVER(0.1f), FILL_DOWN(0.2f), FILL_HOVER(0.1f);
+
+		final float ratio;
+
+		private ColorType(float ratio) {
+			this.ratio = ratio;
+		}
+	}
+
 	private record TreeItemLayout(Point size, ChildIndicator childIndicator, Image image, Rectangle imageBounds, String text,
 			Rectangle textBounds) {
 	}
 
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
+
+	/*
+	 * The background color is displayed when the button is pressed or hovered - but
+	 * not as-is. The background color is shifted in the direction of the target
+	 * color by the ratio defined in ColorType.
+	 */
+	private static final RGB TARGET_RGB = new RGB(0, 139, 255);
+
+	/* If no color is set, this is used as fallback. */
+	private static final RGB DEFAULT_RGB = new RGB(225, 241, 255);
+
 
 	private static final int PADDING_HORIZONTAL = 21;
 	private static final int PADDING_TOP = 1;
@@ -56,8 +78,8 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 	private void renderLayout(GC gc, Point offset, TreeItemLayout layout) {
-		drawChildIndicator(gc, offset, layout.childIndicator);
-		drawHighlight(gc, offset, layout);
+		renderChildIndicator(gc, offset, layout.childIndicator);
+		renderHighlight(gc, offset, layout);
 
 		if (layout.image != null) {
 			Rectangle imageBounds = layout.imageBounds();
@@ -71,7 +93,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		}
 	}
 
-	private void drawChildIndicator(GC gc, Point offset, ChildIndicator childIndicator) {
+	private void renderChildIndicator(GC gc, Point offset, ChildIndicator childIndicator) {
 		int[] relativeLine = switch (childIndicator) {
 		case NONE -> null;
 		case OPEN -> OPEN_POLILINE;
@@ -94,16 +116,49 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		gc.drawPolyline(absoluteLine);
 	}
 
-	private void drawHighlight(GC gc, Point offset, TreeItemLayout layout) {
-		if (item.getMouseState() == MouseState.IDLE) {
+	void renderHighlight(GC gc, Point offset, TreeItemLayout layout) {
+		if (!tree.isEnabled()) {
 			return;
 		}
-		Point itemSize = layout.size();
-		Rectangle bounds = new Rectangle(offset.x + PADDING_HORIZONTAL, offset.y, itemSize.x - PADDING_HORIZONTAL,
-				itemSize.y);
 
-		gc.setBackground(new Color(255, 0, 0));
-		gc.fillRectangle(bounds);
+		Rectangle bounds = new Rectangle(PADDING_HORIZONTAL + offset.x, offset.y, layout.size.x - PADDING_HORIZONTAL,
+				layout.size.y);
+		if (item.isSelected()) {
+			drawHighlight(gc, bounds, getColor(ColorType.BORDER_DOWN), getColor(ColorType.FILL_DOWN));
+			return;
+		}
+
+		switch (item.getMouseState()) {
+		case IDLE -> {
+		}
+		case HOVER -> drawHighlight(gc, bounds, getColor(ColorType.BORDER_HOVER), getColor(ColorType.FILL_HOVER));
+		case DOWN -> drawHighlight(gc, bounds, getColor(ColorType.BORDER_DOWN), getColor(ColorType.FILL_DOWN));
+		}
+	}
+
+	private void drawHighlight(GC gc, Rectangle bounds, Color borderColor, Color fillColor) {
+		gc.setAntialias(SWT.ON);
+		gc.setBackground(fillColor);
+		gc.fillRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
+
+		gc.setForeground(borderColor);
+		gc.drawRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
+	}
+
+	private Color getColor(ColorType type) {
+		Color backgroundColor = item.getBackground();
+		RGB set;
+		if (backgroundColor != null) {
+			set = backgroundColor.getRGB();
+		} else {
+			set = DEFAULT_RGB;
+		}
+
+		int red = Math.round(set.red - (set.red - TARGET_RGB.red) * type.ratio);
+		int gree = Math.round(set.green - (set.green - TARGET_RGB.green) * type.ratio);
+		int blue = Math.round(set.blue - (set.blue - TARGET_RGB.blue) * type.ratio);
+
+		return new Color(red, gree, blue);
 	}
 
 	private TreeItemLayout computeLayout(Point treeSize) {
