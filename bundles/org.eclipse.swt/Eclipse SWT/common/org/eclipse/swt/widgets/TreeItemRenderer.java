@@ -16,7 +16,6 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.TreeItem.*;
-import org.eclipse.swt.widgets.toolbar.ToolItemButtonRenderer.*;
 
 /**
  *
@@ -38,6 +37,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	private record TreeItemLayout(Point size, ChildIndicator childIndicator, Image image, Rectangle imageBounds, String text,
 			Rectangle textBounds) {
+
 	}
 
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
@@ -82,32 +82,26 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		renderHighlight(gc, offset, layout);
 
 		if (layout.image != null) {
-			Rectangle imageBounds = layout.imageBounds();
-			gc.drawImage(item.image, offset.x + imageBounds.x, offset.y + imageBounds.y);
+			Rectangle imageBounds = translate(layout.imageBounds(), offset);
+			gc.drawImage(item.image, imageBounds.x, imageBounds.y);
 		}
 
 		if (layout.text != null) {
-			Rectangle textBounds = layout.textBounds();
+			Rectangle textBounds = translate(layout.textBounds(), offset);
 			gc.setForeground(getTextColor()); // TODO move into render data
-			gc.drawText(layout.text, offset.x + textBounds.x, offset.y + textBounds.y);
+			gc.drawText(layout.text, textBounds.x, textBounds.y);
 		}
 	}
 
 	private void renderChildIndicator(GC gc, Point offset, ChildIndicator childIndicator) {
-		int[] relativeLine = switch (childIndicator) {
+		int[] absoluteLine = switch (childIndicator) {
 		case NONE -> null;
-		case OPEN -> OPEN_POLILINE;
-		case CLOSED -> CLOSED_POLILINE;
+		case OPEN -> translate(OPEN_POLILINE, offset);
+		case CLOSED -> translate(CLOSED_POLILINE, offset);
 		};
 
-		if (relativeLine == null) {
+		if (absoluteLine == null) {
 			return;
-		}
-
-		int[] absoluteLine = new int[relativeLine.length];
-		for (int i = 0; i + 1 < absoluteLine.length; i += 2) {
-			absoluteLine[i] = offset.x + relativeLine[i];
-			absoluteLine[i + 1] = offset.y + relativeLine[i + 1];
 		}
 
 		gc.setForeground(new Color(139, 139, 139));
@@ -121,8 +115,9 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 			return;
 		}
 
-		Rectangle bounds = new Rectangle(PADDING_HORIZONTAL + offset.x, offset.y, layout.size.x - PADDING_HORIZONTAL,
-				layout.size.y);
+		Rectangle bounds = new Rectangle(PADDING_HORIZONTAL, 0, layout.size.x - PADDING_HORIZONTAL, layout.size.y);
+		bounds = translate(bounds, offset);
+
 		if (item.isSelected()) {
 			drawHighlight(gc, bounds, getColor(ColorType.BORDER_DOWN), getColor(ColorType.FILL_DOWN));
 			return;
@@ -158,8 +153,6 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 	private TreeItemLayout computeLayout(Point treeSize) {
-
-
 		Image image = null;
 		String text = null;
 
@@ -242,6 +235,19 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	private Point doMesureText(GC gc) {
 		gc.setFont(item.getFont());
 		return gc.textExtent(item.getText(), DRAW_FLAGS);
+	}
+
+	private Rectangle translate(Rectangle bounds, Point offset) {
+		return new Rectangle(bounds.x + offset.x, bounds.y + offset.y, bounds.width, bounds.height);
+	}
+
+	private int[] translate(int[] original, Point offset) {
+		int[] translatedPath = new int[original.length];
+		for (int i = 0; i + 1 < translatedPath.length; i += 2) {
+			translatedPath[i] = offset.x + original[i];
+			translatedPath[i + 1] = offset.y + original[i + 1];
+		}
+		return translatedPath;
 	}
 
 
