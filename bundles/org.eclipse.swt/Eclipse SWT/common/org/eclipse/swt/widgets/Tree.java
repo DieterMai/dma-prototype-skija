@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.tree.*;
 
 /**
  * Instances of this class provide a selectable user interface object that

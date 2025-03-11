@@ -11,11 +11,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.widgets.tree;
 
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.Tree.*;
-import org.eclipse.swt.widgets.tree.*;
 
 /**
  *
@@ -35,14 +35,14 @@ public class TreeRenderer implements ITreeRenderer {
 		Point size = new Point(bounds.width, bounds.height);
 
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		TreeLayout layout = layoutGenerator.computeLayout(size, items, tree.horizontalBar, tree.verticalBar);
+		TreeLayout layout = layoutGenerator.computeLayout(size, items, tree.getHorizontalBar(), tree.getVerticalBar());
 
-		handleScrollBar(tree.horizontalBar, bounds.width, layout.size().x);
-		handleScrollBar(tree.verticalBar, bounds.height, layout.size().y);
+		handleScrollBar(tree.getHorizontalBar(), bounds.width, layout.size().x);
+		handleScrollBar(tree.getVerticalBar(), bounds.height, layout.size().y);
 //		layout.dump();
 
 		for (int i = 0; i < tree.getItemCount(); i++) {
-			items[i].render(gc, layout.bounds(i));
+			items[i].render(gc, layout.bounds(i), 0);
 		}
 	}
 
@@ -61,7 +61,8 @@ public class TreeRenderer implements ITreeRenderer {
 	@Override
 	public Point computeSize(Point sizeHint) {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		cashedLayout = layoutGenerator.computeLayout(sizeHint, tree.getItems(), tree.horizontalBar, tree.verticalBar);
+		cashedLayout = layoutGenerator.computeLayout(sizeHint, tree.getItems(), tree.getHorizontalBar(),
+				tree.getVerticalBar());
 
 		Point preferedSize = cashedLayout.size();
 		int usedWidth = sizeHint.x == -1 ? preferedSize.x : sizeHint.x;

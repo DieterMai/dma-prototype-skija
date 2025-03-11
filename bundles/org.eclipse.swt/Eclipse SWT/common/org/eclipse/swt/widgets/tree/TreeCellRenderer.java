@@ -11,20 +11,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.widgets.tree;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.TreeItem.*;
 
 /**
  *
  */
-public class TreeItemRenderer implements ITreeItemRenderer {
-	private enum ChildIndicator {
-		NONE, OPEN, CLOSED
-	}
-
+public class TreeCellRenderer implements ITreeItemRenderer {
 	public enum ColorType {
 		BORDER_DOWN(0.4f), BORDER_HOVER(0.1f), FILL_DOWN(0.2f), FILL_HOVER(0.1f);
 
@@ -35,8 +32,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		}
 	}
 
-	private record TreeItemLayout(Point size, ChildIndicator childIndicator, Image image, Rectangle imageBounds, String text,
-			Rectangle textBounds) {
+	private record TreeCellLayout(Point size, Image image, Rectangle imageBounds, String text, Rectangle textBounds) {
 
 	}
 
@@ -53,37 +49,32 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	private static final RGB DEFAULT_RGB = new RGB(225, 241, 255);
 
 
-	private static final int PADDING_HORIZONTAL = 21;
 	private static final int PADDING_TOP = 1;
 	private static final int DEFAULT_HEIGHT = 18;
-
-	private static final int[] CLOSED_POLILINE = { 8, 7, 12, 11, 8, 15 };
-	private static final int[] OPEN_POLILINE = { 7, 7, 11, 12, 15, 7 };
 
 	private final Tree tree;
 	private final TreeItem item;
 
-	public TreeItemRenderer(Tree tree, TreeItem item) {
+	public TreeCellRenderer(Tree tree, TreeItem item) {
 		this.tree = tree;
 		this.item = item;
 	}
 
 	@Override
-	public void render(GC gc, Rectangle bounds) {
+	public void render(GC gc, Rectangle bounds, int parentIndent) {
 		Point size = new Point(bounds.width, bounds.height);
 		Point offset = new Point(bounds.x, bounds.y);
 
-		TreeItemLayout layout = computeLayout(size);
+		TreeCellLayout layout = computeLayout(size);
 		renderLayout(gc, offset, layout);
 	}
 
-	private void renderLayout(GC gc, Point offset, TreeItemLayout layout) {
-		renderChildIndicator(gc, offset, layout.childIndicator);
+	private void renderLayout(GC gc, Point offset, TreeCellLayout layout) {
 		renderHighlight(gc, offset, layout);
 
 		if (layout.image != null) {
 			Rectangle imageBounds = translate(layout.imageBounds(), offset);
-			gc.drawImage(item.image, imageBounds.x, imageBounds.y);
+			gc.drawImage(item.getImage(), imageBounds.x, imageBounds.y);
 		}
 
 		if (layout.text != null) {
@@ -93,29 +84,12 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		}
 	}
 
-	private void renderChildIndicator(GC gc, Point offset, ChildIndicator childIndicator) {
-		int[] absoluteLine = switch (childIndicator) {
-		case NONE -> null;
-		case OPEN -> translate(OPEN_POLILINE, offset);
-		case CLOSED -> translate(CLOSED_POLILINE, offset);
-		};
-
-		if (absoluteLine == null) {
-			return;
-		}
-
-		gc.setForeground(new Color(139, 139, 139));
-		gc.setAntialias(SWT.ON);
-		gc.setLineWidth(2);
-		gc.drawPolyline(absoluteLine);
-	}
-
-	void renderHighlight(GC gc, Point offset, TreeItemLayout layout) {
+	void renderHighlight(GC gc, Point offset, TreeCellLayout layout) {
 		if (!tree.isEnabled()) {
 			return;
 		}
 
-		Rectangle bounds = new Rectangle(PADDING_HORIZONTAL, 0, layout.size.x - PADDING_HORIZONTAL, layout.size.y);
+		Rectangle bounds = new Rectangle(0, 0, layout.size.x, layout.size.y);
 		bounds = translate(bounds, offset);
 
 		if (item.isSelected()) {
@@ -152,14 +126,14 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		return new Color(red, gree, blue);
 	}
 
-	private TreeItemLayout computeLayout(Point treeSize) {
+	private TreeCellLayout computeLayout(Point treeSize) {
 		Image image = null;
 		String text = null;
 
 
 		// 1. Collect elements
 		if (hasImage()) {
-			image = item.image;
+			image = item.getImage();
 		}
 		if (hasText()) {
 			text = item.getText();
@@ -179,7 +153,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		Rectangle imageBounds = null;
 		Rectangle textBounds = null;
 
-		int xOffset = PADDING_HORIZONTAL;
+		int xOffset = 0;
 		int yOffset = PADDING_TOP;
 		int height = DEFAULT_HEIGHT;
 		if (image != null) {
@@ -194,16 +168,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 		Point size = new Point(xOffset, height);
 
-		ChildIndicator state;
-		if (item.getItemCount() <= 0) {
-			state = ChildIndicator.NONE;
-		} else if (item.getExpanded()) {
-			state = ChildIndicator.OPEN;
-		} else {
-			state = ChildIndicator.CLOSED;
-		}
-
-		return new TreeItemLayout(size, state, image, imageBounds, text, textBounds);
+		return new TreeCellLayout(size, image, imageBounds, text, textBounds);
 	}
 
 	private boolean hasImage() {
@@ -224,7 +189,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	@Override
 	public Point getSize() {
-		TreeItemLayout layout = computeLayout(new Point(0, 0));
+		TreeCellLayout layout = computeLayout(new Point(0, 0));
 		return layout.size();
 	}
 
@@ -240,16 +205,6 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	private Rectangle translate(Rectangle bounds, Point offset) {
 		return new Rectangle(bounds.x + offset.x, bounds.y + offset.y, bounds.width, bounds.height);
 	}
-
-	private int[] translate(int[] original, Point offset) {
-		int[] translatedPath = new int[original.length];
-		for (int i = 0; i + 1 < translatedPath.length; i += 2) {
-			translatedPath[i] = offset.x + original[i];
-			translatedPath[i + 1] = offset.y + original[i + 1];
-		}
-		return translatedPath;
-	}
-
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");

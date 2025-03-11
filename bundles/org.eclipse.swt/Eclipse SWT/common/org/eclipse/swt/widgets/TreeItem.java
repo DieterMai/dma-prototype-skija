@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.tree.*;
 
 /**
  * Instances of this class represent a selectable user interface object that
@@ -47,7 +48,7 @@ public class TreeItem extends Item implements ITreeItem {
 		 * @param gc     GC to render with.
 		 * @param bounds Bounds of the rendering. x and y are always 0.
 		 */
-		void render(GC gc, Rectangle bounds);
+		void render(GC gc, Rectangle bounds, int parentIndent);
 
 		/**
 		 * Returns the size of the rendered {@link ToolItem}.
@@ -78,17 +79,7 @@ public class TreeItem extends Item implements ITreeItem {
 		IDLE, HOVER
 	}
 
-
-
-	private class Cell {
-		String text;
-
-		Color backgroundColor;
-		Color foregroundColor;
-		Font font;
-	}
-
-	private List<Cell> cells = new ArrayList<>();
+	private List<TreeCell> cells = new ArrayList<>();
 
 	private boolean selected;
 	private boolean mouseHover;
@@ -249,7 +240,7 @@ public class TreeItem extends Item implements ITreeItem {
 		super(determinParent(tree, parentItem), style);
 		this.tree = determinParent(tree, parentItem); // JEP 492 candidate
 		this.parentItem = parentItem;
-		cells.add(new Cell());
+		cells.add(new TreeCell(tree, this));
 
 		// TODO invalid subclass
 		// TODO backup style
@@ -278,8 +269,8 @@ public class TreeItem extends Item implements ITreeItem {
 		return item;
 	}
 
-	public void render(GC gc, Rectangle bounds) {
-		renderer.render(gc, bounds);
+	public void render(GC gc, Rectangle bounds, int parentIndent) {
+		renderer.render(gc, bounds, parentIndent);
 		this.bounds = bounds;
 	}
 
@@ -399,8 +390,8 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Color getBackground(int index) {
 		checkWidget();
-		if (index < cells.size() && cells.get(index).backgroundColor != null) {
-			return cells.get(index).backgroundColor;
+		if (index < cellCount() && cell(index).backgroundColor() != null) {
+			return cell(index).backgroundColor();
 		} else {
 			return getBackground();
 		}
@@ -445,7 +436,9 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Rectangle getBounds(int index) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		if (index < cellCount()) {
+			return cell(index).bounds();
+		}
 		return null;
 	}
 
@@ -535,8 +528,8 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Font getFont(int index) {
 		checkWidget();
-		if (index < cells.size() && cells.get(index).font != null) {
-			return cells.get(index).font;
+		if (index < cellCount() && cell(index).font() != null) {
+			return cell(index).font();
 		} else {
 			return getFont();
 		}
@@ -587,8 +580,8 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public Color getForeground(int index) {
 		checkWidget();
-		if (index < cells.size() && cells.get(index).foregroundColor != null) {
-			return cells.get(index).foregroundColor;
+		if (index < cellCount() && cell(index).foregroundColor() != null) {
+			return cell(index).foregroundColor();
 		} else {
 			return getForeground();
 		}
@@ -780,7 +773,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public String getText() {
 		checkWidget();
-		return cells.get(0).text;
+		return cell(0).text();
 	}
 
 	/**
@@ -802,7 +795,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public String getText(int index) {
 		checkWidget();
-		return cells.get(index).text;
+		return cell(index).text();
 	}
 
 	/**
@@ -935,7 +928,7 @@ public class TreeItem extends Item implements ITreeItem {
 	public void setBackground(int index, Color color) {
 		checkWidget();
 		growCells(index);
-		cells.get(index).backgroundColor = color;
+		cell(index).backgroundColor(color);
 	}
 
 	/**
@@ -1031,7 +1024,7 @@ public class TreeItem extends Item implements ITreeItem {
 	public void setFont(int index, Font font) {
 		checkWidget();
 		growCells(index);
-		cells.get(index).font = font;
+		cell(index).font(font);
 	}
 
 	/**
@@ -1090,7 +1083,7 @@ public class TreeItem extends Item implements ITreeItem {
 	public void setForeground(int index, Color color) {
 		checkWidget();
 		growCells(index);
-		cells.get(index).backgroundColor = color;
+		cell(index).foregroundColor(color);
 	}
 
 	/**
@@ -1261,18 +1254,24 @@ public class TreeItem extends Item implements ITreeItem {
 	 * @since 3.1
 	 */
 	public void setText(int index, String text) {
-		checkWidget();
 		if (index == 0) {
 			super.setText(text);
 		}
-		growCells(index);
-		cells.get(index).text = text;
+		cell(index).text(text);
+	}
+
+	private TreeCell cell(int index) {
+		return cells.get(index);
 	}
 
 	private void growCells(int size) {
 		for (int i = cells.size(); i <= size; i++) {
-			cells.add(new Cell());
+			cells.add(new TreeCell(tree, this));
 		}
+	}
+
+	private int cellCount() {
+		return cells.size();
 	}
 
 	@Override
@@ -1297,22 +1296,24 @@ public class TreeItem extends Item implements ITreeItem {
 		this.selected = false;
 	}
 
-	boolean isSelected() {
+	public boolean isSelected() {
 		return selected;
 	}
 
 	boolean notifyMouseClick(Point location) {
-		if (!selected && getBounds().contains(location)) {
-			selected = true;
-			return true;
-		} else {
+		if (!getBounds().contains(location)) {
 			return false;
 		}
+
+		if (!selected && getBounds(0).contains(location)) {
+			selected = true;
+			return true;
+		}
+
+		return false;
 	}
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
-
-
 }
