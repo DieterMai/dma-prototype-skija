@@ -116,8 +116,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	private static final Color DEFAULT_HEADER_BACKGROUND_COLOR = new Color(255, 0, 0);
 	private static final Color DEFAULT_HEADER_FOREGROUND_COLOR = new Color(0, 255, 0);
-//	private static final Color DEFAULT_HEADERBACKGROUND_COLOR = new Color(255, 0, 0);
-//	private static final Color DEFAULT_FOREGROUND_COLOR = new Color(0, 255, 0);
 
 	private final List<TreeItem> rootItems = new ArrayList<>();
 	private final Map<TreeItem, List<TreeItem>> itemsMap = new HashMap<>();
@@ -260,22 +258,32 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		boolean redrawRequired = false;
 
 		Point location = e.getLocation();
-		if (selectedItem != null && selectedItem.getBounds().contains(location)) {
-			return;
-		}
+
 		TreeItem item = getItem(location);
+
 		if (item != selectedItem) {
-			if (selectedItem != null) {
-				selectedItem.unselect();
+			redrawRequired |= item.notifyMouseClick(location);
+			if(item.isSelected()) {
+				swapSelection(item);
 			}
-			selectedItem = item;
-			selectedItem.select();
-			redrawRequired = true;
 		}
 
 		if (redrawRequired) {
 			redraw();
 		}
+	}
+
+	/**
+	 * Returns true if anything has changed.
+	 */
+	private void swapSelection(TreeItem newSelection) {
+		if (selectedItem == newSelection) {
+			return;
+		}
+		if (selectedItem != null) {
+			selectedItem.unselect();
+		}
+		selectedItem = newSelection;
 	}
 
 	/**

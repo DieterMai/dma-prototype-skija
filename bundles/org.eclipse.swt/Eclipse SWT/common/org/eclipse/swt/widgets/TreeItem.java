@@ -1297,16 +1297,22 @@ public class TreeItem extends Item implements ITreeItem {
 		this.selected = false;
 	}
 
-	void select() {
-		this.selected = true;
-	}
-
 	boolean isSelected() {
 		return selected;
+	}
+
+	boolean notifyMouseClick(Point location) {
+		if (!selected && getBounds().contains(location)) {
+			selected = true;
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
+
 
 }
