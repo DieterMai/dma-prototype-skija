@@ -357,4 +357,8 @@ public Rectangle union (Rectangle rect) {
 	return new Rectangle (left, top, right - left, bottom - top);
 }
 
+public Rectangle translate(Point offset) {
+	return new Rectangle(x + offset.x, y + offset.y, width, height);
+}
+
 }

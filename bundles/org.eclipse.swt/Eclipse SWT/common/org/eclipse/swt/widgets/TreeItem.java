@@ -48,14 +48,14 @@ public class TreeItem extends Item implements ITreeItem {
 		 * @param gc     GC to render with.
 		 * @param bounds Bounds of the rendering. x and y are always 0.
 		 */
-		void render(GC gc, Rectangle bounds, int parentIndent);
+		void render(GC gc, Rectangle bounds, int parentIndent, java.util.List<TreeCell> cells);
 
 		/**
 		 * Returns the size of the rendered {@link ToolItem}.
 		 *
 		 * @return The size as a {@link Point}.
 		 */
-		Point getSize();
+		Point getSize(java.util.List<TreeCell> cells);
 	}
 
 	private Tree tree;
@@ -270,7 +270,7 @@ public class TreeItem extends Item implements ITreeItem {
 	}
 
 	public void render(GC gc, Rectangle bounds, int parentIndent) {
-		renderer.render(gc, bounds, parentIndent);
+		renderer.render(gc, bounds, parentIndent, cells);
 		this.bounds = bounds;
 	}
 
@@ -280,7 +280,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 * @return The size as {@link Point}.
 	 */
 	public Point getSize() {
-		return renderer.getSize();
+		return renderer.getSize(cells);
 	}
 
 

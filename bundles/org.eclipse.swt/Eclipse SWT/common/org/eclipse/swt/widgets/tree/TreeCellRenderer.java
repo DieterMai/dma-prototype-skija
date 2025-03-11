@@ -16,12 +16,12 @@ package org.eclipse.swt.widgets.tree;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.widgets.TreeItem.*;
+import org.eclipse.swt.widgets.tree.TreeCell.*;
 
 /**
  *
  */
-public class TreeCellRenderer implements ITreeItemRenderer {
+public class TreeCellRenderer implements ITreeCellRenderer {
 	public enum ColorType {
 		BORDER_DOWN(0.4f), BORDER_HOVER(0.1f), FILL_DOWN(0.2f), FILL_HOVER(0.1f);
 
@@ -61,7 +61,7 @@ public class TreeCellRenderer implements ITreeItemRenderer {
 	}
 
 	@Override
-	public void render(GC gc, Rectangle bounds, int parentIndent) {
+	public void render(GC gc, Rectangle bounds) {
 		Point size = new Point(bounds.width, bounds.height);
 		Point offset = new Point(bounds.x, bounds.y);
 
@@ -73,12 +73,12 @@ public class TreeCellRenderer implements ITreeItemRenderer {
 		renderHighlight(gc, offset, layout);
 
 		if (layout.image != null) {
-			Rectangle imageBounds = translate(layout.imageBounds(), offset);
+			Rectangle imageBounds = layout.imageBounds().translate(offset);
 			gc.drawImage(item.getImage(), imageBounds.x, imageBounds.y);
 		}
 
 		if (layout.text != null) {
-			Rectangle textBounds = translate(layout.textBounds(), offset);
+			Rectangle textBounds = layout.textBounds().translate(offset);
 			gc.setForeground(getTextColor()); // TODO move into render data
 			gc.drawText(layout.text, textBounds.x, textBounds.y);
 		}
@@ -89,8 +89,7 @@ public class TreeCellRenderer implements ITreeItemRenderer {
 			return;
 		}
 
-		Rectangle bounds = new Rectangle(0, 0, layout.size.x, layout.size.y);
-		bounds = translate(bounds, offset);
+		Rectangle bounds = new Rectangle(0, 0, layout.size.x, layout.size.y).translate(offset);
 
 		if (item.isSelected()) {
 			drawHighlight(gc, bounds, getColor(ColorType.BORDER_DOWN), getColor(ColorType.FILL_DOWN));
@@ -200,10 +199,6 @@ public class TreeCellRenderer implements ITreeItemRenderer {
 	private Point doMesureText(GC gc) {
 		gc.setFont(item.getFont());
 		return gc.textExtent(item.getText(), DRAW_FLAGS);
-	}
-
-	private Rectangle translate(Rectangle bounds, Point offset) {
-		return new Rectangle(bounds.x + offset.x, bounds.y + offset.y, bounds.width, bounds.height);
 	}
 
 	private void NOT_IMPLEMENTED() {

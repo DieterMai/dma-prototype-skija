@@ -36,6 +36,7 @@ public class TreeCell {
 
 	private final Tree tree;
 	private final TreeItem item;
+	private final ITreeCellRenderer renderer;
 
 	private String text;
 
@@ -43,11 +44,13 @@ public class TreeCell {
 	private Color foregroundColor;
 	private Font font;
 
+
 	private Rectangle bounds = new Rectangle(0, 0, 0, 0);
 
 	public TreeCell(Tree tree, TreeItem item) {
 		this.tree = tree;
 		this.item = item;
+		this.renderer = new TreeCellRenderer(tree, item);
 	}
 
 	public Color backgroundColor() {
@@ -84,5 +87,13 @@ public class TreeCell {
 
 	public Rectangle bounds() {
 		return bounds;
+	}
+
+	public Point getSize() {
+		return renderer.getSize();
+	}
+
+	public void render(GC gc, Rectangle bounds) {
+		renderer.render(gc, bounds);
 	}
 }

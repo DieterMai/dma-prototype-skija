@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets.tree;
 
+import java.util.*;
+import java.util.List;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
@@ -43,7 +46,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	private final Tree tree;
 	private final TreeItem item;
 
-	private int indent;
+	private int indent = INDENT;
 
 	public TreeItemRenderer(Tree tree, TreeItem item) {
 		this.tree = tree;
@@ -51,17 +54,21 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 	@Override
-	public void render(GC gc, Rectangle bounds, int parentIndent) {
+	public void render(GC gc, Rectangle bounds, int parentIndent, List<TreeCell> cells) {
 		indent = parentIndent + INDENT;
 		Point size = new Point(bounds.width, bounds.height);
 		Point offset = new Point(bounds.x, bounds.y);
 
-		TreeItemLayout layout = computeLayout(size);
-		renderLayout(gc, offset, layout);
+		TreeItemLayout layout = computeLayout(size, cells);
+		renderLayout(gc, offset, layout, cells);
 	}
 
-	private void renderLayout(GC gc, Point offset, TreeItemLayout layout) {
+	private void renderLayout(GC gc, Point offset, TreeItemLayout layout, List<TreeCell> cells) {
 		renderChildIndicator(gc, offset, layout.childIndicator());
+
+		for (int i = 0; i < cells.size(); i++) {
+			cells.get(i).render(gc, layout.boundsList().get(i).translate(offset));
+		}
 	}
 
 	private void renderChildIndicator(GC gc, Point offset, ChildIndicator childIndicator) {
@@ -81,9 +88,26 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		gc.drawPolyline(absoluteLine);
 	}
 
-	private TreeItemLayout computeLayout(Point treeSize) {
+	private TreeItemLayout computeLayout(Point treeSize, List<TreeCell> cells) {
 		int xOffset = indent;
 		int height = DEFAULT_HEIGHT;
+
+		// 1. Collect preferred size
+		List<Rectangle> boundsList = new ArrayList<>();
+		for (int i = 0; i < cells.size(); i++) {
+			Point size = cells.get(i).getSize();
+			boundsList.add(new Rectangle(0, 0, size.x, size.y));
+		}
+
+		// 2. Position
+		for (int i = 0; i < boundsList.size(); i++) {
+			Rectangle bounds = boundsList.get(i);
+			bounds.x = xOffset;
+			xOffset += bounds.width;
+		}
+
+		// 3. Normalize Height
+		// TODO
 
 		Point size = new Point(xOffset, height);
 
@@ -96,12 +120,12 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 			state = ChildIndicator.CLOSED;
 		}
 
-		return new TreeItemLayout(size, state);
+		return new TreeItemLayout(size, state, boundsList);
 	}
 
 	@Override
-	public Point getSize() {
-		TreeItemLayout layout = computeLayout(new Point(0, 0));
+	public Point getSize(java.util.List<TreeCell> cells) {
+		TreeItemLayout layout = computeLayout(new Point(0, 0), cells);
 		return layout.size();
 	}
 

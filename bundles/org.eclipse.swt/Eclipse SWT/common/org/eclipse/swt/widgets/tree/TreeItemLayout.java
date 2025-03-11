@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets.tree;
 
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.tree.TreeItemRenderer.*;
+import java.util.*;
 
-public record TreeItemLayout(Point size, ChildIndicator childIndicator) {
+import org.eclipse.swt.graphics.*;
+
+public record TreeItemLayout(Point size, ChildIndicator childIndicator, List<Rectangle> boundsList) {
 	public enum ChildIndicator {
 		NONE, OPEN, CLOSED
 	}
