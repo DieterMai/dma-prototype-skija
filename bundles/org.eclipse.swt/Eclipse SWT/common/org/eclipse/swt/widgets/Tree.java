@@ -130,6 +130,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	private boolean headerVisible;
 	private boolean linesVisible;
+	private int sortDirection;
+	private Font font;
 
 	/** The renderer used to render to {@link ToolBar}. */
 	private final ITreeRenderer renderer;
@@ -653,8 +655,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public int getColumnCount() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return 0;
+		return columns.size();
 	}
 
 	/**
@@ -1047,8 +1048,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public int getSortDirection() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return 0;
+		return sortDirection;
 	}
 
 	/**
@@ -1384,7 +1384,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public void setFont(Font font) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.font = font;
 	}
 
 	/**
@@ -1603,7 +1603,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public void setSortDirection(int direction) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.sortDirection = direction;
 	}
 
 	/**

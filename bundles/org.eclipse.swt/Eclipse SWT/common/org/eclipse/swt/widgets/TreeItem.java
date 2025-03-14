@@ -1270,7 +1270,8 @@ public class TreeItem extends Item implements ITreeItem {
 	}
 
 	private void setCellProperty(int index, Consumer<TreeCell> setter) {
-		if (index >= 0 && index < tree.getColumnCount()) {
+		int cellCount = Math.max(1, tree.getColumnCount());
+		if (index >= 0 && index < cellCount) {
 			growCells(index);
 			setter.accept(cell(index));
 		}
