@@ -56,6 +56,8 @@ public class TreeItem extends Item implements ITreeItem {
 		 * @return The size as a {@link Point}.
 		 */
 		Point getSize(java.util.List<TreeCell> cells);
+
+		boolean isOnChildIndicator(Point location);
 	}
 
 	private Tree tree;
@@ -1301,8 +1303,16 @@ public class TreeItem extends Item implements ITreeItem {
 	}
 
 	boolean notifyMouseClick(Point location) {
-		if (!getBounds().contains(location)) {
+		Rectangle bounds = getBounds();
+		if (!bounds.contains(location)) {
 			return false;
+		}
+
+		Point relative = new Point(location.x - bounds.x, location.y - bounds.y);
+		if (getItemCount() > 0 && renderer.isOnChildIndicator(relative)) {
+			expanded = !expanded;
+			System.out.println("TreeItem.notifyMouseClick() expanded is now " + expanded);
+			return true;
 		}
 
 		if (!selected && getBounds(0).contains(location)) {

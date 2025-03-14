@@ -43,6 +43,9 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	private static final int[] CLOSED_POLILINE = { 8, 7, 12, 11, 8, 15 };
 	private static final int[] OPEN_POLILINE = { 7, 7, 11, 12, 15, 7 };
 
+	private static final Color CLOSED_COLOR = new Color(139, 139, 139);
+	private static final Color OPEN_COLOR = new Color(0, 0, 0);
+
 	private final Tree tree;
 	private final TreeItem item;
 
@@ -78,11 +81,17 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		case CLOSED -> translate(CLOSED_POLILINE, offset);
 		};
 
+		Color color = switch (childIndicator) {
+		case NONE -> null;
+		case OPEN -> OPEN_COLOR;
+		case CLOSED -> CLOSED_COLOR;
+		};
+
 		if (absoluteLine == null) {
 			return;
 		}
 
-		gc.setForeground(new Color(139, 139, 139));
+		gc.setForeground(color);
 		gc.setAntialias(SWT.ON);
 		gc.setLineWidth(2);
 		gc.drawPolyline(absoluteLine);
@@ -136,6 +145,14 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 			translatedPath[i + 1] = offset.y + original[i + 1];
 		}
 		return translatedPath;
+	}
+
+	@Override
+	public boolean isOnChildIndicator(Point location) {
+		if (location.x > indent - INDENT && location.x < indent) {
+			return true;
+		}
+		return false;
 	}
 
 	private void NOT_IMPLEMENTED() {
