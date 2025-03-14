@@ -22,35 +22,22 @@ import org.eclipse.swt.widgets.tree.TreeCell.*;
  *
  */
 public class TreeCellRenderer implements ITreeCellRenderer {
-	public enum ColorType {
-		BORDER_DOWN(0.4f), BORDER_HOVER(0.1f), FILL_DOWN(0.2f), FILL_HOVER(0.1f);
-
-		final float ratio;
-
-		private ColorType(float ratio) {
-			this.ratio = ratio;
-		}
-	}
-
 	private record TreeCellLayout(Point size, Image image, Rectangle imageBounds, String text, Rectangle textBounds) {
 
 	}
 
+	private static final Color COLOR_SELECTED_FILL = new Color(204, 232, 255);
+	private static final Color COLOR_SELECTED_BORDER = new Color(0, 120, 212);
+	private static final Color COLOR_HOVER = new Color(229, 243, 255);
+
 	private static final int DRAW_FLAGS = SWT.DRAW_MNEMONIC;
 
-	/*
-	 * The background color is displayed when the button is pressed or hovered - but
-	 * not as-is. The background color is shifted in the direction of the target
-	 * color by the ratio defined in ColorType.
-	 */
-	private static final RGB TARGET_RGB = new RGB(0, 139, 255);
-
-	/* If no color is set, this is used as fallback. */
-	private static final RGB DEFAULT_RGB = new RGB(225, 241, 255);
-
-
+	private static final int PADDING_LEFT = 2;
+	private static final int PADDING_RIGHT = 3;
 	private static final int PADDING_TOP = 1;
+	private static final int SPACING = 5;
 	private static final int DEFAULT_HEIGHT = 18;
+	private static final int TEXT_OFFSET_HORIZONTAL = 4;
 
 	private final Tree tree;
 	private final TreeItem item;
@@ -92,10 +79,10 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		Rectangle bounds = new Rectangle(0, 0, layout.size.x, layout.size.y).translate(offset);
 
 		if (item.isSelected()) {
-			drawHighlight(gc, bounds, getColor(ColorType.BORDER_DOWN), getColor(ColorType.FILL_DOWN));
+			drawHighlight(gc, bounds, COLOR_SELECTED_BORDER, COLOR_SELECTED_FILL);
 			return;
 		} else if (item.isHover()) {
-			drawHighlight(gc, bounds, getColor(ColorType.BORDER_HOVER), getColor(ColorType.FILL_HOVER));
+			drawHighlight(gc, bounds, COLOR_HOVER, COLOR_HOVER);
 			return;
 		}
 	}
@@ -106,29 +93,14 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		gc.fillRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
 
 		gc.setForeground(borderColor);
+		gc.setLineWidth(1);
 		gc.drawRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
 	}
 
-	private Color getColor(ColorType type) {
-		Color backgroundColor = item.getBackground();
-		RGB set;
-		if (backgroundColor != null) {
-			set = backgroundColor.getRGB();
-		} else {
-			set = DEFAULT_RGB;
-		}
-
-		int red = Math.round(set.red - (set.red - TARGET_RGB.red) * type.ratio);
-		int gree = Math.round(set.green - (set.green - TARGET_RGB.green) * type.ratio);
-		int blue = Math.round(set.blue - (set.blue - TARGET_RGB.blue) * type.ratio);
-
-		return new Color(red, gree, blue);
-	}
 
 	private TreeCellLayout computeLayout(Point treeSize) {
 		Image image = null;
 		String text = null;
-
 
 		// 1. Collect elements
 		if (hasImage()) {
@@ -152,18 +124,21 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		Rectangle imageBounds = null;
 		Rectangle textBounds = null;
 
-		int xOffset = 0;
+		int xOffset = PADDING_LEFT;
 		int yOffset = PADDING_TOP;
 		int height = DEFAULT_HEIGHT;
 		if (image != null) {
 			imageBounds = new Rectangle(xOffset, yOffset, imageSize.x, imageSize.y);
 			xOffset += imageSize.x;
+			xOffset += SPACING;
 		}
 
 		if (text != null) {
 			textBounds = new Rectangle(xOffset, PADDING_TOP, textSize.x, textSize.y);
 			xOffset += textBounds.width;
 		}
+
+		xOffset += PADDING_RIGHT;
 
 		Point size = new Point(xOffset, height);
 

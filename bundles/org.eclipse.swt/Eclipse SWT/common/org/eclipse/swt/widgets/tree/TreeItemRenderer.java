@@ -37,7 +37,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 
-	private static final int INDENT = 21;
+	private static final int INDENT = 17;
 	private static final int DEFAULT_HEIGHT = 18;
 
 	private static final int[] CLOSED_POLILINE = { 8, 7, 12, 11, 8, 15 };
