@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets.tree;
 
-import java.util.*;
 import java.util.List;
+
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.Tree.*;

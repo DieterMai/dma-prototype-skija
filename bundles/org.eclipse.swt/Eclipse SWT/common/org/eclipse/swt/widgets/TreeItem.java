@@ -85,6 +85,7 @@ public class TreeItem extends Item implements ITreeItem {
 	private List<TreeCell> cells = new ArrayList<>();
 
 	private boolean selected;
+	private boolean checked;
 	private boolean mouseHover;
 
 	/**
@@ -473,8 +474,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public boolean getChecked() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return false;
+		return checked;
 	}
 
 	/**
@@ -957,7 +957,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public void setChecked(boolean checked) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.checked = checked;
 	}
 
 	/**

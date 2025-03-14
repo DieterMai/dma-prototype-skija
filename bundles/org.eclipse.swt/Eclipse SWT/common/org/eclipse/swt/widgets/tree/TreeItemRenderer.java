@@ -26,25 +26,18 @@ import org.eclipse.swt.widgets.tree.TreeItemLayout.*;
  *
  */
 public class TreeItemRenderer implements ITreeItemRenderer {
-	public enum ColorType {
-		BORDER_DOWN(0.4f), BORDER_HOVER(0.1f), FILL_DOWN(0.2f), FILL_HOVER(0.1f);
-
-		final float ratio;
-
-		private ColorType(float ratio) {
-			this.ratio = ratio;
-		}
-	}
-
-
 	private static final int INDENT = 17;
 	private static final int DEFAULT_HEIGHT = 18;
 
-	private static final int[] CLOSED_POLILINE = { 8, 7, 12, 11, 8, 15 };
-	private static final int[] OPEN_POLILINE = { 7, 7, 11, 12, 15, 7 };
+	private static final int[] POLILINE_CLOSED = { 8, 7, 12, 11, 8, 15 };
+	private static final int[] POLILINE_OPEN = { 7, 7, 11, 12, 15, 7 };
+	private static final int[] POLILINE_CHECK = { 0, 0, 16, 13, 13, 0 };
 
-	private static final Color CLOSED_COLOR = new Color(139, 139, 139);
-	private static final Color OPEN_COLOR = new Color(0, 0, 0);
+	private static final Color COLOR_CLOSED = new Color(139, 139, 139);
+	private static final Color COLOR_OPEN = new Color(0, 0, 0);
+	private static final Color COLOR_CHECKBOX_BORDER = new Color(98, 98, 98);
+	private static final Color COLOR_CHECKBOX_FILL = new Color(243, 243, 243);
+	private static final Color COLOR_CHECKBOX_CHECKED = new Color(0, 95, 184);
 
 	private final Tree tree;
 	private final TreeItem item;
@@ -66,32 +59,30 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 	private void renderLayout(GC gc, Point offset, TreeItemLayout layout, List<TreeCell> cells) {
-		renderChildIndicator(gc, offset, layout.indent(), layout.childIndicator());
-
-		for (int i = 0; i < cells.size(); i++) {
-			cells.get(i).render(gc, layout.boundsList().get(i).translate(offset));
-		}
+		renderChildIndicator(gc, layout, offset);
+		renderCheckbox(gc, layout, offset);
+		renderCells(gc, layout, offset, cells);
 	}
 
-	private void renderChildIndicator(GC gc, Point offset, int indent, ChildIndicator childIndicator) {
-		Color color = switch (childIndicator) {
+	private void renderChildIndicator(GC gc, TreeItemLayout layout, Point offset) {
+		Color color = switch (layout.childIndicator()) {
 		case NONE -> null;
-		case OPEN -> OPEN_COLOR;
-		case CLOSED -> CLOSED_COLOR;
+		case OPEN -> COLOR_OPEN;
+		case CLOSED -> COLOR_CLOSED;
 		};
 
 		if (color == null) {
 			return;
 		}
 
-		int[] absoluteLine = switch (childIndicator) {
+		int[] absoluteLine = switch (layout.childIndicator()) {
 		case NONE -> null; // can not happen
-		case OPEN -> translate(OPEN_POLILINE, offset);
-		case CLOSED -> translate(CLOSED_POLILINE, offset);
+		case OPEN -> translate(POLILINE_OPEN, offset);
+		case CLOSED -> translate(POLILINE_CLOSED, offset);
 		};
 
 		// the absoluteLine still needs to be translated according to the indent
-		absoluteLine = translate(absoluteLine, new Point(indent, 0));
+		absoluteLine = translate(absoluteLine, new Point(layout.indent(), 0));
 
 		gc.setForeground(color);
 		gc.setAntialias(SWT.ON);
@@ -99,10 +90,49 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		gc.drawPolyline(absoluteLine);
 	}
 
+	private void renderCheckbox(GC gc, TreeItemLayout layout, Point offset) {
+		Rectangle bounds = layout.checkboxBounds();
+		if (bounds == null) {
+			return;
+		}
+
+		Rectangle absolute = bounds.translate(offset);
+		if (layout.isChecked()) {
+			gc.setLineWidth(2);
+			gc.setBackground(COLOR_CHECKBOX_CHECKED);
+			gc.setForeground(new Color(255, 255, 255));
+			gc.setAntialias(SWT.ON);
+
+			int[] absoluteLine = translate(new int[] { 3, 6, 6, 9, 10, 3 }, absolute.x, absolute.y);
+			gc.fillRectangle(absolute);
+			gc.drawPolyline(absoluteLine);
+		} else {
+			gc.setLineWidth(1);
+			gc.setBackground(COLOR_CHECKBOX_FILL);
+			gc.setForeground(COLOR_CHECKBOX_BORDER);
+
+			gc.fillRectangle(absolute);
+			gc.drawRectangle(absolute);
+		}
+	}
+
+	private void renderCells(GC gc, TreeItemLayout layout, Point offset, List<TreeCell> cells) {
+		for (int i = 0; i < cells.size(); i++) {
+			cells.get(i).render(gc, layout.boundsList().get(i).translate(offset));
+		}
+	}
+
 	private TreeItemLayout computeLayout(Point treeSize, List<TreeCell> cells, int depth) {
+		boolean isChecked = item.getChecked();
+		Rectangle checkboxBounds = null;
 		int indent = depth * INDENT;
-		int xOffset = indent + INDENT;
 		int height = DEFAULT_HEIGHT;
+
+		int xOffset = indent + INDENT;
+		if (tree.isCheck()) {
+			checkboxBounds = new Rectangle(xOffset + 3, 3, 12, 12);
+			xOffset += 16;
+		}
 
 		// 1. Collect preferred size
 		List<Rectangle> boundsList = new ArrayList<>();
@@ -132,7 +162,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 			state = ChildIndicator.CLOSED;
 		}
 
-		return new TreeItemLayout(size, indent, state, boundsList);
+		return new TreeItemLayout(size, checkboxBounds, isChecked, indent, state, boundsList);
 	}
 
 	@Override
@@ -141,11 +171,21 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		return layout.size();
 	}
 
+	@Deprecated
 	private int[] translate(int[] original, Point offset) {
 		int[] translatedPath = new int[original.length];
 		for (int i = 0; i + 1 < translatedPath.length; i += 2) {
 			translatedPath[i] = offset.x + original[i];
 			translatedPath[i + 1] = offset.y + original[i + 1];
+		}
+		return translatedPath;
+	}
+
+	private int[] translate(int[] original, int x, int y) {
+		int[] translatedPath = new int[original.length];
+		for (int i = 0; i + 1 < translatedPath.length; i += 2) {
+			translatedPath[i] = x + original[i];
+			translatedPath[i + 1] = y + original[i + 1];
 		}
 		return translatedPath;
 	}

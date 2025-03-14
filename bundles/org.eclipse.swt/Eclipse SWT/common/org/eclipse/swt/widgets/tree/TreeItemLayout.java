@@ -17,7 +17,14 @@ import java.util.*;
 
 import org.eclipse.swt.graphics.*;
 
-public record TreeItemLayout(Point size, int indent, ChildIndicator childIndicator, List<Rectangle> boundsList) {
+public record TreeItemLayout(//
+		Point size, //
+		Rectangle checkboxBounds, //
+		boolean isChecked, //
+		int indent, //
+		ChildIndicator childIndicator, //
+		List<Rectangle> boundsList//
+) {
 	public enum ChildIndicator {
 		NONE, OPEN, CLOSED
 	}

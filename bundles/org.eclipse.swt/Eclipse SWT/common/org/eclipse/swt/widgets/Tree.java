@@ -138,6 +138,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	private Listener listener;
 
+	private final boolean check;
+
 
 	/**
 	 * Constructs a new instance of this class given its parent and a style value
@@ -203,12 +205,24 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		addListener(SWT.MouseUp, listener);
 		addListener(SWT.Paint, listener);
 		addListener(SWT.Resize, listener);
+
+		// cash flags for later use.
+		check = isFlag(style, SWT.CHECK);
+	}
+
+	private static boolean isFlag(int style, int flag) {
+		return (style & flag) == flag;
 	}
 
 	static int checkStyle(int style) {
 		int checkedStyle = checkBits(style, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0);
 		checkedStyle |= SWT.DOUBLE_BUFFERED;
 		return checkedStyle;
+	}
+
+	/** Indicates if the {@link SWT#CHECK} style flag is set. */
+	public boolean isCheck() {
+		return check;
 	}
 
 	private void onPaint(Event event) {

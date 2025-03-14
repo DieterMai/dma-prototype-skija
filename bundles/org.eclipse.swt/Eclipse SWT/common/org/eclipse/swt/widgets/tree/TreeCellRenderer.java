@@ -22,8 +22,13 @@ import org.eclipse.swt.widgets.tree.TreeCell.*;
  *
  */
 public class TreeCellRenderer implements ITreeCellRenderer {
-	private record TreeCellLayout(Point size, Image image, Rectangle imageBounds, String text, Rectangle textBounds) {
-
+	private record TreeCellLayout(//
+			Point size, //
+			Image image, //
+			Rectangle imageBounds, //
+			String text, //
+			Rectangle textBounds//
+	) {
 	}
 
 	private static final Color COLOR_SELECTED_FILL = new Color(204, 232, 255);
@@ -52,25 +57,17 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		Point offset = new Point(bounds.x, bounds.y);
 
 		TreeCellLayout layout = computeLayout(size);
-		renderLayout(gc, offset, layout);
+		render(gc, layout, offset);
 	}
 
-	private void renderLayout(GC gc, Point offset, TreeCellLayout layout) {
-		renderHighlight(gc, offset, layout);
-
-		if (layout.image != null) {
-			Rectangle imageBounds = layout.imageBounds().translate(offset);
-			gc.drawImage(item.getImage(), imageBounds.x, imageBounds.y);
-		}
-
-		if (layout.text != null) {
-			Rectangle textBounds = layout.textBounds().translate(offset);
-			gc.setForeground(getTextColor()); // TODO move into render data
-			gc.drawText(layout.text, textBounds.x, textBounds.y);
-		}
+	private void render(GC gc, TreeCellLayout layout, Point offset) {
+		renderHighlight(gc, layout, offset);
+		renderCheckbox(gc, layout, offset);
+		renderImage(gc, layout, offset);
+		renderText(gc, layout, offset);
 	}
 
-	void renderHighlight(GC gc, Point offset, TreeCellLayout layout) {
+	public void renderHighlight(GC gc, TreeCellLayout layout, Point offset) {
 		if (!tree.isEnabled()) {
 			return;
 		}
@@ -78,15 +75,15 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		Rectangle bounds = new Rectangle(0, 0, layout.size.x, layout.size.y).translate(offset);
 
 		if (item.isSelected()) {
-			drawHighlight(gc, bounds, COLOR_SELECTED_BORDER, COLOR_SELECTED_FILL);
+			renderHighlight(gc, bounds, COLOR_SELECTED_BORDER, COLOR_SELECTED_FILL);
 			return;
 		} else if (item.isHover()) {
-			drawHighlight(gc, bounds, COLOR_HOVER, COLOR_HOVER);
+			renderHighlight(gc, bounds, COLOR_HOVER, COLOR_HOVER);
 			return;
 		}
 	}
 
-	private void drawHighlight(GC gc, Rectangle bounds, Color borderColor, Color fillColor) {
+	private void renderHighlight(GC gc, Rectangle bounds, Color borderColor, Color fillColor) {
 		gc.setAntialias(SWT.ON);
 		gc.setBackground(fillColor);
 		gc.fillRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
@@ -96,6 +93,24 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		gc.drawRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
 	}
 
+	private void renderCheckbox(GC gc, TreeCellLayout layout, Point offset) {
+
+	}
+
+	private void renderImage(GC gc, TreeCellLayout layout, Point offset) {
+		if (layout.image != null) {
+			Rectangle imageBounds = layout.imageBounds().translate(offset);
+			gc.drawImage(item.getImage(), imageBounds.x, imageBounds.y);
+		}
+	}
+
+	private void renderText(GC gc, TreeCellLayout layout, Point offset) {
+		if (layout.text != null) {
+			Rectangle textBounds = layout.textBounds().translate(offset);
+			gc.setForeground(getTextColor()); // TODO move into render data
+			gc.drawText(layout.text, textBounds.x, textBounds.y);
+		}
+	}
 
 	private TreeCellLayout computeLayout(Point treeSize) {
 		Image image = null;
@@ -108,6 +123,7 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		if (hasText()) {
 			text = item.getText(); // TODO cell index
 		}
+
 
 		// 2. Collect sizes
 		Point imageSize = null;
