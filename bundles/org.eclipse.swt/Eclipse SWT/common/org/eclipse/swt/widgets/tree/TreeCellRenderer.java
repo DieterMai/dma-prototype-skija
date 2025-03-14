@@ -37,7 +37,6 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 	private static final int PADDING_TOP = 1;
 	private static final int SPACING = 5;
 	private static final int DEFAULT_HEIGHT = 18;
-	private static final int TEXT_OFFSET_HORIZONTAL = 4;
 
 	private final Tree tree;
 	private final TreeItem item;

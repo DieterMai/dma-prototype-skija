@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.tree.TreeLayout.*;
 
 public class TreeLayoutGenerator {
-	public TreeLayout computeLayout(Point treeSize, TreeItem[] items, ScrollBar hScrollBar, ScrollBar vScrollBar) {
+	public TreeLayout computeLayout(Point treeSize, List<TreeItem> items, ScrollBar hScrollBar, ScrollBar vScrollBar) {
 		Point[] sizeArray = collectSizes(items);
 		int[] positionArray = computePositions(sizeArray);
 		List<TreeItemRecord> itemRecords = createItemRecords(sizeArray, positionArray);
@@ -48,10 +48,10 @@ public class TreeLayoutGenerator {
 		return new TreeLayout(size, clientArea, List.copyOf(itemRecords));
 	}
 
-	private Point[] collectSizes(TreeItem[] items) {
-		Point[] sizeArry = new Point[items.length];
-		for (int i = 0; i < items.length; i++) {
-			sizeArry[i] = items[i].getSize();
+	private Point[] collectSizes(List<TreeItem> items) {
+		Point[] sizeArry = new Point[items.size()];
+		for (int i = 0; i < items.size(); i++) {
+			sizeArry[i] = items.get(i).getSize();
 		}
 		return sizeArry;
 	}

@@ -48,14 +48,14 @@ public class TreeItem extends Item implements ITreeItem {
 		 * @param gc     GC to render with.
 		 * @param bounds Bounds of the rendering. x and y are always 0.
 		 */
-		void render(GC gc, Rectangle bounds, int parentIndent, java.util.List<TreeCell> cells);
+		void render(GC gc, Rectangle bounds, int depth, java.util.List<TreeCell> cells);
 
 		/**
 		 * Returns the size of the rendered {@link ToolItem}.
 		 *
 		 * @return The size as a {@link Point}.
 		 */
-		Point getSize(java.util.List<TreeCell> cells);
+		Point getSize(java.util.List<TreeCell> cells, int depth);
 
 		boolean isOnChildIndicator(Point location);
 	}
@@ -242,7 +242,7 @@ public class TreeItem extends Item implements ITreeItem {
 		super(determinParent(tree, parentItem), style);
 		this.tree = determinParent(tree, parentItem); // JEP 492 candidate
 		this.parentItem = parentItem;
-		cells.add(new TreeCell(tree, this));
+		cells.add(new TreeCell(this.tree, this));
 
 		// TODO invalid subclass
 		// TODO backup style
@@ -271,8 +271,8 @@ public class TreeItem extends Item implements ITreeItem {
 		return item;
 	}
 
-	public void render(GC gc, Rectangle bounds, int parentIndent) {
-		renderer.render(gc, bounds, parentIndent, cells);
+	public void render(GC gc, Rectangle bounds) {
+		renderer.render(gc, bounds, getDept(), cells);
 		this.bounds = bounds;
 	}
 
@@ -282,7 +282,17 @@ public class TreeItem extends Item implements ITreeItem {
 	 * @return The size as {@link Point}.
 	 */
 	public Point getSize() {
-		return renderer.getSize(cells);
+		return renderer.getSize(cells, getDept());
+	}
+
+	private int getDept() {
+		int dept = 0;
+		TreeItem p = parentItem;
+		while (p != null) {
+			dept++;
+			p = p.parentItem;
+		}
+		return dept;
 	}
 
 
@@ -655,7 +665,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public int getItemCount() {
 		checkWidget();
-		return tree.getItems(this);
+		return tree.getItems(this).size();
 	}
 
 	/**
@@ -678,8 +688,7 @@ public class TreeItem extends Item implements ITreeItem {
 	 */
 	public TreeItem[] getItems() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return null;
+		return tree.getItems(this).toArray(TreeItem[]::new);
 	}
 
 	@Override
@@ -1311,7 +1320,6 @@ public class TreeItem extends Item implements ITreeItem {
 		Point relative = new Point(location.x - bounds.x, location.y - bounds.y);
 		if (getItemCount() > 0 && renderer.isOnChildIndicator(relative)) {
 			expanded = !expanded;
-			System.out.println("TreeItem.notifyMouseClick() expanded is now " + expanded);
 			return true;
 		}
 

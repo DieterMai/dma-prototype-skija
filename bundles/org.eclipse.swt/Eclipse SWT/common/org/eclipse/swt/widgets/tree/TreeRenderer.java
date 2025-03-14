@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets.tree;
 
+import java.util.*;
+import java.util.List;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.Tree.*;
@@ -30,19 +32,19 @@ public class TreeRenderer implements ITreeRenderer {
 	}
 
 	@Override
-	public void render(GC gc, Rectangle bounds) {
-		TreeItem[] items = tree.getItems();
+	public void render(GC gc, Rectangle bounds, List<TreeItem> flatItems) {
 		Point size = new Point(bounds.width, bounds.height);
 
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		TreeLayout layout = layoutGenerator.computeLayout(size, items, tree.getHorizontalBar(), tree.getVerticalBar());
+		TreeLayout layout = layoutGenerator.computeLayout(size, flatItems, tree.getHorizontalBar(),
+				tree.getVerticalBar());
 
 		handleScrollBar(tree.getHorizontalBar(), bounds.width, layout.size().x);
 		handleScrollBar(tree.getVerticalBar(), bounds.height, layout.size().y);
 //		layout.dump();
 
-		for (int i = 0; i < tree.getItemCount(); i++) {
-			items[i].render(gc, layout.bounds(i), 0);
+		for (int i = 0; i < flatItems.size(); i++) {
+			flatItems.get(i).render(gc, layout.bounds(i));
 		}
 	}
 
@@ -59,9 +61,9 @@ public class TreeRenderer implements ITreeRenderer {
 
 
 	@Override
-	public Point computeSize(Point sizeHint) {
+	public Point computeSize(Point sizeHint, List<TreeItem> items) {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		cashedLayout = layoutGenerator.computeLayout(sizeHint, tree.getItems(), tree.getHorizontalBar(),
+		cashedLayout = layoutGenerator.computeLayout(sizeHint, items, tree.getHorizontalBar(),
 				tree.getVerticalBar());
 
 		Point preferedSize = cashedLayout.size();

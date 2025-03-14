@@ -103,14 +103,14 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		 * @param gc     GC to render with.
 		 * @param bounds Bounds of the rendering. x and y are always 0.
 		 */
-		void render(GC gc, Rectangle bounds);
+		void render(GC gc, Rectangle bounds, List<TreeItem> items);
 
 		/**
 		 * Computes the size of the rendered ToolBar.
 		 *
 		 * @return The size as {@link Point}
 		 */
-		Point computeSize(Point size);
+		Point computeSize(Point size, List<TreeItem> items);
 
 		Rectangle getClientArea();
 	}
@@ -219,7 +219,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			return;
 		}
 
-		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, new Rectangle(0, 0, bounds.width, bounds.height)));
+		Rectangle rendererBounds = new Rectangle(0, 0, bounds.width, bounds.height);
+		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, rendererBounds, getFlatItems()));
 	}
 
 	private void onMouseMove(Event e) {
@@ -426,7 +427,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
-		return renderer.computeSize(new Point(wHint, hHint));
+		return renderer.computeSize(new Point(wHint, hHint), getFlatItems());
 	}
 
 
@@ -790,7 +791,22 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public TreeItem getItem(Point point) {
 		checkWidget();
-		return getItem(rootItems, point);
+		return getItem(getFlatItems(), point);
+	}
+
+	private List<TreeItem> getFlatItems() { // TODO might be a good idea to cash this
+		List<TreeItem> expandedItems = new ArrayList<>();
+		collectExpandedItems(expandedItems, rootItems.toArray(TreeItem[]::new));
+		return expandedItems;
+	}
+
+	private void collectExpandedItems(List<TreeItem> list, TreeItem[] items) {
+		for (TreeItem item : items) {
+			list.add(item);
+			if (item.getExpanded()) {
+				collectExpandedItems(list, item.getItems());
+			}
+		}
 	}
 
 	private TreeItem getItem(List<TreeItem> items, Point location) {
@@ -1723,8 +1739,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		}
 	}
 
-	public int getItems(TreeItem parentItem) {
-		return itemsMap.getOrDefault(parentItem, List.of()).size();
+	public List<TreeItem> getItems(TreeItem parentItem) {
+		return itemsMap.getOrDefault(parentItem, List.of());
 	}
 
 	private void NOT_IMPLEMENTED() {

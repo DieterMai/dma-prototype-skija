@@ -49,7 +49,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	private final Tree tree;
 	private final TreeItem item;
 
-	private int indent = INDENT;
+	private TreeItemLayout renderedLayout;
 
 	public TreeItemRenderer(Tree tree, TreeItem item) {
 		this.tree = tree;
@@ -57,39 +57,41 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	}
 
 	@Override
-	public void render(GC gc, Rectangle bounds, int parentIndent, List<TreeCell> cells) {
-		indent = parentIndent + INDENT;
+	public void render(GC gc, Rectangle bounds, int dept, List<TreeCell> cells) {
 		Point size = new Point(bounds.width, bounds.height);
 		Point offset = new Point(bounds.x, bounds.y);
 
-		TreeItemLayout layout = computeLayout(size, cells);
-		renderLayout(gc, offset, layout, cells);
+		renderedLayout = computeLayout(size, cells, dept);
+		renderLayout(gc, offset, renderedLayout, cells);
 	}
 
 	private void renderLayout(GC gc, Point offset, TreeItemLayout layout, List<TreeCell> cells) {
-		renderChildIndicator(gc, offset, layout.childIndicator());
+		renderChildIndicator(gc, offset, layout.indent(), layout.childIndicator());
 
 		for (int i = 0; i < cells.size(); i++) {
 			cells.get(i).render(gc, layout.boundsList().get(i).translate(offset));
 		}
 	}
 
-	private void renderChildIndicator(GC gc, Point offset, ChildIndicator childIndicator) {
-		int[] absoluteLine = switch (childIndicator) {
-		case NONE -> null;
-		case OPEN -> translate(OPEN_POLILINE, offset);
-		case CLOSED -> translate(CLOSED_POLILINE, offset);
-		};
-
+	private void renderChildIndicator(GC gc, Point offset, int indent, ChildIndicator childIndicator) {
 		Color color = switch (childIndicator) {
 		case NONE -> null;
 		case OPEN -> OPEN_COLOR;
 		case CLOSED -> CLOSED_COLOR;
 		};
 
-		if (absoluteLine == null) {
+		if (color == null) {
 			return;
 		}
+
+		int[] absoluteLine = switch (childIndicator) {
+		case NONE -> null; // can not happen
+		case OPEN -> translate(OPEN_POLILINE, offset);
+		case CLOSED -> translate(CLOSED_POLILINE, offset);
+		};
+
+		// the absoluteLine still needs to be translated according to the indent
+		absoluteLine = translate(absoluteLine, new Point(indent, 0));
 
 		gc.setForeground(color);
 		gc.setAntialias(SWT.ON);
@@ -97,8 +99,9 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		gc.drawPolyline(absoluteLine);
 	}
 
-	private TreeItemLayout computeLayout(Point treeSize, List<TreeCell> cells) {
-		int xOffset = indent;
+	private TreeItemLayout computeLayout(Point treeSize, List<TreeCell> cells, int depth) {
+		int indent = depth * INDENT;
+		int xOffset = indent + INDENT;
 		int height = DEFAULT_HEIGHT;
 
 		// 1. Collect preferred size
@@ -129,12 +132,12 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 			state = ChildIndicator.CLOSED;
 		}
 
-		return new TreeItemLayout(size, state, boundsList);
+		return new TreeItemLayout(size, indent, state, boundsList);
 	}
 
 	@Override
-	public Point getSize(java.util.List<TreeCell> cells) {
-		TreeItemLayout layout = computeLayout(new Point(0, 0), cells);
+	public Point getSize(List<TreeCell> cells, int depth) {
+		TreeItemLayout layout = computeLayout(new Point(0, 0), cells, depth);
 		return layout.size();
 	}
 
@@ -149,7 +152,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	@Override
 	public boolean isOnChildIndicator(Point location) {
-		if (location.x > indent - INDENT && location.x < indent) {
+		if (location.x > renderedLayout.indent() && location.x < renderedLayout.indent() + INDENT) {
 			return true;
 		}
 		return false;
