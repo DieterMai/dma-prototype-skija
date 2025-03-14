@@ -85,15 +85,16 @@ public class TreeCell {
 		this.text = text;
 	}
 
-	public Rectangle bounds() {
-		return bounds;
-	}
-
 	public Point getSize() {
 		return renderer.getSize();
 	}
 
 	public void render(GC gc, Rectangle bounds) {
 		renderer.render(gc, bounds);
+		this.bounds = bounds;
+	}
+
+	public Rectangle getBounds() {
+		return bounds;
 	}
 }

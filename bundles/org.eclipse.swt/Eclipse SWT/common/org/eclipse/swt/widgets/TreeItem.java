@@ -437,7 +437,7 @@ public class TreeItem extends Item implements ITreeItem {
 	public Rectangle getBounds(int index) {
 		checkWidget();
 		if (index < cellCount()) {
-			return cell(index).bounds();
+			return cell(index).getBounds();
 		}
 		return null;
 	}

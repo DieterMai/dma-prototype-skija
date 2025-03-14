@@ -138,7 +138,6 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		return translatedPath;
 	}
 
-
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
