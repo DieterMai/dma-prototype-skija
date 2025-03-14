@@ -103,10 +103,10 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 
 		// 1. Collect elements
 		if (hasImage()) {
-			image = item.getImage();
+			image = item.getImage(); // TODO cell index
 		}
 		if (hasText()) {
-			text = item.getText();
+			text = item.getText(); // TODO cell index
 		}
 
 		// 2. Collect sizes

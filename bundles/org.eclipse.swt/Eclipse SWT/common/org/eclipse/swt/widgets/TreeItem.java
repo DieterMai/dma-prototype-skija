@@ -15,6 +15,7 @@ package org.eclipse.swt.widgets;
 
 import java.util.*;
 import java.util.List;
+import java.util.function.*;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
@@ -938,8 +939,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setBackground(int index, Color color) {
 		checkWidget();
-		growCells(index);
-		cell(index).backgroundColor(color);
+		setCellProperty(index, cell -> cell.backgroundColor(color));
 	}
 
 	/**
@@ -1034,8 +1034,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setFont(int index, Font font) {
 		checkWidget();
-		growCells(index);
-		cell(index).font(font);
+		setCellProperty(index, cell -> cell.font(font));
 	}
 
 	/**
@@ -1093,8 +1092,7 @@ public class TreeItem extends Item implements ITreeItem {
 	@Override
 	public void setForeground(int index, Color color) {
 		checkWidget();
-		growCells(index);
-		cell(index).foregroundColor(color);
+		setCellProperty(index, cell -> cell.foregroundColor(color));
 	}
 
 	/**
@@ -1269,6 +1267,14 @@ public class TreeItem extends Item implements ITreeItem {
 			super.setText(text);
 		}
 		cell(index).text(text);
+	}
+
+	private void setCellProperty(int index, Consumer<TreeCell> setter) {
+		if (index >= 0 && index < tree.getColumnCount()) {
+			growCells(index);
+			setter.accept(cell(index));
+		}
+		return;
 	}
 
 	private TreeCell cell(int index) {

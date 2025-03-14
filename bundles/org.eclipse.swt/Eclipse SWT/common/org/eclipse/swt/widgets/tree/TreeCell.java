@@ -97,4 +97,9 @@ public class TreeCell {
 	public Rectangle getBounds() {
 		return bounds;
 	}
+
+	@Override
+	public String toString() {
+		return "TreeCell: " + text;
+	}
 }
