@@ -31,7 +31,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	private static final int[] POLILINE_CLOSED = { 8, 7, 12, 11, 8, 15 };
 	private static final int[] POLILINE_OPEN = { 7, 7, 11, 12, 15, 7 };
-	private static final int[] POLILINE_CHECK = { 0, 0, 16, 13, 13, 0 };
+	private static final int[] POLILINE_CHECK = { 2, 6, 5, 9, 9, 3 };
 
 	private static final Color COLOR_CLOSED = new Color(139, 139, 139);
 	private static final Color COLOR_OPEN = new Color(0, 0, 0);
@@ -103,7 +103,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 			gc.setForeground(new Color(255, 255, 255));
 			gc.setAntialias(SWT.ON);
 
-			int[] absoluteLine = translate(new int[] { 3, 6, 6, 9, 10, 3 }, absolute.x, absolute.y);
+			int[] absoluteLine = translate(POLILINE_CHECK, absolute.x, absolute.y);
 			gc.fillRectangle(absolute);
 			gc.drawPolyline(absoluteLine);
 		} else {
@@ -196,6 +196,14 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isOnCheckbox(Point locations) {
+		if (renderedLayout == null) {
+			return false;
+		}
+		return renderedLayout.checkboxBounds().contains(locations);
 	}
 
 	private void NOT_IMPLEMENTED() {

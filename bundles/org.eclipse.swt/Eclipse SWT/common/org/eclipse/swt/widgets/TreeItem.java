@@ -59,6 +59,8 @@ public class TreeItem extends Item implements ITreeItem {
 		Point getSize(java.util.List<TreeCell> cells, int depth);
 
 		boolean isOnChildIndicator(Point location);
+
+		boolean isOnCheckbox(Point locations);
 	}
 
 	private Tree tree;
@@ -1329,6 +1331,12 @@ public class TreeItem extends Item implements ITreeItem {
 			expanded = !expanded;
 			return true;
 		}
+
+		if (renderer.isOnCheckbox(relative)) {
+			checked = !checked;
+			return true;
+		}
+
 
 		if (!selected && getBounds(0).contains(location)) {
 			selected = true;
