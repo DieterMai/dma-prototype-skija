@@ -15,10 +15,12 @@ package org.eclipse.swt.widgets;
 
 import java.util.*;
 import java.util.List;
+import java.util.function.*;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.TreeItem.*;
 import org.eclipse.swt.widgets.tree.*;
 
 /**
@@ -142,16 +144,15 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private final boolean multiSelection;
 
 	private interface ISelectionHandler {
-		boolean handleSelection(TreeItem item, Event e);
-
-		List<TreeItem> selectedItems();
+		// TODO return value no longer used
+		boolean handleSelection(Event e, TreeItem item, Supplier<List<TreeItem>> itemsSupplier);
 	}
 
 	private class SingleSelectionHandler implements ISelectionHandler {
 		private TreeItem selectedItem;
 
 		@Override
-		public boolean handleSelection(TreeItem newSelection, Event e) {
+		public boolean handleSelection(Event e, TreeItem newSelection, Supplier<List<TreeItem>> itemsSupplier) {
 			if (newSelection == selectedItem) {
 				return false;
 			}
@@ -163,11 +164,72 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			selectedItem = newSelection;
 			return true;
 		}
+	}
+
+	private class MultiSelectionHandler implements ISelectionHandler {
+		private List<TreeItem> selectedItems = new ArrayList<>();
+		private TreeItem anchorSelection;
 
 		@Override
-		public List<TreeItem> selectedItems() {
-			// TODO Auto-generated method stub
-			return null;
+		public boolean handleSelection(Event e, TreeItem newSelection, Supplier<List<TreeItem>> itemsSupplier) {
+			if ((e.stateMask & SWT.MOD1) != 0) { // Control/Command
+				addSelection(newSelection);
+			} else if ((e.stateMask & SWT.MOD2) != 0) { // Shift
+				rangeSelection(newSelection, itemsSupplier);
+
+			} else {
+				simpleSelection(newSelection);
+			}
+			return true;
+		}
+
+		private void addSelection(TreeItem newSelection) {
+			if (selectedItems.contains(newSelection)) {
+				selectedItems.remove(newSelection);
+				newSelection.unselect();
+				anchorSelection = null;
+			} else {
+				selectedItems.add(newSelection);
+				newSelection.select();
+				anchorSelection = newSelection;
+			}
+		}
+
+		private void rangeSelection(TreeItem newSelection, Supplier<List<TreeItem>> itemsSupplier) {
+			if (anchorSelection == null) {
+				simpleSelection(newSelection);
+				return;
+			}
+
+			List<TreeItem> allItems = itemsSupplier.get();
+			while (!allItems.contains(anchorSelection)) {
+				anchorSelection = anchorSelection.getParentItem();
+				if (anchorSelection == null) {
+					simpleSelection(newSelection);
+					return;
+				}
+			}
+
+			int indexAnchor = allItems.indexOf(anchorSelection);
+			int indexNew = allItems.indexOf(newSelection);
+			// TODO handle -1
+			int start = Math.min(indexAnchor, indexNew);
+			int end = Math.max(indexAnchor, indexNew);
+
+			List<TreeItem> oldSelectedItems = selectedItems;
+			List<TreeItem> newSelectedItems = new ArrayList<>(allItems.subList(start, end + 1));
+			oldSelectedItems.removeAll(newSelectedItems);
+			oldSelectedItems.forEach(TreeItem::unselect);
+			newSelectedItems.forEach(TreeItem::select);
+			selectedItems = newSelectedItems;
+		}
+
+		private void simpleSelection(TreeItem newSelection) {
+			selectedItems.forEach(TreeItem::unselect);
+			selectedItems.clear();
+			newSelection.select();
+			selectedItems.add(newSelection);
+			anchorSelection = newSelection;
 		}
 	}
 
@@ -243,7 +305,11 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		border = isFlag(style, SWT.BORDER);
 		multiSelection = isFlag(style, SWT.MULTI);
 
-		selectionHandler = new SingleSelectionHandler();
+		if(multiSelection) {
+			selectionHandler = new MultiSelectionHandler();
+		}else {
+			selectionHandler = new SingleSelectionHandler();
+		}
 	}
 
 	private static boolean isFlag(int style, int flag) {
@@ -327,20 +393,19 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			return;
 		}
 
-		boolean redrawRequired = false;
-
 		Point location = e.getLocation();
 
 		TreeItem item = getItem(location);
-		item.notifyMouseClick(location);
-		if (item.isSelected()) {
-			redrawRequired |= selectionHandler.handleSelection(item, e);
+		TreeItem.ItemChange change = item.notifyMouseClick(location);
+
+		if (change == ItemChange.NONE) {
+			return;
+		}
+		if (change == ItemChange.SELECT) {
+			selectionHandler.handleSelection(e, item, this::getFlatItems);
 		}
 
-
-		if (redrawRequired) {
-			redraw();
-		}
+		redraw();
 	}
 
 

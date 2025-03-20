@@ -63,6 +63,10 @@ public class TreeItem extends Item implements ITreeItem {
 		boolean isOnCheckbox(Point locations);
 	}
 
+	public enum ItemChange {
+		NONE, EXPAND, CHECK, SELECT
+	}
+
 	private Tree tree;
 
 	private TreeItem parentItem;
@@ -1324,30 +1328,30 @@ public class TreeItem extends Item implements ITreeItem {
 		return selected;
 	}
 
-	boolean notifyMouseClick(Point location) {
+	ItemChange notifyMouseClick(Point location) {
 		Rectangle bounds = getBounds();
 		if (!bounds.contains(location)) {
-			return false;
+			return ItemChange.NONE;
 		}
 
 		Point relative = new Point(location.x - bounds.x, location.y - bounds.y);
 		if (getItemCount() > 0 && renderer.isOnChildIndicator(relative)) {
 			expanded = !expanded;
-			return true;
+			return ItemChange.EXPAND;
 		}
 
 		if (renderer.isOnCheckbox(relative)) {
 			checked = !checked;
-			return true;
+			return ItemChange.CHECK;
 		}
 
 
 		if (!selected && getBounds(0).contains(location)) {
 			selected = true;
-			return true;
+			return ItemChange.SELECT;
 		}
 
-		return false;
+		return ItemChange.NONE;
 	}
 
 	private void NOT_IMPLEMENTED() {
