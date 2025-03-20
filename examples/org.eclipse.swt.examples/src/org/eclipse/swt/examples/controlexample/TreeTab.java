@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
 class TreeTab extends ScrollableTab {
-	WrapperTee exampleWrapper_old;
+	WrapperTee exampleWrapper;
 
 	/* Example widgets and groups that contain them */
 	Group treeGroup, imageTreeGroup;
@@ -86,13 +86,13 @@ class TreeTab extends ScrollableTab {
 		item.setText(ControlExample.getResourceString ("Header_Background_Color"));
 
 		shell.addDisposeListener(event -> {
-			exampleWrapper_old.addDisposeListener();
+			exampleWrapper.addDisposeListener();
 		});
 	}
 
 	@Override
 	void changeFontOrColor(int index) {
-		exampleWrapper_old.changeFontOrColor(index);
+		exampleWrapper.changeFontOrColor(index);
 
 	}
 
@@ -136,7 +136,7 @@ class TreeTab extends ScrollableTab {
 	}
 
 	void makeTreeContentEditable() {
-		exampleWrapper_old.makeTreesEditable();
+		exampleWrapper.makeTreesEditable();
 	}
 
 	/**
@@ -175,7 +175,7 @@ class TreeTab extends ScrollableTab {
 		if (fullSelectionButton.getSelection ()) style |= SWT.FULL_SELECTION;
 		if (borderButton.getSelection()) style |= SWT.BORDER;
 
-		exampleWrapper_old = new WrapperTee(style, this, treeGroup, imageTreeGroup);
+		exampleWrapper = new WrapperTee(style, this, treeGroup, imageTreeGroup);
 	}
 
 
@@ -191,7 +191,7 @@ class TreeTab extends ScrollableTab {
 		packColumnsButton = new Button (sizeGroup, SWT.PUSH);
 		packColumnsButton.setText (ControlExample.getResourceString("Pack_Columns"));
 		packColumnsButton.addSelectionListener(widgetSelectedAdapter(event -> {
-			exampleWrapper_old.packColumns();
+			exampleWrapper.packColumns();
 			setExampleWidgetSize ();
 		}));
 	}
@@ -224,7 +224,7 @@ class TreeTab extends ScrollableTab {
 		 * because tree items don't have any events. If events
 		 * are ever added to TreeItem, then this needs to change.
 		 */
-		List<Item> allItems = new ArrayList<>(exampleWrapper_old.getExampleWidgetItems());
+		List<Item> allItems = new ArrayList<>(exampleWrapper.getExampleWidgetItems());
 		return allItems.toArray(Item[]::new);
 	}
 
@@ -233,7 +233,7 @@ class TreeTab extends ScrollableTab {
 	 */
 	@Override
 	Widget [] getExampleWidgets () {
-		List<ITree> allTrees = new ArrayList<>(exampleWrapper_old.getExampleWidgets());
+		List<ITree> allTrees = new ArrayList<>(exampleWrapper.getExampleWidgets());
 		return allTrees.stream().map(tree -> (Widget)tree).toArray(Widget[]::new);
 	}
 
@@ -283,25 +283,25 @@ class TreeTab extends ScrollableTab {
 	}
 
 	void setHeaderBackground () {
-		exampleWrapper_old.setHeaderBackground(colorAndFontTable);
+		exampleWrapper.setHeaderBackground(colorAndFontTable);
 	}
 
 	void setHeaderForeground () {
-		exampleWrapper_old.setHeaderForeground(colorAndFontTable);
+		exampleWrapper.setHeaderForeground(colorAndFontTable);
 	}
 
 	/**
 	 * Sets the moveable columns state of the "Example" widgets.
 	 */
 	void setColumnsMoveable () {
-		exampleWrapper_old.setColumnsMoveable();
+		exampleWrapper.setColumnsMoveable();
 	}
 
 	/**
 	 * Sets the resizable columns state of the "Example" widgets.
 	 */
 	void setColumnsResizable () {
-		exampleWrapper_old.setColumnsResizable();
+		exampleWrapper.setColumnsResizable();
 	}
 
 	/**
@@ -313,7 +313,7 @@ class TreeTab extends ScrollableTab {
 	@Override
 	void resetColorsAndFonts () {
 		super.resetColorsAndFonts ();
-		exampleWrapper_old.resetColorsAndFonts(colorAndFontTable, font);
+		exampleWrapper.resetColorsAndFonts(colorAndFontTable, font);
 	}
 
 	/**
@@ -338,24 +338,24 @@ class TreeTab extends ScrollableTab {
 		}
 		super.setExampleWidgetState ();
 
-		int style = exampleWrapper_old.getStyle();
+		int style = exampleWrapper.getStyle();
 		noScrollButton.setSelection ((style & SWT.NO_SCROLL) != 0);
 		checkButton.setSelection ((style & SWT.CHECK) != 0);
 		fullSelectionButton.setSelection ((style & SWT.FULL_SELECTION) != 0);
 		try {
-			moveableColumns.setSelection (exampleWrapper_old.columnMovable());
-			resizableColumns.setSelection (exampleWrapper_old.columnResizable());
+			moveableColumns.setSelection (exampleWrapper.columnMovable());
+			resizableColumns.setSelection (exampleWrapper.columnResizable());
 
 		} catch (IllegalArgumentException ex) {}
-		headerVisibleButton.setSelection (exampleWrapper_old.headerVisible());
-		linesVisibleButton.setSelection (exampleWrapper_old.linesVisible());
+		headerVisibleButton.setSelection (exampleWrapper.headerVisible());
+		linesVisibleButton.setSelection (exampleWrapper.linesVisible());
 	}
 
 	/**
 	 * Sets the background color of the Node 1 TreeItems in column 1.
 	 */
 	void setCellBackground () {
-		exampleWrapper_old.setCellBackground(colorAndFontTable);
+		exampleWrapper.setCellBackground(colorAndFontTable);
 
 	}
 
@@ -363,42 +363,42 @@ class TreeTab extends ScrollableTab {
 	 * Sets the foreground color of the Node 1 TreeItems in column 1.
 	 */
 	void setCellForeground () {
-		exampleWrapper_old.setCellForeground(colorAndFontTable);
+		exampleWrapper.setCellForeground(colorAndFontTable);
 	}
 
 	/**
 	 * Sets the font of the Node 1 TreeItems in column 1.
 	 */
 	void setCellFont () {
-		exampleWrapper_old.setCellFont(colorAndFontTable);
+		exampleWrapper.setCellFont(colorAndFontTable);
 	}
 
 	/**
 	 * Sets the background color of the Node 1 TreeItems.
 	 */
 	void setItemBackground () {
-		exampleWrapper_old.setItemBackground(colorAndFontTable);
+		exampleWrapper.setItemBackground(colorAndFontTable);
 	}
 
 	/**
 	 * Sets the foreground color of the Node 1 TreeItems.
 	 */
 	void setItemForeground () {
-		exampleWrapper_old.setItemForeground(colorAndFontTable);
+		exampleWrapper.setItemForeground(colorAndFontTable);
 	}
 
 	/**
 	 * Sets the font of the Node 1 TreeItems.
 	 */
 	void setItemFont () {
-		exampleWrapper_old.setItemFont(colorAndFontTable);
+		exampleWrapper.setItemFont(colorAndFontTable);
 	}
 
 	/**
 	 * Sets the header visible state of the "Example" widgets.
 	 */
 	void setWidgetHeaderVisible () {
-		exampleWrapper_old.setWidgetHeaderVisible(headerVisibleButton.getSelection ());
+		exampleWrapper.setWidgetHeaderVisible(headerVisibleButton.getSelection ());
 
 	}
 
@@ -406,7 +406,7 @@ class TreeTab extends ScrollableTab {
 	 * Sets the sort indicator state of the "Example" widgets.
 	 */
 	void setWidgetSortIndicator () {
-		exampleWrapper_old.setWidgetSortIndicator(sortIndicatorButton.getSelection ());
+		exampleWrapper.setWidgetSortIndicator(sortIndicatorButton.getSelection ());
 	}
 
 
@@ -415,7 +415,7 @@ class TreeTab extends ScrollableTab {
 	 * Sets the lines visible state of the "Example" widgets.
 	 */
 	void setWidgetLinesVisible () {
-		exampleWrapper_old.setWidgetLinesVisible(linesVisibleButton.getSelection ());
+		exampleWrapper.setWidgetLinesVisible(linesVisibleButton.getSelection ());
 	}
 
 	@Override

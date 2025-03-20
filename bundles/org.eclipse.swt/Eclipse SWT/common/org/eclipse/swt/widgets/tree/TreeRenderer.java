@@ -40,7 +40,8 @@ public class TreeRenderer implements ITreeRenderer {
 
 		handleScrollBar(tree.getHorizontalBar(), bounds.width, layout.size().x);
 		handleScrollBar(tree.getVerticalBar(), bounds.height, layout.size().y);
-//		layout.dump();
+		System.out.println("TreeRenderer.render() items: " + flatItems);
+		layout.dump();
 
 		for (int i = 0; i < flatItems.size(); i++) {
 			flatItems.get(i).render(gc, layout.bounds(i));
@@ -62,15 +63,20 @@ public class TreeRenderer implements ITreeRenderer {
 
 	@Override
 	public Point computeSize(Point sizeHint, List<TreeItem> items) {
-		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		cashedLayout = layoutGenerator.computeLayout(sizeHint, items);
-
-		Point preferedSize = cashedLayout.size();
+		Point preferedSize = computeContentSize(sizeHint, items);
 
 		int usedWidth = sizeHint.x == -1 ? preferedSize.x : sizeHint.x;
 		int usedHeight = sizeHint.y == -1 ? preferedSize.y : sizeHint.y;
 
 		return new Point(usedWidth, usedHeight);
+	}
+
+	@Override
+	public Point computeContentSize(Point sizeHint, List<TreeItem> items) {
+		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
+		cashedLayout = layoutGenerator.computeLayout(sizeHint, items);
+
+		return cashedLayout.size();
 	}
 
 	@Override

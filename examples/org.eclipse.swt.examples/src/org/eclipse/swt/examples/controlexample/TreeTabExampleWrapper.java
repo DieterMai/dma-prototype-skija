@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
 public class TreeTabExampleWrapper {
@@ -66,6 +67,9 @@ public class TreeTabExampleWrapper {
 		this.host = host;
 		/* Create the text tree */
 		tree1 = factory.createTree(treeGroup, style);
+		if(tree1 instanceof Tree tree) {
+			tree.setData("Tree1");
+		}
 
 		if (host.multipleColumns.getSelection()) {
 			for (String columnTitle : columnTitles) {
@@ -99,6 +103,10 @@ public class TreeTabExampleWrapper {
 
 		/* Create the image tree */
 		tree2 = factory.createTree(imageTreeGroup, style);
+		if(tree2 instanceof Tree tree) {
+			tree.setData("Tree2");
+		}
+
 		Image image = host.instance.images[ControlExample.ciClosedFolder];
 		if (host.multipleColumns.getSelection()) {
 			for (int i = 0; i < columnTitles.length; i++) {

@@ -114,7 +114,9 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		 */
 		Point computeSize(Point size, List<TreeItem> items);
 
-		Rectangle getClientArea();
+		Point computeContentSize(Point size, List<TreeItem> items);
+
+		Rectangle getClientArea(); // TODO why do we need this?
 	}
 
 	private static final Color DEFAULT_HEADER_BACKGROUND_COLOR = new Color(255, 0, 0);
@@ -136,8 +138,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	/** The renderer used to render to {@link ToolBar}. */
 	private final ITreeRenderer renderer;
-
-	private Listener listener;
 
 	private final boolean check;
 	private final boolean border;
@@ -279,17 +279,15 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 		renderer = new TreeRenderer(this);
 
-		listener = event -> {
+		Listener listener = event -> {
 			if (isDisposed()) {
 				return;
 			}
 			switch (event.type) {
 			case SWT.MouseDown -> onMouseDown(event);
-//			case SWT.MouseExit -> onMouseExit(event);
 			case SWT.MouseMove -> onMouseMove(event);
-//			case SWT.MouseUp -> onMouseUp(event);
 			case SWT.Paint -> onPaint(event);
-			case SWT.Resize -> redraw();
+			case SWT.Resize -> onResize(event);
 			}
 		};
 
@@ -300,14 +298,18 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		addListener(SWT.Paint, listener);
 		addListener(SWT.Resize, listener);
 
+		if (getVerticalBar() != null) {
+			getVerticalBar().addListener(SWT.Selection, this::onVerticalScroll);
+		}
+
 		// cash flags for later use.
 		check = isFlag(style, SWT.CHECK);
 		border = isFlag(style, SWT.BORDER);
 		multiSelection = isFlag(style, SWT.MULTI);
 
-		if(multiSelection) {
+		if (multiSelection) {
 			selectionHandler = new MultiSelectionHandler();
-		}else {
+		} else {
 			selectionHandler = new SingleSelectionHandler();
 		}
 	}
@@ -342,6 +344,43 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		return !multiSelection;
 	}
 
+	private void onResize(Event event) {
+		updateVerticalScrollBar();
+
+		redraw();
+	}
+
+	private void updateVerticalScrollBar() {
+		if (getVerticalBar() == null) {
+			return;
+		}
+		ScrollBar bar = getVerticalBar();
+
+		Rectangle window = getClientArea();
+		Point clientSize = new Point(window.x, window.y);
+		Point contentSize = renderer.computeContentSize(clientSize, getFlatItems());
+		int ITEM_HEIGHT = 18;
+
+
+		log("window: " + window);
+		log("Content: " + contentSize);
+
+		int available = window.height;
+		int content = contentSize.y;
+
+		int selection = 0; // TODO
+		int min = 0;
+		int increment = ITEM_HEIGHT;
+		int page = increment * 5;
+
+		log("Tree.updateVerticalScrollBar() max: " + content + ", handle: " + available);
+
+		bar.setValues(selection, min, content, available, increment, page);
+		log("Tree.updateVerticalScrollBar() Selection: " + bar.getSelection() + ", max: "
+				+ bar.getMaximum() + ", thumb: " + bar.getThumb() + ", inc: " + bar.getIncrement() + ", page: "
+				+ bar.getPageIncrement());
+	}
+
 	private void onPaint(Event event) {
 		if (!isVisible()) {
 			return;
@@ -357,6 +396,14 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 		Rectangle rendererBounds = new Rectangle(0, 0, useableWidth, useableHight);
 		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, rendererBounds, getFlatItems()));
+
+		updateVerticalScrollBar();
+	}
+
+	private void onVerticalScroll(Event e) {
+		ScrollBar bar = getVerticalBar();
+		System.out.println("Tree.onVerticalScroll() Selection: " + bar.getSelection() + ", max: " + bar.getMaximum()
+				+ ", thumb: " + bar.getThumb() + ", inc: " + bar.getIncrement() + ", page: " + bar.getPageIncrement());
 	}
 
 	private void onMouseMove(Event e) {
@@ -388,6 +435,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private void onMouseDown(Event e) {
 		if (!isVisible()) {
 			return;
@@ -396,18 +444,20 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		Point location = e.getLocation();
 
 		TreeItem item = getItem(location);
-		TreeItem.ItemChange change = item.notifyMouseClick(location);
-
-		if (change == ItemChange.NONE) {
+		if (item == null) {
 			return;
 		}
-		if (change == ItemChange.SELECT) {
-			selectionHandler.handleSelection(e, item, this::getFlatItems);
-		}
 
+		TreeItem.ItemChange change = item.notifyMouseClick(location);
+		switch (change) {
+		case NONE:
+			return;
+		case SELECT:
+			selectionHandler.handleSelection(e, item, this::getFlatItems);
+			break;
+		}
 		redraw();
 	}
-
 
 	/**
 	 * Adds the listener to the collection of listeners who will be notified when
@@ -546,6 +596,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 		Point size = renderer.computeSize(new Point(wHint, hHint), getFlatItems());
+		System.out.println("Tree.computeSize() 1 size: " + size);
 
 		if (getVerticalBar() != null) {
 			size.x += getVerticalBar().getSize().x;
@@ -1845,6 +1896,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	public List<TreeItem> getItems(TreeItem parentItem) {
 		return itemsMap.getOrDefault(parentItem, List.of());
+	}
+
+	private void log(String msg) {
+		System.out.println(getData() + ": " + msg);
 	}
 
 	private void NOT_IMPLEMENTED() {
