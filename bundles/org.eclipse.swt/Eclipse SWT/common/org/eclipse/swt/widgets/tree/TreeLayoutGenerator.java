@@ -34,14 +34,7 @@ public class TreeLayoutGenerator {
 			preferedWidth = Math.max(preferedWidth, size.x);
 		}
 
-		Rectangle clientArea = new Rectangle(0, 0, preferedWidth, preferedHeight);
-
-		if (vScrollBar != null) {
-			preferedWidth += vScrollBar.getSize().x;
-		}
-		if (hScrollBar != null) {
-			preferedHeight += hScrollBar.getSize().y;
-		}
+		Rectangle clientArea = new Rectangle(0, 0, preferedWidth, preferedHeight); // TODO why do we need this?
 
 		Point size = new Point(preferedWidth, preferedHeight);
 

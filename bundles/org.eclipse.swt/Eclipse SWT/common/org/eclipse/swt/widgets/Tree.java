@@ -235,7 +235,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			return;
 		}
 
-		Rectangle rendererBounds = new Rectangle(0, 0, bounds.width, bounds.height);
+		int useableWidth = bounds.width - (getVerticalBar() != null ? getVerticalBar().getSize().x : 0);
+		int useableHight = bounds.height - (getHorizontalBar() != null ? getHorizontalBar().getSize().y : 0);
+
+		Rectangle rendererBounds = new Rectangle(0, 0, useableWidth, useableHight);
 		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, rendererBounds, getFlatItems()));
 	}
 
@@ -443,7 +446,15 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
-		return renderer.computeSize(new Point(wHint, hHint), getFlatItems());
+		Point size = renderer.computeSize(new Point(wHint, hHint), getFlatItems());
+
+		if (getVerticalBar() != null) {
+			size.x += getVerticalBar().getSize().x;
+		}
+		if (getHorizontalBar() != null) {
+			size.y += getHorizontalBar().getSize().y;
+		}
+		return size;
 	}
 
 
