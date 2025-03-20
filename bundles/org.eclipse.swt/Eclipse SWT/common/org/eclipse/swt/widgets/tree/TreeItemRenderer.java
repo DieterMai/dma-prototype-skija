@@ -77,12 +77,9 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 		int[] absoluteLine = switch (layout.childIndicator()) {
 		case NONE -> null; // can not happen
-		case OPEN -> translate(POLILINE_OPEN, offset.x, offset.y);
-		case CLOSED -> translate(POLILINE_CLOSED, offset.x, offset.y);
+		case OPEN -> translate(POLILINE_OPEN, offset.x + layout.indent(), offset.y);
+		case CLOSED -> translate(POLILINE_CLOSED, offset.x + layout.indent(), offset.y);
 		};
-
-		// the absoluteLine still needs to be translated according to the indent
-		absoluteLine = translate(absoluteLine, new Point(layout.indent(), 0));
 
 		gc.setForeground(color);
 		gc.setAntialias(SWT.ON);
