@@ -36,8 +36,7 @@ public class TreeRenderer implements ITreeRenderer {
 		Point size = new Point(bounds.width, bounds.height);
 
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		TreeLayout layout = layoutGenerator.computeLayout(size, flatItems, tree.getHorizontalBar(),
-				tree.getVerticalBar());
+		TreeLayout layout = layoutGenerator.computeLayout(size, flatItems);
 
 		handleScrollBar(tree.getHorizontalBar(), bounds.width, layout.size().x);
 		handleScrollBar(tree.getVerticalBar(), bounds.height, layout.size().y);
@@ -48,6 +47,7 @@ public class TreeRenderer implements ITreeRenderer {
 		}
 	}
 
+	// TODO maybe the scrollbar handling should be in the widget. ???
 	private void handleScrollBar(ScrollBar scrollbar, int available, int required) {
 		if (scrollbar == null) {
 			return;
@@ -63,10 +63,10 @@ public class TreeRenderer implements ITreeRenderer {
 	@Override
 	public Point computeSize(Point sizeHint, List<TreeItem> items) {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		cashedLayout = layoutGenerator.computeLayout(sizeHint, items, tree.getHorizontalBar(),
-				tree.getVerticalBar());
+		cashedLayout = layoutGenerator.computeLayout(sizeHint, items);
 
 		Point preferedSize = cashedLayout.size();
+
 		int usedWidth = sizeHint.x == -1 ? preferedSize.x : sizeHint.x;
 		int usedHeight = sizeHint.y == -1 ? preferedSize.y : sizeHint.y;
 

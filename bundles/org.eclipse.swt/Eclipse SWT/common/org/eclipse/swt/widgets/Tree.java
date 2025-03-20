@@ -139,6 +139,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private Listener listener;
 
 	private final boolean check;
+	private final boolean border;
 
 
 	/**
@@ -208,6 +209,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 		// cash flags for later use.
 		check = isFlag(style, SWT.CHECK);
+		border = isFlag(style, SWT.BORDER);
 	}
 
 	private static boolean isFlag(int style, int flag) {
@@ -223,6 +225,11 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	/** Indicates if the {@link SWT#CHECK} style flag is set. */
 	public boolean isCheck() {
 		return check;
+	}
+
+	/** Indicates if the SWT.BORDER style flag is set. */
+	public boolean isBorder() {
+		return border;
 	}
 
 	private void onPaint(Event event) {
@@ -454,6 +461,12 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		if (getHorizontalBar() != null) {
 			size.y += getHorizontalBar().getSize().y;
 		}
+
+		if (border) {
+			size.x += 4;
+			size.y += 4;
+		}
+
 		return size;
 	}
 

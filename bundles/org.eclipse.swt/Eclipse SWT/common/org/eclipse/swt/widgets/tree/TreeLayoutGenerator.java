@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.tree.TreeLayout.*;
 
 public class TreeLayoutGenerator {
-	public TreeLayout computeLayout(Point treeSize, List<TreeItem> items, ScrollBar hScrollBar, ScrollBar vScrollBar) {
+	public TreeLayout computeLayout(Point treeSize, List<TreeItem> items) {
 		Point[] sizeArray = collectSizes(items);
 		int[] positionArray = computePositions(sizeArray);
 		List<TreeItemRecord> itemRecords = createItemRecords(sizeArray, positionArray);
