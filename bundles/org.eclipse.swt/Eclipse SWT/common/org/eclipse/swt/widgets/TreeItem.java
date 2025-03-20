@@ -1316,6 +1316,10 @@ public class TreeItem extends Item implements ITreeItem {
 		this.selected = false;
 	}
 
+	void select() {
+		this.selected = true;
+	}
+
 	public boolean isSelected() {
 		return selected;
 	}

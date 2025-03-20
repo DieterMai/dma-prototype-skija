@@ -121,7 +121,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	private TreeItemLayout computeLayout(Point treeSize, List<TreeCell> cells, int depth) {
 		boolean isChecked = item.getChecked();
-		Rectangle checkboxBounds = null;
+		Rectangle checkboxBounds = new Rectangle(0, 0, 0, 0);
 		int indent = depth * INDENT;
 		int height = DEFAULT_HEIGHT;
 

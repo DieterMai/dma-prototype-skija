@@ -123,7 +123,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private final List<TreeColumn> columns = new ArrayList<>();
 
 	private TreeItem hoverItem;
-	private TreeItem selectedItem;
 
 	private Color headerBackgroundColor = DEFAULT_HEADER_BACKGROUND_COLOR;
 	private Color headerForegroundColor = DEFAULT_HEADER_FOREGROUND_COLOR;
@@ -140,7 +139,39 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	private final boolean check;
 	private final boolean border;
+	private final boolean multiSelection;
 
+	private interface ISelectionHandler {
+		boolean handleSelection(TreeItem item, Event e);
+
+		List<TreeItem> selectedItems();
+	}
+
+	private class SingleSelectionHandler implements ISelectionHandler {
+		private TreeItem selectedItem;
+
+		@Override
+		public boolean handleSelection(TreeItem newSelection, Event e) {
+			if (newSelection == selectedItem) {
+				return false;
+			}
+
+			if (selectedItem != null) {
+				selectedItem.unselect();
+			}
+			newSelection.select();
+			selectedItem = newSelection;
+			return true;
+		}
+
+		@Override
+		public List<TreeItem> selectedItems() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
+
+	private final ISelectionHandler selectionHandler;
 
 	/**
 	 * Constructs a new instance of this class given its parent and a style value
@@ -210,6 +241,9 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		// cash flags for later use.
 		check = isFlag(style, SWT.CHECK);
 		border = isFlag(style, SWT.BORDER);
+		multiSelection = isFlag(style, SWT.MULTI);
+
+		selectionHandler = new SingleSelectionHandler();
 	}
 
 	private static boolean isFlag(int style, int flag) {
@@ -227,9 +261,19 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		return check;
 	}
 
-	/** Indicates if the SWT.BORDER style flag is set. */
+	/** Indicates if the {@link SWT#BORDER} style flag is set. */
 	public boolean isBorder() {
 		return border;
+	}
+
+	/** Indicates if the {@link SWT#MULTI} style flag is set. */
+	public boolean isMultiSelection() {
+		return multiSelection;
+	}
+
+	/** Indicates if the {link {@link SWT#SINGLE} style flag is set. */
+	public boolean isSingleSelection() {
+		return !multiSelection;
 	}
 
 	private void onPaint(Event event) {
@@ -288,31 +332,17 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		Point location = e.getLocation();
 
 		TreeItem item = getItem(location);
-
-		if (item != selectedItem) {
-			redrawRequired |= item.notifyMouseClick(location);
-			if(item.isSelected()) {
-				swapSelection(item);
-			}
+		item.notifyMouseClick(location);
+		if (item.isSelected()) {
+			redrawRequired |= selectionHandler.handleSelection(item, e);
 		}
+
 
 		if (redrawRequired) {
 			redraw();
 		}
 	}
 
-	/**
-	 * Returns true if anything has changed.
-	 */
-	private void swapSelection(TreeItem newSelection) {
-		if (selectedItem == newSelection) {
-			return;
-		}
-		if (selectedItem != null) {
-			selectedItem.unselect();
-		}
-		selectedItem = newSelection;
-	}
 
 	/**
 	 * Adds the listener to the collection of listeners who will be notified when
@@ -381,8 +411,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		addTypedListener(listener, SWT.Expand, SWT.Collapse);
 	}
 
-
-
 	@Override
 	protected void checkSubclass() {
 		if (!isValidSubclass()) {
@@ -450,7 +478,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		NOT_IMPLEMENTED();
 	}
 
-
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 		Point size = renderer.computeSize(new Point(wHint, hHint), getFlatItems());
@@ -469,7 +496,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 		return size;
 	}
-
 
 	/**
 	 * Deselects an item in the receiver. If the item was already deselected, it
@@ -514,8 +540,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		NOT_IMPLEMENTED();
 	}
 
-
-
 	/**
 	 * Returns the width in points of a grid line.
 	 *
@@ -557,7 +581,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		return headerBackgroundColor;
 	}
 
-
 	/**
 	 * Returns the header foreground color.
 	 *
@@ -577,7 +600,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		checkWidget();
 		return headerForegroundColor;
 	}
-
 
 	/**
 	 * Returns the height of the receiver's header
@@ -666,7 +688,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	public TreeColumn getColumn(int index) {
 		checkWidget();
 		if (index < 0 || index >= columns.size()) {
-			error (SWT.ERROR_INVALID_RANGE);
+			error(SWT.ERROR_INVALID_RANGE);
 		}
 		return columns.get(index);
 	}
@@ -858,7 +880,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			return null;
 		}
 
-
 		TreeItem prevItem = items.get(0);
 		for (TreeItem item : items) {
 			Rectangle bounds = item.getBounds();
@@ -946,7 +967,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		return rootItems.toArray(TreeItem[]::new);
 	}
 
-
 	/**
 	 * Returns <code>true</code> if the receiver's lines are visible, and
 	 * <code>false</code> otherwise. Note that some platforms draw grid lines while
@@ -994,7 +1014,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		NOT_IMPLEMENTED();
 		return null;
 	}
-
 
 	/**
 	 * Returns an array of <code>TreeItem</code>s that are currently selected in the
@@ -1112,9 +1131,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		return null;
 	}
 
-
-
-
 	/**
 	 * Searches the receiver's list starting at the first column (index 0) until a
 	 * column is found that is equal to the argument, and returns the index of that
@@ -1176,8 +1192,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		NOT_IMPLEMENTED();
 		return 0;
 	}
-
-
 
 	/**
 	 * Removes all of the items from the receiver.
@@ -1331,7 +1345,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		this.linesVisible = show;
 	}
 
-
 	/**
 	 * Selects an item in the receiver. If the item was already selected, it remains
 	 * selected.
@@ -1380,8 +1393,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		NOT_IMPLEMENTED();
 	}
 
-
-
 	/**
 	 * Sets the order that the items in the receiver should be displayed in to the
 	 * given argument which is described in terms of the zero-relative ordering of
@@ -1417,7 +1428,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		checkWidget();
 		NOT_IMPLEMENTED();
 	}
-
 
 	@Override
 	public void setFont(Font font) {
@@ -1523,8 +1533,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		checkWidget();
 		NOT_IMPLEMENTED();
 	}
-
-
 
 	/**
 	 * Sets the receiver's selection to the given item. The current selection is
@@ -1676,9 +1684,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		NOT_IMPLEMENTED();
 	}
 
-
-
-
 	/**
 	 * Shows the column. If the column is already showing in the receiver, this
 	 * method simply returns. Otherwise, the columns are scrolled until the column
@@ -1759,15 +1764,11 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		NOT_IMPLEMENTED();
 	}
 
-
-
 	@Override
 	public Composite _composite() {
 		NOT_IMPLEMENTED();
 		return this;
 	}
-
-
 
 	protected void addItem(TreeItem item, TreeItem parentItem) {
 		if (parentItem == null) {
