@@ -77,8 +77,8 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 		int[] absoluteLine = switch (layout.childIndicator()) {
 		case NONE -> null; // can not happen
-		case OPEN -> translate(POLILINE_OPEN, offset);
-		case CLOSED -> translate(POLILINE_CLOSED, offset);
+		case OPEN -> translate(POLILINE_OPEN, offset.x, offset.y);
+		case CLOSED -> translate(POLILINE_CLOSED, offset.x, offset.y);
 		};
 
 		// the absoluteLine still needs to be translated according to the indent
@@ -169,16 +169,6 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	public Point getSize(List<TreeCell> cells, int depth) {
 		TreeItemLayout layout = computeLayout(new Point(0, 0), cells, depth);
 		return layout.size();
-	}
-
-	@Deprecated
-	private int[] translate(int[] original, Point offset) {
-		int[] translatedPath = new int[original.length];
-		for (int i = 0; i + 1 < translatedPath.length; i += 2) {
-			translatedPath[i] = offset.x + original[i];
-			translatedPath[i + 1] = offset.y + original[i + 1];
-		}
-		return translatedPath;
 	}
 
 	private int[] translate(int[] original, int x, int y) {
