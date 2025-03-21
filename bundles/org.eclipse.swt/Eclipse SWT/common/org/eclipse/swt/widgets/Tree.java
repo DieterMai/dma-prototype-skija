@@ -9,7 +9,8 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API
+ *     Dieter Mai
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -102,10 +103,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		/**
 		 * Renders the handle.
 		 *
-		 * @param gc     GC to render with.
-		 * @param bounds Bounds of the rendering. x and y are always 0.
+		 * @param gc   GC to render with.
+		 * @param size Size of the rendering.
 		 */
-		void render(GC gc, Rectangle bounds, List<TreeItem> items);
+		void render(GC gc, Point size, Point origin, List<TreeItem> items);
 
 		/**
 		 * Computes the size of the rendered ToolBar.
@@ -135,6 +136,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private boolean linesVisible;
 	private int sortDirection;
 	private Font font;
+	private Point origin = new Point(0, 0);
 
 	/** The renderer used to render to {@link ToolBar}. */
 	private final ITreeRenderer renderer;
@@ -142,6 +144,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private final boolean check;
 	private final boolean border;
 	private final boolean multiSelection;
+
 
 	private interface ISelectionHandler {
 		// TODO return value no longer used
@@ -361,24 +364,17 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		Point contentSize = renderer.computeContentSize(clientSize, getFlatItems());
 		int ITEM_HEIGHT = 18;
 
-
-		log("window: " + window);
-		log("Content: " + contentSize);
-
 		int available = window.height;
-		int content = contentSize.y;
+		int max = contentSize.y;
 
-		int selection = 0; // TODO
+		int selection = -origin.y; // TODO
 		int min = 0;
 		int increment = ITEM_HEIGHT;
 		int page = increment * 5;
 
-		log("Tree.updateVerticalScrollBar() max: " + content + ", handle: " + available);
-
-		bar.setValues(selection, min, content, available, increment, page);
-		log("Tree.updateVerticalScrollBar() Selection: " + bar.getSelection() + ", max: "
-				+ bar.getMaximum() + ", thumb: " + bar.getThumb() + ", inc: " + bar.getIncrement() + ", page: "
-				+ bar.getPageIncrement());
+		bar.setValues(selection, min, max, available, increment, page);
+//		log("Tree.updateVerticalScrollBar() Selection: " + bar.getSelection() + ", max: " + bar.getMaximum()
+//				+ ", thumb: " + bar.getThumb() + ", inc: " + bar.getIncrement() + ", page: " + bar.getPageIncrement());
 	}
 
 	private void onPaint(Event event) {
@@ -394,16 +390,21 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		int useableWidth = bounds.width - (getVerticalBar() != null ? getVerticalBar().getSize().x : 0);
 		int useableHight = bounds.height - (getHorizontalBar() != null ? getHorizontalBar().getSize().y : 0);
 
-		Rectangle rendererBounds = new Rectangle(0, 0, useableWidth, useableHight);
-		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, rendererBounds, getFlatItems()));
+		Point size = new Point(useableWidth, useableHight);
+		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, size, origin, getFlatItems()));
 
 		updateVerticalScrollBar();
 	}
 
 	private void onVerticalScroll(Event e) {
 		ScrollBar bar = getVerticalBar();
-		System.out.println("Tree.onVerticalScroll() Selection: " + bar.getSelection() + ", max: " + bar.getMaximum()
-				+ ", thumb: " + bar.getThumb() + ", inc: " + bar.getIncrement() + ", page: " + bar.getPageIncrement());
+//		System.out.println("Tree.onVerticalScroll() Selection: " + bar.getSelection() + ", max: " + bar.getMaximum()
+//				+ ", thumb: " + bar.getThumb() + ", inc: " + bar.getIncrement() + ", page: " + bar.getPageIncrement());
+		System.out.println("Tree.onVerticalScroll() bar.getSelection() " + bar.getSelection());
+		origin.y = -bar.getSelection();
+		System.out.println("Tree.onVerticalScroll() origin: " + origin);
+
+		redraw();
 	}
 
 	private void onMouseMove(Event e) {

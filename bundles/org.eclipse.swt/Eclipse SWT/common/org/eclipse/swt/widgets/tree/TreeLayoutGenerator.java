@@ -21,13 +21,13 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.tree.TreeLayout.*;
 
 public class TreeLayoutGenerator {
-	public TreeLayout computeLayout(Point treeSize, List<TreeItem> items) {
+	public TreeLayout computeLayout(Point treeSize, Point origin, List<TreeItem> items) {
 		Point[] sizeArray = collectSizes(items);
-		int[] positionArray = computePositions(sizeArray);
+		Point[] positionArray = computePositions(origin, sizeArray);
 		List<TreeItemRecord> itemRecords = createItemRecords(sizeArray, positionArray);
 
 		int lastIndex = sizeArray.length - 1;
-		int preferedHeight = sizeArray[lastIndex].y + positionArray[lastIndex];
+		int preferedHeight = sizeArray[lastIndex].y + positionArray[lastIndex].y;
 
 		int preferedWidth = 0;
 		for (Point size : sizeArray) {
@@ -49,20 +49,22 @@ public class TreeLayoutGenerator {
 		return sizeArry;
 	}
 
-	private int[] computePositions(Point[] sizeArray) {
-		int yOffset = 0;
-		int[] positionArray = new int[sizeArray.length];
+	private Point[] computePositions(Point origin, Point[] sizeArray) {
+		int yOffset = origin.y;
+		int xOffset = origin.x;
+		Point[] positionArray = new Point[sizeArray.length];
+
 		for (int i = 0; i < sizeArray.length; i++) {
-			positionArray[i] = yOffset;
+			positionArray[i] = new Point(xOffset, yOffset);
 			yOffset += sizeArray[i].y;
 		}
 		return positionArray;
 	}
 
-	private List<TreeItemRecord> createItemRecords(Point[] sizeArray, int[] positionArray) {
+	private List<TreeItemRecord> createItemRecords(Point[] sizeArray, Point[] positionArray) {
 		List<TreeItemRecord> records = new ArrayList<>();
 		for (int i = 0; i < sizeArray.length; i++) {
-			records.add(new TreeItemRecord(i, new Rectangle(0, positionArray[i], sizeArray[i].x, sizeArray[i].y)));
+			records.add(new TreeItemRecord(i, new Rectangle(0, positionArray[i].y, sizeArray[i].x, sizeArray[i].y)));
 		}
 
 		return records;

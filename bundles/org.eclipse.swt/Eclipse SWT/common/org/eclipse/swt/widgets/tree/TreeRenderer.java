@@ -32,34 +32,17 @@ public class TreeRenderer implements ITreeRenderer {
 	}
 
 	@Override
-	public void render(GC gc, Rectangle bounds, List<TreeItem> flatItems) {
-		Point size = new Point(bounds.width, bounds.height);
-
+	public void render(GC gc, Point size, Point origin, List<TreeItem> flatItems) {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		TreeLayout layout = layoutGenerator.computeLayout(size, flatItems);
+		TreeLayout layout = layoutGenerator.computeLayout(size, origin, flatItems);
 
-		handleScrollBar(tree.getHorizontalBar(), bounds.width, layout.size().x);
-		handleScrollBar(tree.getVerticalBar(), bounds.height, layout.size().y);
-		System.out.println("TreeRenderer.render() items: " + flatItems);
-		layout.dump();
+//		System.out.println("TreeRenderer.render() items: " + flatItems);
+//		layout.dump();
 
 		for (int i = 0; i < flatItems.size(); i++) {
 			flatItems.get(i).render(gc, layout.bounds(i));
 		}
 	}
-
-	// TODO maybe the scrollbar handling should be in the widget. ???
-	private void handleScrollBar(ScrollBar scrollbar, int available, int required) {
-		if (scrollbar == null) {
-			return;
-		}
-		if (available < required) {
-			scrollbar.setVisible(true);
-		}else {
-			scrollbar.setVisible(false);
-		}
-	}
-
 
 	@Override
 	public Point computeSize(Point sizeHint, List<TreeItem> items) {
@@ -74,7 +57,7 @@ public class TreeRenderer implements ITreeRenderer {
 	@Override
 	public Point computeContentSize(Point sizeHint, List<TreeItem> items) {
 		TreeLayoutGenerator layoutGenerator = new TreeLayoutGenerator();
-		cashedLayout = layoutGenerator.computeLayout(sizeHint, items);
+		cashedLayout = layoutGenerator.computeLayout(sizeHint, new Point(0, 0), items);
 
 		return cashedLayout.size();
 	}
