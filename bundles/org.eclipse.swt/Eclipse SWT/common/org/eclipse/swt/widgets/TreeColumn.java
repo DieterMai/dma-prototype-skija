@@ -16,6 +16,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.tree.*;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class TreeColumn extends Item implements ITreeColumn {
 	private Tree tree;
 
 	private int sortDirection;
-	private int width;
+	private int width = 42; // TODO magic
 
 	/**
 	 * Constructs a new instance of this class given its parent (which must be a
@@ -341,8 +342,7 @@ public class TreeColumn extends Item implements ITreeColumn {
 	 */
 	public int getWidth() {
 		checkWidget();
-		NOT_IMPLEMENTED();
-		return 0;
+		return width;
 	}
 
 
@@ -361,10 +361,16 @@ public class TreeColumn extends Item implements ITreeColumn {
 	@Override
 	public void pack() {
 		checkWidget();
+		int columnIndex = tree.getColumnIndex(this);
+
+		if (columnIndex == -1) {
+			return;
+		}
 		List<TreeItem> items = tree.getFlatItems();
+
 		int maxWidth = 0;
 		for (TreeItem item : items) {
-			maxWidth = Math.max(maxWidth, item.getSize().x);
+			maxWidth = Math.max(maxWidth, item.computePreferedCellWidth(columnIndex));
 		}
 		setWidth(maxWidth);
 		tree.redraw();
@@ -571,6 +577,7 @@ public class TreeColumn extends Item implements ITreeColumn {
 	public void setWidth(int width) {
 		checkWidget();
 		this.width = width;
+		System.out.println("TreeColumn.setWidth() " + width);
 	}
 
 	void setSortDirection(int sortDirection) {

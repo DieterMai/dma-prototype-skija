@@ -61,6 +61,8 @@ public class TreeItem extends Item implements ITreeItem {
 		boolean isOnChildIndicator(Point location);
 
 		boolean isOnCheckbox(Point locations);
+
+		int getIndent(int dept);
 	}
 
 	public enum ItemChange {
@@ -1293,7 +1295,7 @@ public class TreeItem extends Item implements ITreeItem {
 		if (cells.size() >= tree.getColumnCount()) {
 			return;
 		}
-		for (int i = cells.size(); i <= tree.getColumnCount(); i++) {
+		for (int i = cells.size(); i < tree.getColumnCount(); i++) {
 			cells.add(new TreeCell(tree, this));
 		}
 	}
@@ -1360,5 +1362,9 @@ public class TreeItem extends Item implements ITreeItem {
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
+	}
+
+	public int computePreferedCellWidth(int column) {
+		return cell(column).computePreferedWidth();
 	}
 }

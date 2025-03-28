@@ -31,7 +31,9 @@ public class TreeCell {
 		 *
 		 * @return The size as a {@link Point}.
 		 */
-		Point getSize();
+		int getHeight();
+
+		int computePreferedWidth();
 	}
 
 	private final Tree tree;
@@ -86,8 +88,8 @@ public class TreeCell {
 		this.text = text;
 	}
 
-	public Point getSize() {
-		return renderer.getSize();
+	public int getHeight() {
+		return renderer.getHeight();
 	}
 
 	public void render(GC gc, Rectangle bounds) {
@@ -114,5 +116,13 @@ public class TreeCell {
 
 	public void setImage(Image image) {
 		this.image = image;
+	}
+
+	public int computePreferedWidth() {
+		return renderer.computePreferedWidth();
+	}
+
+	public Font getFont() {
+		return font;
 	}
 }

@@ -179,9 +179,8 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 	}
 
 	@Override
-	public Point getSize() {
-		TreeCellLayout layout = computeLayout(new Point(0, 0));
-		return layout.size();
+	public int getHeight() {
+		return DEFAULT_HEIGHT;
 	}
 
 	private Point getTextSize() {
@@ -189,11 +188,53 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 	}
 
 	private Point doMesureText(GC gc) {
-		gc.setFont(item.getFont());
-		return gc.textExtent(item.getText(), DRAW_FLAGS);
+		gc.setFont(cell.getFont());
+		return gc.textExtent(cell.getText(), DRAW_FLAGS);
 	}
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
+	}
+
+	@Override
+	public int computePreferedWidth() { // TODO duplicated code -> computeLayout
+		Image image = null;
+		String text = null;
+
+		// 1. Collect elements
+		if (hasImage()) {
+			image = cell.getImage();
+		}
+		if (hasText()) {
+			text = cell.getText();
+		}
+
+		// 2. Collect sizes
+		Point imageSize = null;
+		Point textSize = null;
+		if (image != null) {
+			imageSize = new Point(image.getBounds().width, image.getBounds().height);
+		}
+		if (text != null) {
+			textSize = getTextSize();
+		}
+
+		// 3. Position elements
+		Rectangle textBounds = null;
+
+		int width = PADDING_LEFT;
+		if (image != null) {
+			width += imageSize.x;
+			width += SPACING;
+		}
+
+		if (text != null) {
+			textBounds = new Rectangle(width, PADDING_TOP, textSize.x, textSize.y);
+			width += textBounds.width;
+		}
+
+		width += PADDING_RIGHT;
+
+		return width;
 	}
 }

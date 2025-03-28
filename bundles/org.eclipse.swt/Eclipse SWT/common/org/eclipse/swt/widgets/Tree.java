@@ -125,6 +125,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private final List<TreeItem> rootItems = new ArrayList<>();
 	private final Map<TreeItem, List<TreeItem>> itemsMap = new HashMap<>();
 	private final List<TreeColumn> columns = new ArrayList<>();
+	private final TreeColumn defaultColumn;
 
 	private TreeItem hoverItem;
 	private TreeColumn sortColumn;
@@ -319,6 +320,8 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		} else {
 			selectionHandler = new SingleSelectionHandler();
 		}
+
+		defaultColumn = new TreeColumn(this, SWT.NONE);
 	}
 
 	private static boolean isFlag(int style, int flag) {
@@ -834,6 +837,9 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public TreeColumn getColumn(int index) {
 		checkWidget();
+		if (columns.isEmpty() && index == 0) {
+			return defaultColumn;
+		}
 		if (index < 0 || index >= columns.size()) {
 			error(SWT.ERROR_INVALID_RANGE);
 		}
@@ -1947,6 +1953,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
+	}
+
+	int getColumnIndex(TreeColumn column) {
+		return columns.indexOf(column);
 	}
 
 }

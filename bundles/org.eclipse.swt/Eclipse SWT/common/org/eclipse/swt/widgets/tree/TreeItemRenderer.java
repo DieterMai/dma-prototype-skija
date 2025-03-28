@@ -123,7 +123,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 	private TreeItemLayout computeLayout(Point treeSize, List<TreeCell> cells, int depth) {
 		boolean isChecked = item.getChecked();
 		Rectangle checkboxBounds = new Rectangle(0, 0, 0, 0);
-		int indent = depth * INDENT;
+		int indent = getIndent(depth);
 		int height = DEFAULT_HEIGHT;
 
 		int xOffset = indent + INDENT;
@@ -135,8 +135,9 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 		// 1. Collect preferred size
 		List<Rectangle> boundsList = new ArrayList<>();
 		for (int i = 0; i < cells.size(); i++) {
-			Point size = cells.get(i).getSize();
-			boundsList.add(new Rectangle(0, 0, size.x, size.y));
+			int cellHeight = cells.get(i).getHeight();
+			int cellWidth = tree.getColumn(i).getWidth();
+			boundsList.add(new Rectangle(0, 0, cellWidth, cellHeight));
 		}
 
 		// 2. Position
@@ -200,5 +201,10 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
+	}
+
+	@Override
+	public int getIndent(int dept) {
+		return dept * INDENT;
 	}
 }
