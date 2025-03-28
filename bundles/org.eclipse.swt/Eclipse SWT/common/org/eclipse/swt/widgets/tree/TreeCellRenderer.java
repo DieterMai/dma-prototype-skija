@@ -64,7 +64,6 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 
 	private void render(GC gc, TreeCellLayout layout, Point offset) {
 		renderHighlight(gc, layout, offset);
-		renderCheckbox(gc, layout, offset);
 		renderImage(gc, layout, offset);
 		renderText(gc, layout, offset);
 	}
@@ -93,10 +92,6 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		gc.setForeground(borderColor);
 		gc.setLineWidth(1);
 		gc.drawRoundRectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1, 4, 4);
-	}
-
-	private void renderCheckbox(GC gc, TreeCellLayout layout, Point offset) {
-
 	}
 
 	private void renderImage(GC gc, TreeCellLayout layout, Point offset) {
@@ -192,10 +187,6 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		return gc.textExtent(cell.getText(), DRAW_FLAGS);
 	}
 
-	private void NOT_IMPLEMENTED() {
-		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
-	}
-
 	@Override
 	public int computePreferedWidth() { // TODO duplicated code -> computeLayout
 		Image image = null;
@@ -236,5 +227,9 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 		width += PADDING_RIGHT;
 
 		return width;
+	}
+
+	private void NOT_IMPLEMENTED() {
+		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
 }
