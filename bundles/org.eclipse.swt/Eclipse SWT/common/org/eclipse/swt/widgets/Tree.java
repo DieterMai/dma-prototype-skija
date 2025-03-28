@@ -21,7 +21,6 @@ import java.util.function.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.TreeItem.*;
 import org.eclipse.swt.widgets.tree.*;
 
 /**
@@ -352,8 +351,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	}
 
 	private void onResize(Event event) {
-		updateVerticalScrollBar();
-		updateHorizontalScrollBar();
 		redraw();
 	}
 
@@ -376,8 +373,11 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		int increment = ITEM_HEIGHT;
 		int page = increment * 5;
 
-		bar.setValues(selection, min, max, available, increment, page);
-		bar.setVisible(available < max);
+		boolean visible = available < max;
+		bar.setVisible(visible);
+		if (visible) {
+			bar.setValues(selection, min, max, available, increment, page);
+		}
 	}
 
 	private void updateHorizontalScrollBar() {
@@ -398,8 +398,11 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		int increment = 5;
 		int page = increment * 5;
 
-		bar.setValues(selection, min, max, available, increment, page);
-		bar.setVisible(available < max);
+		boolean visible = available < max;
+		bar.setVisible(visible);
+		if (visible) {
+			bar.setValues(selection, min, max, available, increment, page);
+		}
 	}
 
 	private void onPaint(Event event) {
@@ -419,6 +422,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		Drawing.drawWithGC(this, event.gc, gc -> renderer.render(gc, size, origin, getFlatItems()));
 
 		updateVerticalScrollBar();
+		updateHorizontalScrollBar();
 	}
 
 	private void onVerticalScroll(Event e) {
@@ -623,7 +627,6 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 		Point size = renderer.computeSize(new Point(wHint, hHint), getFlatItems());
-		System.out.println("Tree.computeSize() 1 size: " + size);
 
 		if (getVerticalBar() != null) {
 			size.x += getVerticalBar().getSize().x;
