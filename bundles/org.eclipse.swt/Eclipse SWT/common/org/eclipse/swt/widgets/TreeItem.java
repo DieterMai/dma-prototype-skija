@@ -1180,6 +1180,9 @@ public class TreeItem extends Item implements ITreeItem {
 	public void setImage(Image image) {
 		checkWidget();
 		super.setImage(image);
+		growCells();
+		cell(0).setImage(image);
+
 	}
 
 	/**
@@ -1272,15 +1275,13 @@ public class TreeItem extends Item implements ITreeItem {
 		if (index == 0) {
 			super.setText(text);
 		}
+		growCells();
 		cell(index).text(text);
 	}
 
 	private void setCellProperty(int index, Consumer<TreeCell> setter) {
-		int cellCount = Math.max(1, tree.getColumnCount());
-		if (index >= 0 && index < cellCount) {
-			growCells(index);
-			setter.accept(cell(index));
-		}
+		growCells();
+		setter.accept(cell(index));
 		return;
 	}
 
@@ -1288,8 +1289,11 @@ public class TreeItem extends Item implements ITreeItem {
 		return cells.get(index);
 	}
 
-	private void growCells(int size) {
-		for (int i = cells.size(); i <= size; i++) {
+	private void growCells() {
+		if (cells.size() >= tree.getColumnCount()) {
+			return;
+		}
+		for (int i = cells.size(); i <= tree.getColumnCount(); i++) {
 			cells.add(new TreeCell(tree, this));
 		}
 	}

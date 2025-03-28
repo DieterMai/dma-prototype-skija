@@ -127,6 +127,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private final List<TreeColumn> columns = new ArrayList<>();
 
 	private TreeItem hoverItem;
+	private TreeColumn sortColumn;
 
 	private Color headerBackgroundColor = DEFAULT_HEADER_BACKGROUND_COLOR;
 	private Color headerForegroundColor = DEFAULT_HEADER_FOREGROUND_COLOR;
@@ -1001,7 +1002,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		return getItem(getFlatItems(), point);
 	}
 
-	private List<TreeItem> getFlatItems() { // TODO might be a good idea to cash this
+	List<TreeItem> getFlatItems() { // TODO might be a good idea to cash this
 		List<TreeItem> expandedItems = new ArrayList<>();
 		collectExpandedItems(expandedItems, rootItems.toArray(TreeItem[]::new));
 		return expandedItems;
@@ -1773,7 +1774,15 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	@Override
 	public void setSortColumn(TreeColumn column) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		if (column != null && column.isDisposed())
+			error(SWT.ERROR_INVALID_ARGUMENT);
+		if (sortColumn != null && !sortColumn.isDisposed()) {
+			sortColumn.setSortDirection(SWT.NONE);
+		}
+		sortColumn = column;
+		if (sortColumn != null && sortDirection != SWT.NONE) {
+			sortColumn.setSortDirection(sortDirection);
+		}
 	}
 
 	/**
@@ -1928,6 +1937,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		return itemsMap.getOrDefault(parentItem, List.of());
 	}
 
+	void createItem(TreeColumn treeColumn, int index) {
+		columns.add(index, treeColumn);
+	}
+
 	private void log(String msg) {
 		System.out.println(getData() + ": " + msg);
 	}
@@ -1935,4 +1948,5 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
+
 }

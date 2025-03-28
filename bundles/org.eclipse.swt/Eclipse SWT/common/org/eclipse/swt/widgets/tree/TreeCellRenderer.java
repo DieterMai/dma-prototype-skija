@@ -45,10 +45,12 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 
 	private final Tree tree;
 	private final TreeItem item;
+	private final TreeCell cell;
 
-	public TreeCellRenderer(Tree tree, TreeItem item) {
+	public TreeCellRenderer(Tree tree, TreeItem item, TreeCell cell) {
 		this.tree = tree;
 		this.item = item;
+		this.cell = cell;
 	}
 
 	@Override
@@ -118,10 +120,10 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 
 		// 1. Collect elements
 		if (hasImage()) {
-			image = item.getImage(); // TODO cell index
+			image = cell.getImage();
 		}
 		if (hasText()) {
-			text = item.getText(); // TODO cell index
+			text = cell.getText();
 		}
 
 
@@ -161,11 +163,11 @@ public class TreeCellRenderer implements ITreeCellRenderer {
 	}
 
 	private boolean hasImage() {
-		return item.getImage() != null;
+		return cell.getImage() != null;
 	}
 
 	private boolean hasText() {
-		return item.getText() != null && !item.getText().isBlank();
+		return cell.getText() != null && !cell.getText().isBlank();
 	}
 
 	private Color getTextColor() {

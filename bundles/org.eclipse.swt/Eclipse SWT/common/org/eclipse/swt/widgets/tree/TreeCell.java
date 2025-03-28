@@ -39,6 +39,7 @@ public class TreeCell {
 	private final ITreeCellRenderer renderer;
 
 	private String text;
+	private Image image;
 
 	private Color backgroundColor;
 	private Color foregroundColor;
@@ -50,7 +51,7 @@ public class TreeCell {
 	public TreeCell(Tree tree, TreeItem item) {
 		this.tree = tree;
 		this.item = item;
-		this.renderer = new TreeCellRenderer(tree, item);
+		this.renderer = new TreeCellRenderer(tree, item, this);
 	}
 
 	public Color backgroundColor() {
@@ -101,5 +102,17 @@ public class TreeCell {
 	@Override
 	public String toString() {
 		return "TreeCell: " + text;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
 	}
 }

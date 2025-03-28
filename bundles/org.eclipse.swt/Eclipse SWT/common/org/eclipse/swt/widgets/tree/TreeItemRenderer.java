@@ -41,6 +41,7 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	private final Tree tree;
 	private final TreeItem item;
+	private Point size;
 
 	private TreeItemLayout renderedLayout;
 
@@ -164,8 +165,12 @@ public class TreeItemRenderer implements ITreeItemRenderer {
 
 	@Override
 	public Point getSize(List<TreeCell> cells, int depth) {
-		TreeItemLayout layout = computeLayout(new Point(0, 0), cells, depth);
-		return layout.size();
+		if (renderedLayout != null) {
+			return renderedLayout.size();
+		} else {
+			TreeItemLayout layout = computeLayout(new Point(0, 0), cells, depth);
+			return layout.size();
+		}
 	}
 
 	private int[] translate(int[] original, int x, int y) {

@@ -17,6 +17,8 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 
+import java.util.List;
+
 /**
  * Instances of this class represent a column in a tree widget.
  * <dl>
@@ -41,6 +43,13 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class TreeColumn extends Item implements ITreeColumn {
+	private String toolTipText;
+	private boolean resizable;
+	private Tree tree;
+
+	private int sortDirection;
+	private int width;
+
 	/**
 	 * Constructs a new instance of this class given its parent (which must be a
 	 * <code>Tree</code>) and a style value describing its behavior and appearance.
@@ -80,7 +89,10 @@ public class TreeColumn extends Item implements ITreeColumn {
 	 */
 	public TreeColumn(Tree parent, int style) {
 		super(parent, checkStyle(style));
-		NOT_IMPLEMENTED();
+
+		resizable = true;
+		this.tree = parent;
+		parent.createItem(this, parent.getColumnCount());
 	}
 
 	/**
@@ -130,7 +142,9 @@ public class TreeColumn extends Item implements ITreeColumn {
 	 */
 	public TreeColumn(Tree parent, int style, int index) {
 		super(parent, checkStyle(style));
-		NOT_IMPLEMENTED();
+		resizable = true;
+		this.tree = parent;
+		parent.createItem(this, index);
 	}
 
 	/**
@@ -347,7 +361,13 @@ public class TreeColumn extends Item implements ITreeColumn {
 	@Override
 	public void pack() {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		List<TreeItem> items = tree.getFlatItems();
+		int maxWidth = 0;
+		for (TreeItem item : items) {
+			maxWidth = Math.max(maxWidth, item.getSize().x);
+		}
+		setWidth(maxWidth);
+		tree.redraw();
 	}
 
 
@@ -500,12 +520,6 @@ public class TreeColumn extends Item implements ITreeColumn {
 		NOT_IMPLEMENTED();
 	}
 
-	@Override
-	public void setText(String string) {
-		checkWidget();
-		NOT_IMPLEMENTED();
-	}
-
 	/**
 	 * Sets the receiver's tool tip text to the argument, which may be null
 	 * indicating that the default tool tip for the control will be shown. For a
@@ -538,7 +552,7 @@ public class TreeColumn extends Item implements ITreeColumn {
 	@Override
 	public void setToolTipText(String string) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.toolTipText = string;
 	}
 
 	/**
@@ -556,10 +570,16 @@ public class TreeColumn extends Item implements ITreeColumn {
 	 */
 	public void setWidth(int width) {
 		checkWidget();
-		NOT_IMPLEMENTED();
+		this.width = width;
+	}
+
+	void setSortDirection(int sortDirection) {
+		this.sortDirection = sortDirection;
 	}
 
 	private void NOT_IMPLEMENTED() {
 		System.out.println(Thread.currentThread().getStackTrace()[2] + " not implemented yet!");
 	}
+
+
 }
