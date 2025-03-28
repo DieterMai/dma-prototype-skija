@@ -305,6 +305,10 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 			getVerticalBar().addListener(SWT.Selection, this::onVerticalScroll);
 		}
 
+		if (getHorizontalBar() != null) {
+			getHorizontalBar().addListener(SWT.Selection, this::onHorizontalScroll);
+		}
+
 		// cash flags for later use.
 		check = isFlag(style, SWT.CHECK);
 		border = isFlag(style, SWT.BORDER);
@@ -349,7 +353,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	private void onResize(Event event) {
 		updateVerticalScrollBar();
-
+		updateHorizontalScrollBar();
 		redraw();
 	}
 
@@ -373,6 +377,29 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		int page = increment * 5;
 
 		bar.setValues(selection, min, max, available, increment, page);
+		bar.setVisible(available < max);
+	}
+
+	private void updateHorizontalScrollBar() {
+		ScrollBar bar = getHorizontalBar();
+		if (bar == null) {
+			return;
+		}
+
+		Rectangle window = getClientArea();
+		Point clientSize = new Point(window.x, window.y);
+		Point contentSize = renderer.computeContentSize(clientSize, getFlatItems());
+
+		int available = window.height;
+		int max = contentSize.y;
+
+		int selection = bar.getSelection();
+		int min = 0;
+		int increment = 5;
+		int page = increment * 5;
+
+		bar.setValues(selection, min, max, available, increment, page);
+		bar.setVisible(available < max);
 	}
 
 	private void onPaint(Event event) {
@@ -397,6 +424,12 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 	private void onVerticalScroll(Event e) {
 		ScrollBar bar = getVerticalBar();
 		origin.y = -bar.getSelection();
+		redraw();
+	}
+
+	private void onHorizontalScroll(Event e) {
+		ScrollBar bar = getHorizontalBar();
+		origin.x = -bar.getSelection();
 		redraw();
 	}
 

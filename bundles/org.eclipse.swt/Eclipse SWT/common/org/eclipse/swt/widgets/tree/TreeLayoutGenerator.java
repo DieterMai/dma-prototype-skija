@@ -64,7 +64,8 @@ public class TreeLayoutGenerator {
 	private List<TreeItemRecord> createItemRecords(Point[] sizeArray, Point[] positionArray) {
 		List<TreeItemRecord> records = new ArrayList<>();
 		for (int i = 0; i < sizeArray.length; i++) {
-			records.add(new TreeItemRecord(i, new Rectangle(0, positionArray[i].y, sizeArray[i].x, sizeArray[i].y)));
+			var bounds = new Rectangle(positionArray[i].x, positionArray[i].y, sizeArray[i].x, sizeArray[i].y);
+			records.add(new TreeItemRecord(i, bounds));
 		}
 
 		return records;
