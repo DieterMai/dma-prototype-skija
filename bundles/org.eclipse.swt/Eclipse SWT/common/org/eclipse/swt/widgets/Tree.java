@@ -367,14 +367,12 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 		int available = window.height;
 		int max = contentSize.y;
 
-		int selection = -origin.y; // TODO
+		int selection = bar.getSelection();
 		int min = 0;
 		int increment = ITEM_HEIGHT;
 		int page = increment * 5;
 
 		bar.setValues(selection, min, max, available, increment, page);
-//		log("Tree.updateVerticalScrollBar() Selection: " + bar.getSelection() + ", max: " + bar.getMaximum()
-//				+ ", thumb: " + bar.getThumb() + ", inc: " + bar.getIncrement() + ", page: " + bar.getPageIncrement());
 	}
 
 	private void onPaint(Event event) {
@@ -398,12 +396,7 @@ public class Tree extends Composite implements ITree<TreeColumn, TreeItem> {
 
 	private void onVerticalScroll(Event e) {
 		ScrollBar bar = getVerticalBar();
-//		System.out.println("Tree.onVerticalScroll() Selection: " + bar.getSelection() + ", max: " + bar.getMaximum()
-//				+ ", thumb: " + bar.getThumb() + ", inc: " + bar.getIncrement() + ", page: " + bar.getPageIncrement());
-		System.out.println("Tree.onVerticalScroll() bar.getSelection() " + bar.getSelection());
 		origin.y = -bar.getSelection();
-		System.out.println("Tree.onVerticalScroll() origin: " + origin);
-
 		redraw();
 	}
 
